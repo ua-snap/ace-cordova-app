@@ -29,7 +29,7 @@ angular.module('starter.controllers')
   /**
    * @property
    */
-  $scope.report = new GenericReport();
+  $scope.report = new WeatherReport();
 
   // Submit Popover functions
   //-------------------------------------------------------------------------------------
@@ -55,34 +55,34 @@ angular.module('starter.controllers')
     
     // Fill in each report element
     var cat1 = document.getElementById("sumcat1");
-    cat1.innerText = "Cloud Cover: " + $scope.report.category1;
+    cat1.innerText = "Cloud Cover: " + $scope.report.cloudCover;
     
     var cat2 = document.getElementById("sumcat2");
-    cat2.innerText = "Precipitation: " + $scope.report.category2;
+    cat2.innerText = "Precipitation: " + $scope.report.precipitation;
     
     var cat3 = document.getElementById("sumcat3");
-    cat3.innerText = "Visibility: " + $scope.report.category3;
+    cat3.innerText = "Visibility: " + $scope.report.visibility;
     
     var cat4_1 = document.getElementById("sumcat4_1");
-    cat4_1.innerText = "Pressure Trend: " + $scope.report.category4_1;
+    cat4_1.innerText = "Pressure Trend: " + $scope.report.pressureTendency;
     
     var cat4_2 = document.getElementById("sumcat4_2");
-    cat4_2.innerText = "Surface Pressure: " + $scope.report.category4_2 + " hPa";
+    cat4_2.innerText = "Surface Pressure: " + $scope.report.pressureValue + " hPa";
     
     var cat5 = document.getElementById("sumcat5");
-    cat5.innerText = "Surface Temperature: " + $scope.report.category5_1 + " " + $scope.report.category5_2;
+    cat5.innerText = "Surface Temperature: " + $scope.report.temperatureValue + " " + $scope.report.temperatureUnits;
     
     var cat6 = document.getElementById("sumcat6");
-    cat6.innerText = "Wind Speed: " + $scope.report.category6_1 + " " + $scope.report.category6_2;
+    cat6.innerText = "Wind Speed: " + $scope.report.windValue + " " + $scope.report.windUnits;
     
     var cat6_3 = document.getElementById("sumcat6_3");
-    cat6_3.innerText = "Wind Direction: " + $scope.report.category6_3;
+    cat6_3.innerText = "Wind Direction: " + $scope.report.windDirection;
     
     var cat9 = document.getElementById("sumcat9");
     cat9.innerText = "Other: " + $scope.report.category9;
     
     var cat7 = document.getElementById("sumcat7");
-    cat7.innerText = "Notes:\n" + $scope.report.category7_1;
+    cat7.innerText = "Notes:\n" + $scope.report.notes_1;
     
     var cat8 = document.getElementById("sumcat8");
     
@@ -175,7 +175,7 @@ angular.module('starter.controllers')
   // Save category 1 modal selections
   $scope.saveModal1 = function() {
       $scope.modalHandler.saveModal(document, $scope.cloudCoverModal, "cat1sum", $scope.convertCategory1, function(str) {return str;});
-      $scope.report.category1 = $scope.convertCategory1($scope.cloudCoverModal.selection);
+      $scope.report.cloudCover = $scope.convertCategory1($scope.cloudCoverModal.selection);
   };
   
   $scope.cancelModal1 = function() {
@@ -253,7 +253,7 @@ angular.module('starter.controllers')
   // Save category 1 modal selections
   $scope.saveModal2 = function() {
       $scope.modalHandler.saveModal(document, $scope.precipModal, "cat2sum", $scope.convertCategory2, function(str) {return str;});
-      $scope.report.category2 = $scope.convertCategory2($scope.precipModal.selection);
+      $scope.report.precipitation = $scope.convertCategory2($scope.precipModal.selection);
   };
   
   $scope.cancelModal2 = function() {
@@ -346,7 +346,7 @@ angular.module('starter.controllers')
   // Save category 3 modal selections
   $scope.saveModal3 = function() {
       $scope.modalHandler.saveModal(document, $scope.visibilityModal, "cat3sum", $scope.convertCategory3, function(str) {return str;});
-      $scope.report.category3 = $scope.convertCategory3($scope.visibilityModal.selection);
+      $scope.report.visibility = $scope.convertCategory3($scope.visibilityModal.selection);
   };
   
   // Cancel modal 3
@@ -438,7 +438,7 @@ angular.module('starter.controllers')
       
       $scope.pressureModal.input = $scope.pressureModal.inputTemp;
       
-      $scope.report.category4_1 = $scope.convertCategory4($scope.pressureModal.selection);
+      $scope.report.pressureTendency = $scope.convertCategory4($scope.pressureModal.selection);
       $scope.report.categoty4_2 = $scope.pressureModal.input;
   };
   
@@ -509,10 +509,10 @@ angular.module('starter.controllers')
       $scope.surfaceTempModal.input = $scope.surfaceTempModal.inputTemp;
       $scope.surfaceTempModal.select = $scope.surfaceTempModal.selectTemp;
       
-      $scope.report.category5_1 = $scope.surfaceTempModal.input;
-      $scope.report.category5_2 = $scope.surfaceTempModal.select;
+      $scope.report.temperatureValue = $scope.surfaceTempModal.input;
+      $scope.report.temperatureUnits = $scope.surfaceTempModal.select;
       
-      document.getElementById('cat5sum').innerText = $scope.report.category5_1 + " " + $scope.report.category5_2;
+      document.getElementById('cat5sum').innerText = $scope.report.temperatureValue + " " + $scope.report.temperatureUnits;
       
       $scope.surfaceTempModal.hide();
   };
@@ -569,11 +569,11 @@ angular.module('starter.controllers')
       $scope.windModal.select1 = $scope.windModal.select1Temp;
       $scope.windModal.select2 = $scope.windModal.select2Temp;
       
-      $scope.report.category6_1 = $scope.windModal.input;
-      $scope.report.category6_2 = $scope.windModal.select1;
-      $scope.report.category6_3 = $scope.windModal.select2;
+      $scope.report.windValue = $scope.windModal.input;
+      $scope.report.windUnits = $scope.windModal.select1;
+      $scope.report.windDirection = $scope.windModal.select2;
       
-      document.getElementById('cat6sum').innerText = $scope.report.category6_1 + " " + $scope.report.category6_2 + " " + $scope.report.category6_3;
+      document.getElementById('cat6sum').innerText = $scope.report.windValue + " " + $scope.report.windUnits + " " + $scope.report.windDirection;
       
       $scope.windModal.hide();
   };
@@ -614,9 +614,9 @@ angular.module('starter.controllers')
   $scope.saveModal7 = function() {
       $scope.notesModal.input = $scope.notesModal.inputTemp;
       
-      $scope.report.category7 = $scope.notesModal.input;
+      $scope.report.notes = $scope.notesModal.input;
       
-      document.getElementById('cat7sum').innerText = $scope.report.category7;
+      document.getElementById('cat7sum').innerText = $scope.report.notes;
       
       $scope.notesModal.hide();
   };
