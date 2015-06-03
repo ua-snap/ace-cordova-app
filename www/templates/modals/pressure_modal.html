@@ -4,7 +4,7 @@
 	</ion-header-bar>
 	<ion-content>
 		<div class="list">
-			<label class="item item-stacked-label">
+			<label class="item item-stacked-label"></label>
 				<span class="input-label" style="width: 100%;">Pressure Tendency:</span>
 				<div class="row">
 					<div class="col report-block modal-block-three-wide" ng-click="selectItemCat4('4opt1')" id="4opt1">
@@ -20,12 +20,12 @@
 		        		<div class="report-title">Downward</div>
 					</div>
 				</div>
-			</label>
+
 			
 			<label class="item item-input item-select item-stacked-label">
 				<span class="input-label">Surface Pressure:</span>
 					<div class="row">
-						<div class="col"><input type="number" placeholder="Enter here..." ng-model="modal4.inputTemp"></div>
+						<div class="col"><input type="number" placeholder="Enter here..." ng-model="pressureModal.inputTemp"></div>
 						<div class="col">
 							<select style="font-size:1.5rem;">
 								<option selected> hPa </option>

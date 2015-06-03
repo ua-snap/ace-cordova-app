@@ -174,7 +174,7 @@ angular.module('starter.controllers')
   
   // Save category 1 modal selections
   $scope.saveModal1 = function() {
-      $scope.modalHandler.saveModal(document, $scope.cloudCoverModal, "cat1sum", $scope.convertCategory1, function(str) {return str;});
+      $scope.modalHandler.saveModal(document, $scope.cloudCoverModal, "cloud_sum", $scope.convertCategory1, function(str) {return str;});
       $scope.report.cloudCover = $scope.convertCategory1($scope.cloudCoverModal.selection);
   };
   
@@ -252,7 +252,7 @@ angular.module('starter.controllers')
   
   // Save category 1 modal selections
   $scope.saveModal2 = function() {
-      $scope.modalHandler.saveModal(document, $scope.precipModal, "cat2sum", $scope.convertCategory2, function(str) {return str;});
+      $scope.modalHandler.saveModal(document, $scope.precipModal, "precip_sum", $scope.convertCategory2, function(str) {return str;});
       $scope.report.precipitation = $scope.convertCategory2($scope.precipModal.selection);
   };
   
@@ -345,7 +345,7 @@ angular.module('starter.controllers')
   
   // Save category 3 modal selections
   $scope.saveModal3 = function() {
-      $scope.modalHandler.saveModal(document, $scope.visibilityModal, "cat3sum", $scope.convertCategory3, function(str) {return str;});
+      $scope.modalHandler.saveModal(document, $scope.visibilityModal, "vis_sum", $scope.convertCategory3, function(str) {return str;});
       $scope.report.visibility = $scope.convertCategory3($scope.visibilityModal.selection);
   };
   
@@ -434,12 +434,14 @@ angular.module('starter.controllers')
   
   // Save category 4 modal selections
   $scope.saveModal4 = function() {
-      $scope.modalHandler.saveModal(document, $scope.pressureModal, "cat4sum", $scope.convertCategory4, function(str) {return $scope.pressureModal.inputTemp + " hPa";}, true);
+      $scope.modalHandler.saveModal(document, $scope.pressureModal, "pressure_sum", $scope.convertCategory4, function(str) {return $scope.pressureModal.inputTemp + " hPa";}, true);
       
       $scope.pressureModal.input = $scope.pressureModal.inputTemp;
       
       $scope.report.pressureTendency = $scope.convertCategory4($scope.pressureModal.selection);
-      $scope.report.categoty4_2 = $scope.pressureModal.input;
+      $scope.report.pressureValue = $scope.pressureModal.input;
+      
+      document.getElementById("pressure_sum").innerText = $scope.pressureModal.input + " hPa";
   };
   
   // Conversion function for category 4
@@ -512,7 +514,7 @@ angular.module('starter.controllers')
       $scope.report.temperatureValue = $scope.surfaceTempModal.input;
       $scope.report.temperatureUnits = $scope.surfaceTempModal.select;
       
-      document.getElementById('cat5sum').innerText = $scope.report.temperatureValue + " " + $scope.report.temperatureUnits;
+      document.getElementById('temp_sum').innerText = $scope.report.temperatureValue + " " + $scope.report.temperatureUnits;
       
       $scope.surfaceTempModal.hide();
   };
@@ -577,7 +579,7 @@ angular.module('starter.controllers')
       $scope.report.windUnits = $scope.windModal.select1;
       $scope.report.windDirection = $scope.windModal.select2;
       
-      document.getElementById('cat6sum').innerText = $scope.report.windValue + " " + $scope.report.windUnits + " " + $scope.report.windDirection;
+      document.getElementById('wind_sum').innerText = $scope.report.windValue + " " + $scope.report.windUnits + " " + $scope.report.windDirection;
       
       $scope.windModal.hide();
   };
@@ -620,7 +622,7 @@ angular.module('starter.controllers')
       
       $scope.report.notes = $scope.notesModal.input;
       
-      document.getElementById('cat7sum').innerText = $scope.report.notes;
+      document.getElementById('notes_sum').innerText = $scope.report.notes;
       
       $scope.notesModal.hide();
   };
@@ -758,7 +760,7 @@ angular.module('starter.controllers')
   
   // Save category 9 modal selections
   $scope.saveModal9 = function() {
-      $scope.modalHandler.saveModal(document, $scope.otherModal, "cat9sum", $scope.convertCategory9, function(str) {return str;});
+      $scope.modalHandler.saveModal(document, $scope.otherModal, "other_sum", $scope.convertCategory9, function(str) {return str;});
       $scope.report.other = $scope.convertCategory9($scope.otherModal.selection);
   };
   
