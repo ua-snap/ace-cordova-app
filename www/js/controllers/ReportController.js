@@ -79,7 +79,7 @@ angular.module('starter.controllers')
     cat6_3.innerText = "Wind Direction: " + $scope.report.windDirection;
     
     var cat9 = document.getElementById("sumcat9");
-    cat9.innerText = "Other: " + $scope.report.category9;
+    cat9.innerText = "Other: " + $scope.report.other;
     
     var cat7 = document.getElementById("sumcat7");
     cat7.innerText = "Notes:\n" + $scope.report.notes_1;
@@ -548,6 +548,10 @@ angular.module('starter.controllers')
     {
       $scope.windModal.select1Temp = $scope.windModal.select1;
     }
+    else
+    {
+      document.getElementById("wind_sel_units").selectedIndex = 1;
+    }
     
     if($scope.windModal.select2 && $scope.windModal.select2 != "")
     {
@@ -690,8 +694,8 @@ angular.module('starter.controllers')
    */
   $scope.cancelModal8 = function() {
       //this.modal8.selection = "";
-      //this.report.category8_1 = "";
-      //alert(this.report.category8_1 + "\n" + this.report.category8_2);
+      //this.report.camera_1 = "";
+      //alert(this.report.camera_1 + "\n" + this.report.camera_2);
       this.closeModal8();
   };
 
@@ -708,7 +712,7 @@ angular.module('starter.controllers')
       
      
       
-      //alert(this.report.category8_1 + "\n" + this.report.category8_2);
+      //alert(this.report.camera_1 + "\n" + this.report.camera_2);
       
       this.closeModal8();
   };
@@ -755,7 +759,7 @@ angular.module('starter.controllers')
   // Save category 9 modal selections
   $scope.saveModal9 = function() {
       $scope.modalHandler.saveModal(document, $scope.otherModal, "cat9sum", $scope.convertCategory9, function(str) {return str;});
-      $scope.report.category9 = $scope.convertCategory9($scope.otherModal.selection);
+      $scope.report.other = $scope.convertCategory9($scope.otherModal.selection);
   };
   
   $scope.cancelModal9 = function() {

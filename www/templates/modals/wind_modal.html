@@ -5,12 +5,12 @@
 	
 	<ion-content>	
 		<div class="list">
-			<div class="item item-input-inset">
+			<div class="item item-input-inset item-select">
 				<label class="item-input">
 					<span class="input-label ">Wind Speed</span>
-					<input type="number" ng-model="modal6.inputTemp">
+					<input type="number" placeholder="Enter here" ng-model="modal6.inputTemp">
 				</label>				
-					<select ng-model="modal6.select1Temp">
+					<select ng-model="modal6.select1Temp" id="wind_sel_units" style="font-size:1.5rem;">
 						<option selected> Knots </option>
 						<option> mph </option>
 					</select>				
