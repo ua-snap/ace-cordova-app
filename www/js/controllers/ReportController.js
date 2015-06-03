@@ -158,33 +158,33 @@ angular.module('starter.controllers')
   //--------------------------------------------------------------------------------------
   
   // Create modal1 from html
-  $ionicModal.fromTemplateUrl('templates/modals/category1.html', {
+  $ionicModal.fromTemplateUrl('templates/modals/cloud_cover.html', {
       scope: $scope,
       animation: 'slide-in-up',
   }).then(function(modal) {
-      $scope.modal1 = modal;
-      $scope.modal1.selection = "";      
+      $scope.cloudCoverModal = modal;
+      $scope.cloudCoverModal.selection = "";      
   });
   
   // Select an item on category 1
   $scope.selectItemCat1 = function(id) {
     var handler = $scope.modalHandler;
-    handler.setNewTempSelection(document, $scope.modal1, id);
+    handler.setNewTempSelection(document, $scope.cloudCoverModal, id);
   };
   
   // Save category 1 modal selections
   $scope.saveModal1 = function() {
-      $scope.modalHandler.saveModal(document, $scope.modal1, "cat1sum", $scope.convertCategory1, function(str) {return str;});
-      $scope.report.category1 = $scope.convertCategory1($scope.modal1.selection);
+      $scope.modalHandler.saveModal(document, $scope.cloudCoverModal, "cat1sum", $scope.convertCategory1, function(str) {return str;});
+      $scope.report.category1 = $scope.convertCategory1($scope.cloudCoverModal.selection);
   };
   
   $scope.cancelModal1 = function() {
-      $scope.modal1.temp = "";
-      $scope.modal1.hide();
+      $scope.cloudCoverModal.temp = "";
+      $scope.cloudCoverModal.hide();
   };
 
    $scope.openModal1 = function() {
-      $scope.modalHandler.openModal(document, $scope.modal1);
+      $scope.modalHandler.openModal(document, $scope.cloudCoverModal);
   };  
   
   $scope.convertCategory1 = function(id) {
@@ -236,33 +236,33 @@ angular.module('starter.controllers')
   //-----------------------------------------------------------------------------------------------
   
   // Create modal1 from html
-  $ionicModal.fromTemplateUrl('templates/modals/category2.html', {
+  $ionicModal.fromTemplateUrl('templates/modals/precip_modal.html', {
       scope: $scope,
       animation: 'slide-in-up',
   }).then(function(modal) {
-      $scope.modal2 = modal;
-      $scope.modal2.selection = "";      
+      $scope.precipModal = modal;
+      $scope.precipModal.selection = "";      
   });
   
   // Select an item on category 2
   $scope.selectItemCat2 = function(id) {
     var handler = $scope.modalHandler;
-    handler.setNewTempSelection(document, $scope.modal2, id);
+    handler.setNewTempSelection(document, $scope.precipModal, id);
   };
   
   // Save category 1 modal selections
   $scope.saveModal2 = function() {
-      $scope.modalHandler.saveModal(document, $scope.modal2, "cat2sum", $scope.convertCategory2, function(str) {return str;});
-      $scope.report.category2 = $scope.convertCategory2($scope.modal2.selection);
+      $scope.modalHandler.saveModal(document, $scope.precipModal, "cat2sum", $scope.convertCategory2, function(str) {return str;});
+      $scope.report.category2 = $scope.convertCategory2($scope.precipModal.selection);
   };
   
   $scope.cancelModal2 = function() {
-      $scope.modal2.temp = "";
-      $scope.modal2.hide();
+      $scope.precipModal.temp = "";
+      $scope.precipModal.hide();
   };
 
    $scope.openModal2 = function() {
-      $scope.modalHandler.openModal(document, $scope.modal2);
+      $scope.modalHandler.openModal(document, $scope.precipModal);
   };  
   
   // Converts id for category 2 to the correct report value
@@ -329,35 +329,35 @@ angular.module('starter.controllers')
   //-----------------------------------------------------------------------------------------------
 
   // Create modal3 from html
-  $ionicModal.fromTemplateUrl('templates/modals/category3.html', {
+  $ionicModal.fromTemplateUrl('templates/modals/visibility_modal.html', {
       scope: $scope,
       animation: 'slide-in-up',
   }).then(function(modal) {
-      $scope.modal3 = modal;
-      $scope.modal3.selection = "";      
+      $scope.visibilityModal = modal;
+      $scope.visibilityModal.selection = "";      
   });
   
   // Select an item on category 3
   $scope.selectItemCat3 = function(id) {
     var handler = $scope.modalHandler;
-    handler.setNewTempSelection(document, $scope.modal3, id);
+    handler.setNewTempSelection(document, $scope.visibilityModal, id);
   };
   
   // Save category 3 modal selections
   $scope.saveModal3 = function() {
-      $scope.modalHandler.saveModal(document, $scope.modal3, "cat3sum", $scope.convertCategory3, function(str) {return str;});
-      $scope.report.category3 = $scope.convertCategory3($scope.modal3.selection);
+      $scope.modalHandler.saveModal(document, $scope.visibilityModal, "cat3sum", $scope.convertCategory3, function(str) {return str;});
+      $scope.report.category3 = $scope.convertCategory3($scope.visibilityModal.selection);
   };
   
   // Cancel modal 3
   $scope.cancelModal3 = function() {
-      $scope.modal3.temp = "";
-      $scope.modal3.hide();
+      $scope.visibilityModal.temp = "";
+      $scope.visibilityModal.hide();
   };
 
   // Open modal 3
   $scope.openModal3 = function() {
-      $scope.modalHandler.openModal(document, $scope.modal3);
+      $scope.modalHandler.openModal(document, $scope.visibilityModal);
   };  
   
   // Conversion function for category3
@@ -397,49 +397,49 @@ angular.module('starter.controllers')
   //-----------------------------------------------------------------------------------------------------
   
   // Create modal4 from html
-  $ionicModal.fromTemplateUrl('templates/modals/category4.html', {
+  $ionicModal.fromTemplateUrl('templates/modals/pressure_modal.html', {
       scope: $scope,
       animation: 'slide-in-up',
   }).then(function(modal) {
-      $scope.modal4 = modal;
-      $scope.modal4.selection = "";
-      $scope.modal4.temp = "";
-      $scope.modal4.input = "";
-      $scope.modal4.inputTemp = "";
+      $scope.pressureModal = modal;
+      $scope.pressureModal.selection = "";
+      $scope.pressureModal.temp = "";
+      $scope.pressureModal.input = "";
+      $scope.pressureModal.inputTemp = "";
   });
   
   // Open modal 4
   $scope.openModal4 = function() {
-    $scope.modalHandler.openModal(document, $scope.modal4);
+    $scope.modalHandler.openModal(document, $scope.pressureModal);
     
     // Handle pressure value
-    if($scope.modal4.input && $scope.modal4.input != "")
+    if($scope.pressureModal.input && $scope.pressureModal.input != "")
     {
-      $scope.modal4.inputTemp = $scope.modal4.input;
+      $scope.pressureModal.inputTemp = $scope.pressureModal.input;
     }
   };
   
   // Select an item on category 4
   $scope.selectItemCat4 = function(id) {
     var handler = $scope.modalHandler;
-    handler.setNewTempSelection(document, $scope.modal4, id);
+    handler.setNewTempSelection(document, $scope.pressureModal, id);
   };
   
   // Cancel modal 4
   $scope.cancelModal4 = function() {
-      $scope.modal4.temp = "";
-      $scope.modal4.inputTemp = "";
-      $scope.modal4.hide();
+      $scope.pressureModal.temp = "";
+      $scope.pressureModal.inputTemp = "";
+      $scope.pressureModal.hide();
   };
   
   // Save category 4 modal selections
   $scope.saveModal4 = function() {
-      $scope.modalHandler.saveModal(document, $scope.modal4, "cat4sum", $scope.convertCategory4, function(str) {return $scope.modal4.inputTemp + " hPa";}, true);
+      $scope.modalHandler.saveModal(document, $scope.pressureModal, "cat4sum", $scope.convertCategory4, function(str) {return $scope.pressureModal.inputTemp + " hPa";}, true);
       
-      $scope.modal4.input = $scope.modal4.inputTemp;
+      $scope.pressureModal.input = $scope.pressureModal.inputTemp;
       
-      $scope.report.category4_1 = $scope.convertCategory4($scope.modal4.selection);
-      $scope.report.categoty4_2 = $scope.modal4.input;
+      $scope.report.category4_1 = $scope.convertCategory4($scope.pressureModal.selection);
+      $scope.report.categoty4_2 = $scope.pressureModal.input;
   };
   
   // Conversion function for category 4
@@ -467,29 +467,29 @@ angular.module('starter.controllers')
   //-----------------------------------------------------------------------------------------------------
   
   // Create modal5 from html
-  $ionicModal.fromTemplateUrl('templates/modals/category5.html', {
+  $ionicModal.fromTemplateUrl('templates/modals/surf_temp_modal.html', {
       scope: $scope,
       animation: 'slide-in-up',
   }).then(function(modal) {
-      $scope.modal5 = modal;
-      $scope.modal5.input = "";
-      $scope.modal5.inputTemp = "";
-      $scope.modal5.selectTemp = "";
-      $scope.modal5.select = "";
+      $scope.surfaceTempModal = modal;
+      $scope.surfaceTempModal.input = "";
+      $scope.surfaceTempModal.inputTemp = "";
+      $scope.surfaceTempModal.selectTemp = "";
+      $scope.surfaceTempModal.select = "";
   });
   
   // Open modal 5
   $scope.openModal5 = function() {
-    $scope.modalHandler.openModal(document, $scope.modal5);
+    $scope.modalHandler.openModal(document, $scope.surfaceTempModal);
     
-    if($scope.modal5.input && $scope.modal5.input != "")
+    if($scope.surfaceTempModal.input && $scope.surfaceTempModal.input != "")
     {
-      $scope.modal5.inputTemp = $scope.modal5.input;
+      $scope.surfaceTempModal.inputTemp = $scope.surfaceTempModal.input;
     }
     
-    if($scope.modal5.select && $scope.modal5.select != "")
+    if($scope.surfaceTempModal.select && $scope.surfaceTempModal.select != "")
     {
-      $scope.modal5.selectTemp = $scope.modal5.select;
+      $scope.surfaceTempModal.selectTemp = $scope.surfaceTempModal.select;
     }
     else 
     {
@@ -499,22 +499,22 @@ angular.module('starter.controllers')
   
   // Cancel modal 5
   $scope.cancelModal5 = function() {
-      $scope.modal5.inputTemp = "";
-      $scope.modal5.selectTemp = "";
-      $scope.modal5.hide();
+      $scope.surfaceTempModal.inputTemp = "";
+      $scope.surfaceTempModal.selectTemp = "";
+      $scope.surfaceTempModal.hide();
   };
   
   // Save category 5 modal selections
   $scope.saveModal5 = function() {
-      $scope.modal5.input = $scope.modal5.inputTemp;
-      $scope.modal5.select = $scope.modal5.selectTemp;
+      $scope.surfaceTempModal.input = $scope.surfaceTempModal.inputTemp;
+      $scope.surfaceTempModal.select = $scope.surfaceTempModal.selectTemp;
       
-      $scope.report.category5_1 = $scope.modal5.input;
-      $scope.report.category5_2 = $scope.modal5.select;
+      $scope.report.category5_1 = $scope.surfaceTempModal.input;
+      $scope.report.category5_2 = $scope.surfaceTempModal.select;
       
       document.getElementById('cat5sum').innerText = $scope.report.category5_1 + " " + $scope.report.category5_2;
       
-      $scope.modal5.hide();
+      $scope.surfaceTempModal.hide();
   };
   
   
@@ -522,60 +522,60 @@ angular.module('starter.controllers')
   //-----------------------------------------------------------------------------------------------------
   
   // Create modal6 from html
-  $ionicModal.fromTemplateUrl('templates/modals/category6.html', {
+  $ionicModal.fromTemplateUrl('templates/modals/wind_modal.html', {
       scope: $scope,
       animation: 'slide-in-up',
   }).then(function(modal) {
-      $scope.modal6 = modal;
-      $scope.modal6.input = "";
-      $scope.modal6.inputTemp = "";
-      $scope.modal6.select1Temp = "";
-      $scope.modal6.select1 = "";
-      $scope.modal6.select2Temp = "";
-      $scope.modal6.select2 = "";
+      $scope.windModal = modal;
+      $scope.windModal.input = "";
+      $scope.windModal.inputTemp = "";
+      $scope.windModal.select1Temp = "";
+      $scope.windModal.select1 = "";
+      $scope.windModal.select2Temp = "";
+      $scope.windModal.select2 = "";
   });
   
   // Open modal 6
   $scope.openModal6 = function() {
-    $scope.modalHandler.openModal(document, $scope.modal6);
+    $scope.modalHandler.openModal(document, $scope.windModal);
     
-    if($scope.modal6.input && $scope.modal6.input != "")
+    if($scope.windModal.input && $scope.windModal.input != "")
     {
-      $scope.modal6.inputTemp = $scope.modal6.input;
+      $scope.windModal.inputTemp = $scope.windModal.input;
     }
     
-    if($scope.modal6.select1 && $scope.modal6.select1 != "")
+    if($scope.windModal.select1 && $scope.windModal.select1 != "")
     {
-      $scope.modal6.select1Temp = $scope.modal6.select1;
+      $scope.windModal.select1Temp = $scope.windModal.select1;
     }
     
-    if($scope.modal6.select2 && $scope.modal6.select2 != "")
+    if($scope.windModal.select2 && $scope.windModal.select2 != "")
     {
-      $scope.modal6.select2Temp = $scope.modal6.select2;
+      $scope.windModal.select2Temp = $scope.windModal.select2;
     }
   };
   
   // Cancel modal 6
   $scope.cancelModal6 = function() {
-      $scope.modal6.inputTemp = "";
-      $scope.modal6.select1Temp = "";
-       $scope.modal6.select2Temp = "";
-      $scope.modal6.hide();
+      $scope.windModal.inputTemp = "";
+      $scope.windModal.select1Temp = "";
+       $scope.windModal.select2Temp = "";
+      $scope.windModal.hide();
   };
   
   // Save category 6 modal selections
   $scope.saveModal6 = function() {
-      $scope.modal6.input = $scope.modal6.inputTemp;
-      $scope.modal6.select1 = $scope.modal6.select1Temp;
-      $scope.modal6.select2 = $scope.modal6.select2Temp;
+      $scope.windModal.input = $scope.windModal.inputTemp;
+      $scope.windModal.select1 = $scope.windModal.select1Temp;
+      $scope.windModal.select2 = $scope.windModal.select2Temp;
       
-      $scope.report.category6_1 = $scope.modal6.input;
-      $scope.report.category6_2 = $scope.modal6.select1;
-      $scope.report.category6_3 = $scope.modal6.select2;
+      $scope.report.category6_1 = $scope.windModal.input;
+      $scope.report.category6_2 = $scope.windModal.select1;
+      $scope.report.category6_3 = $scope.windModal.select2;
       
       document.getElementById('cat6sum').innerText = $scope.report.category6_1 + " " + $scope.report.category6_2 + " " + $scope.report.category6_3;
       
-      $scope.modal6.hide();
+      $scope.windModal.hide();
   };
   
   
@@ -584,41 +584,41 @@ angular.module('starter.controllers')
   //-----------------------------------------------------------------------------------------------------
   
   // Create modal7 from html
-  $ionicModal.fromTemplateUrl('templates/modals/category7.html', {
+  $ionicModal.fromTemplateUrl('templates/modals/notes_modal.html', {
       scope: $scope,
       animation: 'slide-in-up',
   }).then(function(modal) {
-      $scope.modal7 = modal;
-      $scope.modal7.input = "";
-      $scope.modal7.inputTemp = "";
+      $scope.notesModal = modal;
+      $scope.notesModal.input = "";
+      $scope.notesModal.inputTemp = "";
   });
   
   // Open modal 7
   $scope.openModal7 = function() {
-    $scope.modalHandler.openModal(document, $scope.modal7);
+    $scope.modalHandler.openModal(document, $scope.notesModal);
     
-    if($scope.modal7.input && $scope.modal7.input != "")
+    if($scope.notesModal.input && $scope.notesModal.input != "")
     {
-      $scope.modal7.inputTemp = $scope.modal7.input;
+      $scope.notesModal.inputTemp = $scope.notesModal.input;
     }
     
   };
   
   // Cancel modal 7
   $scope.cancelModal7 = function() {
-      $scope.modal7.inputTemp = "";
-      $scope.modal7.hide();
+      $scope.notesModal.inputTemp = "";
+      $scope.notesModal.hide();
   };
   
   // Save category 7 modal selections
   $scope.saveModal7 = function() {
-      $scope.modal7.input = $scope.modal7.inputTemp;
+      $scope.notesModal.input = $scope.notesModal.inputTemp;
       
-      $scope.report.category7 = $scope.modal7.input;
+      $scope.report.category7 = $scope.notesModal.input;
       
       document.getElementById('cat7sum').innerText = $scope.report.category7;
       
-      $scope.modal7.hide();
+      $scope.notesModal.hide();
   };
   
   // Category 8 Functions
@@ -635,11 +635,11 @@ angular.module('starter.controllers')
   
   // Modal8 functions
   // Create modal8 from html
-  $ionicModal.fromTemplateUrl('templates/modals/category8.html', {
+  $ionicModal.fromTemplateUrl('templates/modals/camera_modal.html', {
       scope: $scope,
       animation: 'slide-in-up',
   }).then(function(modal) {
-      $scope.modal8 = modal;
+      $scope.cameraModal = modal;
   });
   
   $scope.takePic = function() {
@@ -667,7 +667,7 @@ angular.module('starter.controllers')
    * @throws none
    */
   $scope.openModal8 = function() {
-      $scope.modal8.show();
+      $scope.cameraModal.show();
   };
   
   // Function closes modal8
@@ -678,7 +678,7 @@ angular.module('starter.controllers')
    * @throws none
    */
   $scope.closeModal8 = function() {
-      $scope.modal8.hide();
+      $scope.cameraModal.hide();
   };
   
   // Function called when user presses cancel on modal8
@@ -738,33 +738,33 @@ angular.module('starter.controllers')
   //--------------------------------------------------------------------------------------
   
   // Create modal9 from html
-  $ionicModal.fromTemplateUrl('templates/modals/category9.html', {
+  $ionicModal.fromTemplateUrl('templates/modals/other_modal.html', {
       scope: $scope,
       animation: 'slide-in-up',
   }).then(function(modal) {
-      $scope.modal9 = modal;
-      $scope.modal9.selection = "";      
+      $scope.otherModal = modal;
+      $scope.otherModal.selection = "";      
   });
   
   // Select an item on category 9
   $scope.selectItemCat9 = function(id) {
     var handler = $scope.modalHandler;
-    handler.setNewTempSelection(document, $scope.modal9, id);
+    handler.setNewTempSelection(document, $scope.otherModal, id);
   };
   
   // Save category 9 modal selections
   $scope.saveModal9 = function() {
-      $scope.modalHandler.saveModal(document, $scope.modal9, "cat9sum", $scope.convertCategory9, function(str) {return str;});
-      $scope.report.category9 = $scope.convertCategory9($scope.modal9.selection);
+      $scope.modalHandler.saveModal(document, $scope.otherModal, "cat9sum", $scope.convertCategory9, function(str) {return str;});
+      $scope.report.category9 = $scope.convertCategory9($scope.otherModal.selection);
   };
   
   $scope.cancelModal9 = function() {
-      $scope.modal9.temp = "";
-      $scope.modal9.hide();
+      $scope.otherModal.temp = "";
+      $scope.otherModal.hide();
   };
 
    $scope.openModal9 = function() {
-      $scope.modalHandler.openModal(document, $scope.modal9);
+      $scope.modalHandler.openModal(document, $scope.otherModal);
   };  
   
   // Takes in an id string representing the item selected in the modal.  Returns the corresponding report string value.
@@ -800,15 +800,15 @@ angular.module('starter.controllers')
    */
   $scope.$on('$destroy', function() {
       // Remove all modals
-      $scope.modal1.remove();
-      $scope.modal2.remove();
-      $scope.modal3.remove();
-      $scope.modal4.remove();
-      $scope.modal5.remove();
-      $scope.modal6.remove();
-      $scope.modal7.remove();
-      $scope.modal8.remove();
-      $scope.modal9.remove();
+      $scope.cloudCoverModal.remove();
+      $scope.precipModal.remove();
+      $scope.visibilityModal.remove();
+      $scope.pressureModal.remove();
+      $scope.surfaceTempModal.remove();
+      $scope.windModal.remove();
+      $scope.notesModal.remove();
+      $scope.cameraModal.remove();
+      $scope.otherModal.remove();
       
       // Cleanup submit popover
       $scope.popover.remove();
