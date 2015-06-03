@@ -1,0 +1,58 @@
+<ion-modal-view>
+	<ion-header-bar>
+		<h1 class="title">Wind</h1>
+	</ion-header-bar>
+	
+	<ion-content>	
+		<div class="list">
+			<div class="item item-input-inset">
+				<label class="item-input">
+					<span class="input-label ">Wind Speed</span>
+					<input type="number" ng-model="modal6.inputTemp">
+				</label>				
+					<select ng-model="modal6.select1Temp">
+						<option selected> Knots </option>
+						<option> mph </option>
+					</select>				
+			</div>
+		</div>
+	
+	
+	
+		
+		<!--<div class="row item">
+			<div class="col">
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Category 6 #1</span>
+					<input type="number" placeholder="number">	
+				</label>						
+			</div>
+			<div class="col">
+				<label class="item item-select">
+					<select>
+						<option selected> Knots </option>
+						<option> mph </option>
+					</select>
+
+			</div>
+		</div>
+		</label>-->
+		<label class="item item-input item-select">	
+			<span class="input-label">Wind Direction</span>
+			<select ng-model="modal6.select2Temp">
+				<option selected> North </option>
+				<option> Northeast </option>
+				<option> East </option>
+				<option> Southeast </option>
+				<option> South </option>
+				<option> Southwest </option>
+				<option> West </option>
+				<option> Northwest </option>
+			</select>
+		</label>
+	</ion-content>
+	<ion-footer-bar>
+		<button class="button button-assertive" style="float: left" ng-click="cancelModal6()">Cancel</button>
+		<button class="button button-balanced" style="float: right" ng-click="saveModal6()">Save</button>
+	</ion-footer-bar> 
+</ion-modal-view>
