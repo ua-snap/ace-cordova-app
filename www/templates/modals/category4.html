@@ -3,32 +3,37 @@
 		<h1 class="title">Pressure</h1>
 	</ion-header-bar>
 	<ion-content>
-		<div class="row">
-			<div class="col report-block modal-block-three-wide" ng-click="selectItemCat4('4opt1')" id="4opt1">
-				<img src="img/arrow_up.png" class="report-image"></img>
-        		<div class="report-title">Upward</div>
-			</div>
-			<div class="col report-block modal-block-four-wide" ng-click="selectItemCat4('4opt2')" id="4opt2">
-				<img src="img/no_change.png" class="report-image"></img>
-        		<div class="report-title">No Change</div>
-			</div>
-			<div class="col report-block modal-block-four-wide" ng-click="selectItemCat4('4opt3')" id="4opt3">
-				<img src="img/arrow_down.png" class="report-image"></img>
-        		<div class="report-title">Downward</div>
-			</div>
-		</div>
-		
-		<label class="item item-input item-select">
-			<span class="input-label">Surface Pressure</span>
+		<div class="list">
+			<label class="item item-stacked-label">
+				<span class="input-label" style="width: 100%;">Pressure Tendency:</span>
 				<div class="row">
-					<div class="col"><input type="number" ng-model="modal4.inputTemp"></div>
-					<div class="col">
-						<select>
-							<option selected> hPa </option>
-						</select>
+					<div class="col report-block modal-block-three-wide" ng-click="selectItemCat4('4opt1')" id="4opt1">
+						<img src="img/arrow_up.png" class="report-image"></img>
+		        		<div class="report-title">Upward</div>
+					</div>
+					<div class="col report-block modal-block-four-wide" ng-click="selectItemCat4('4opt2')" id="4opt2">
+						<img src="img/no_change.png" class="report-image"></img>
+		        		<div class="report-title">No Change</div>
+					</div>
+					<div class="col report-block modal-block-four-wide" ng-click="selectItemCat4('4opt3')" id="4opt3">
+						<img src="img/arrow_down.png" class="report-image"></img>
+		        		<div class="report-title">Downward</div>
 					</div>
 				</div>
 			</label>
+			
+			<label class="item item-input item-select item-stacked-label">
+				<span class="input-label">Surface Pressure:</span>
+					<div class="row">
+						<div class="col"><input type="number" placeholder="Enter here..." ng-model="modal4.inputTemp"></div>
+						<div class="col">
+							<select style="font-size:1.5rem;">
+								<option selected> hPa </option>
+							</select>
+						</div>
+					</div>
+			</label>
+		</div>
 	</ion-content>
 	<ion-footer-bar>
 		<button class="button button-assertive" style="float: left" ng-click="cancelModal4()">Cancel</button>

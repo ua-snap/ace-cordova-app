@@ -491,6 +491,10 @@ angular.module('starter.controllers')
     {
       $scope.modal5.selectTemp = $scope.modal5.select;
     }
+    else 
+    {
+      document.getElementById("tempsel").selectedIndex = 1;
+    }
   };
   
   // Cancel modal 5

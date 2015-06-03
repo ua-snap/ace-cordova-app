@@ -5,18 +5,15 @@
 	
 	<ion-content>
 		<div class="list">
-			<div class="item item-input-inset">
+			<div class="item item-input-inset item-select">
 				<label class="item-input">
-					<span class="input-label ">Temperature</span>
-					<input type="number" ng-model="modal5.inputTemp">
+					<span class="input-label ">Temperature:</span>
+					<input type="number" placeholder="Enter here" ng-model="modal5.inputTemp">
 				</label>
-				<label class="item-select-inset">
-					<select ng-model="modal5.selectTemp">
-						<option selected>&degC</option>
-						<option>&degF</option>
-					</select>	
-				</label>
-							
+				<select ng-model="modal5.selectTemp" id="tempsel" style="font-size:1.5rem;">
+					<option selected> &degC </option>
+					<option> &degF </option>
+				</select>	
 			</div>
 		</div>
 			
