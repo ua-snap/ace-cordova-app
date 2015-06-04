@@ -21,16 +21,20 @@ angular.module('starter.controllers')
 		$ionicSideMenuDelegate.canDragContent(false);
 	});
     
+    // default latitude and longitude
     var myLatlng = new google.maps.LatLng(37.3000, -120.4833);
 
+    // Set up map options
     var mapOptions = {
         center: myLatlng,
         zoom: 16,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
+    // Create map
     var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-
+    
+    // Get current position and update map once position is recieved
     navigator.geolocation.getCurrentPosition(function(pos) {
         map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
         var myLocation = new google.maps.Marker({
@@ -40,5 +44,6 @@ angular.module('starter.controllers')
         });
     });
 
+    // Save the map for later access
     $scope.map = map;
 });

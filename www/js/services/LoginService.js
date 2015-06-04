@@ -1,5 +1,14 @@
+// LoginService.js
+
+/**
+ * @module starter.services
+ */
 angular.module('starter.services', [])
 
+// LoginService class.  Performs login functionality.  Currently hardcoded to "user/secret"
+/**
+ * @class LoginService
+ */
 .service('LoginService', function($q) {
     return {
         loginUser: function(name, pw) {

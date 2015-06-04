@@ -3,53 +3,125 @@
 // WeatherReport
 //-------------------------------------------------------------------------
 
+// This class serves as a data container for all the information pertaining to Weather reports.
+
+/**
+ * @class WeatherReport
+ * @description This class serves as a data container for all the information pertaining to Weather reports.
+ * @constructor Initializes all values to "".
+ */
 var WeatherReport = function() {
 	/**
-	 * @property
+	 * Stores the user selection for cloud cover
+	 * 
+	 * @property cloudCover
+	 * @type string
+	 * @default ""
 	 */
 	this.cloudCover = "";
 	
 	/**
-	 * @property
+	 * Precipitation variable
+	 * 
+	 * @property precipitation
+	 * @type string
+	 * @default ""
 	 */
 	this.precipitation = "";
 	
 	/**
-	 * @property
+	 * Visibility
+	 * 
+	 * @property visibility	 
+	 * @type string
+	 * @default ""
 	 */
 	this.visibility = "";
 	
 	/**
-	 * @property
+	 * Pressure Tendency (Upward, No Change, or Downward)
+	 * 
+	 * @property pressureTendency
+	 * @type string
+	 * @default ""
 	 */
 	this.pressureTendency = "";
+	
+	/**
+	 * Pressure Value (restricted to hPa units)
+	 * 
+	 * @property pressureValue
+	 * @type string
+	 * @default ""
+	 */
 	this.pressureValue = "";
 	
 	/**
-	 * @property
+	 * Temperature value
+	 * 
+	 * @property temperatureValue
+	 * @type string
+	 * @default ""
 	 */
 	this.tempuratureValue = "";
+	
+	/**
+	 * Temperature units (deg C or deg F)
+	 * @property temperatureUnits
+	 * @type string
+	 * @default ""
+	 */
 	this.tempuratureUnits = "";
 	
 	/**
-	 * @property
+	 * Wind value
+	 * 
+	 * @property windValue
+	 * @type string
+	 * @default ""
 	 */
 	this.windValue = "";
+	
+	/**
+	 * Wind units
+	 * 
+	 * @property windUnits
+	 * @type string
+	 * @default ""
+	 */
 	this.windUnits = "";
+	
+	/**
+	 * Wind direction
+	 * 
+	 * @property windDirection
+	 * @type string
+	 * @default ""
+	 */
 	this.windDirection = "";
 	
 	/**
-	 * @property
+	 * Notes
+	 * @property notes
+	 * @type string
+	 * @default ""
 	 */
 	this.notes = "";
 	
 	/**
-	 * @property
+	 * Field for camera
+	 * 
+	 * @property camera
+	 * @type string
+	 * @default ""
 	 */
 	this.camera = "";
 	
 	/**
-	 * @property
+	 * Other (Aurora Borealis or Tornado)
+	 * @property other
+	 * @type string
+	 * @default ""
 	 */
 	this.other = "";
 };

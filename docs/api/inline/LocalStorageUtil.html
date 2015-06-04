@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>LocalStorageUtil.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>LocalStorageUtil.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>LocalStorageUtil.js</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h2 id="localstorageutil">LocalStorageUtil</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Constructor assigns Cordova window variable</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/**
+ * @class LocalStorageUtil
+ * @constructor
+ */</span>
+<span class="hljs-keyword">var</span> LocalStorageUtil = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">window</span>) </span>{
+	<span class="hljs-comment">/**
+	 * @property _window
+	 * @type window
+	 * @description Private variable to store the Cordova window to access window.localStorage
+	 * @default The window passed into the constructor
+	 */</span>
+	<span class="hljs-keyword">this</span>._window = <span class="hljs-built_in">window</span>;
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Function returns the value mapped to the specified key in local storage, if it exists.
+If the value mapped to key does not exist, the function returns defaultValue</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/**
+ * @method get 
+ * @description Function returns the value mapped to the specified key, if it exists.
+ * If the value mapped to key does not exist, the function returns defaultValue *
+ *  
+ * @param {string} key The key associated with the string/object  to be retrieved. *
+ * @param {string, Object} defaultValue Will be returned if no value is assosciated with the key param
+ * @return {string, Object} Returns the string associated with the key if the string
+ * does not register as valid JSON.  Otherwise returns the Object that the json string
+ * parses to.
+ * 
+ * @throws none
+ */</span>
+LocalStorageUtil.prototype.get = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key, defaultValue</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>instantiate new JSONValidator object</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> validator = <span class="hljs-keyword">new</span> JSONValidator();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Attempt to get the string associated with the key param</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> temp = <span class="hljs-keyword">this</span>._getString(key);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Three cases:</p>
+<ol>
+<li><p>If key is not associated with anything, return defaultValue</p>
+</li>
+<li><p>If the value key is associated with is a valid json string, 
+create the object from the string and return it.</p>
+</li>
+<li><p>If the value that key is associated with is not a valid json
+string, it must just simply be a string so return that.</p>
+</li>
+</ol>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">if</span>(!temp)
+	{
+		<span class="hljs-keyword">return</span> defaultValue;
+	}
+	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(validator.isValidJSON(temp))
+	{
+		<span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.parse(temp);
+	}
+	<span class="hljs-keyword">else</span>
+	{
+		<span class="hljs-keyword">return</span> temp;
+	}
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Function saves the value param in local storage.  value is associated with
+the provided key param.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/**
+ * @method set
+ * @description Function saves the value param in local storage.  value is associated with
+ * the provided key param.
+ * 
+ * @param {string} key The key to associate to value
+ * @param {string, Object} The string or Object to save in LocalStorage
+ * @return void
+ * @throws none
+ */</span>
+LocalStorageUtil.prototype.set = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key, value</span>) </span>{
+	<span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> value == <span class="hljs-string">"string"</span> || value <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">String</span>)
+	{
+		<span class="hljs-keyword">this</span>._setString(key, value);
+	}
+	<span class="hljs-keyword">else</span>
+	{
+		<span class="hljs-keyword">this</span>._setObject(key, value);
+	}
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Private helper function saves a string variable in local storage and 
+associates it with the provided key param.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>LocalStorageUtil.prototype._setString = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key, value</span>) </span>{
+	<span class="hljs-keyword">this</span>._window.localStorage.setItem(key, value);
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Private helper function gets the string variable that was saved in local
+storage and associated with the provided key param.  If no object corresponds
+to key, then the function returns the defaultValue param.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>LocalStorageUtil.prototype._getString = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key, defaultValue</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Attempt to retreive the item associated with key</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> item = <span class="hljs-keyword">this</span>._window.localStorage.getItem(key);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>If the item does not exist, return the provided defaultValue.  Otherwise
+return the string</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">if</span>(!item)
+	{
+		<span class="hljs-keyword">return</span> defaultValue;
+	}
+	<span class="hljs-keyword">else</span>
+	{
+		<span class="hljs-keyword">return</span> item;
+	}
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Private helper function saves the object param in local storage and 
+associates it with the provided key variable.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>LocalStorageUtil.prototype._setObject = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key, object</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Save the object, converting it to a string using the JSON.stringify method.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">this</span>._window.localStorage.setItem(key, <span class="hljs-built_in">JSON</span>.stringify(object));
+};</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

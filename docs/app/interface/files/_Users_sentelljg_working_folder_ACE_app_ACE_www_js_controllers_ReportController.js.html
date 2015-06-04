@@ -1,9 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>/Users/sentelljg/working_folder/ACE/app/ACE/www/js/controllers/ReportController.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title=""></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/AppController.html">AppController</a></li>
+            
+                <li><a href="../classes/LoginController.html">LoginController</a></li>
+            
+                <li><a href="../classes/MapController.html">MapController</a></li>
+            
+                <li><a href="../classes/ModalHandler.html">ModalHandler</a></li>
+            
+                <li><a href="../classes/ReportController.html">ReportController</a></li>
+            
+                <li><a href="../classes/WeatherReport.html">WeatherReport</a></li>
+            
+                <li><a href="../classes/WorkspaceController.html">WorkspaceController</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="../modules/starter.controllers.html">starter.controllers</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: /Users/sentelljg/working_folder/ACE/app/ACE/www/js/controllers/ReportController.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
 // ReportController.js
 
 /**
  * @module starter.controllers
  */
-angular.module('starter.controllers')
+angular.module(&#x27;starter.controllers&#x27;)
 
 // ReportController
 //--------------------------------------------------------------
@@ -15,14 +117,14 @@ angular.module('starter.controllers')
  * @description Controller for the Report view.  This controller contains all the
  * UI functionality for entering and saving reports.
  */
-.controller('ReportController', function($scope, $ionicSideMenuDelegate, $ionicModal, $ionicPopover, $ionicLoading) {
+.controller(&#x27;ReportController&#x27;, function($scope, $ionicSideMenuDelegate, $ionicModal, $ionicPopover, $ionicLoading) {
   
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
   
   // Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.  Here, this is used to enable the side menu drag functionality.
-	$scope.$on('$ionicView.enter', function() {
+	$scope.$on(&#x27;$ionicView.enter&#x27;, function() {
 		$ionicSideMenuDelegate.canDragContent(true);
 	});
   
@@ -31,7 +133,7 @@ angular.module('starter.controllers')
    * 
    * @property report
    * @type WeatherReport
-   * @default All fields initialized to ""
+   * @default All fields initialized to &quot;&quot;
    */
   $scope.report = new WeatherReport();
 
@@ -39,7 +141,7 @@ angular.module('starter.controllers')
   //-------------------------------------------------------------------------------------
   
   // Create popover from template and save to $scope variable
-  $ionicPopover.fromTemplateUrl('templates/popovers/submit.html', {
+  $ionicPopover.fromTemplateUrl(&#x27;templates/popovers/submit.html&#x27;, {
     scope: $scope
   }).then(function(popover) {
     $scope.submitPopover = popover;
@@ -51,37 +153,37 @@ angular.module('starter.controllers')
     $scope.submitPopover.show($event);
     
     // Fill in each report element
-    var clouds = document.getElementById("sumcat1");
-    clouds.innerText = "Cloud Cover: " + $scope.report.cloudCover;
+    var clouds = document.getElementById(&quot;sumcat1&quot;);
+    clouds.innerText = &quot;Cloud Cover: &quot; + $scope.report.cloudCover;
     
-    var precip = document.getElementById("sumcat2");
-    precip.innerText = "Precipitation: " + $scope.report.precipitation;
+    var precip = document.getElementById(&quot;sumcat2&quot;);
+    precip.innerText = &quot;Precipitation: &quot; + $scope.report.precipitation;
     
-    var vis = document.getElementById("sumcat3");
-    vis.innerText = "Visibility: " + $scope.report.visibility;
+    var vis = document.getElementById(&quot;sumcat3&quot;);
+    vis.innerText = &quot;Visibility: &quot; + $scope.report.visibility;
     
-    var pressTrend = document.getElementById("sumcat4_1");
-    pressTrend.innerText = "Pressure Trend: " + $scope.report.pressureTendency;
+    var pressTrend = document.getElementById(&quot;sumcat4_1&quot;);
+    pressTrend.innerText = &quot;Pressure Trend: &quot; + $scope.report.pressureTendency;
     
-    var pressVal = document.getElementById("sumcat4_2");
-    pressVal.innerText = "Surface Pressure: " + $scope.report.pressureValue + " hPa";
+    var pressVal = document.getElementById(&quot;sumcat4_2&quot;);
+    pressVal.innerText = &quot;Surface Pressure: &quot; + $scope.report.pressureValue + &quot; hPa&quot;;
     
-    var temp = document.getElementById("sumcat5");
-    temp.innerText = "Surface Temperature: " + $scope.report.temperatureValue + " " + $scope.report.temperatureUnits;
+    var temp = document.getElementById(&quot;sumcat5&quot;);
+    temp.innerText = &quot;Surface Temperature: &quot; + $scope.report.temperatureValue + &quot; &quot; + $scope.report.temperatureUnits;
     
-    var wind = document.getElementById("sumcat6");
-    wind.innerText = "Wind Speed: " + $scope.report.windValue + " " + $scope.report.windUnits;
+    var wind = document.getElementById(&quot;sumcat6&quot;);
+    wind.innerText = &quot;Wind Speed: &quot; + $scope.report.windValue + &quot; &quot; + $scope.report.windUnits;
     
-    var windDir = document.getElementById("sumcat6_3");
-    windDir.innerText = "Wind Direction: " + $scope.report.windDirection;
+    var windDir = document.getElementById(&quot;sumcat6_3&quot;);
+    windDir.innerText = &quot;Wind Direction: &quot; + $scope.report.windDirection;
     
-    var other = document.getElementById("sumcat9");
-    other.innerText = "Other: " + $scope.report.other;
+    var other = document.getElementById(&quot;sumcat9&quot;);
+    other.innerText = &quot;Other: &quot; + $scope.report.other;
     
-    var notes = document.getElementById("sumcat7");
-    notes.innerText = "Notes:\n" + $scope.report.notes_1;
+    var notes = document.getElementById(&quot;sumcat7&quot;);
+    notes.innerText = &quot;Notes:\n&quot; + $scope.report.notes_1;
     
-    var pic = document.getElementById("sumcat8");
+    var pic = document.getElementById(&quot;sumcat8&quot;);
     
   };
   
@@ -90,10 +192,10 @@ angular.module('starter.controllers')
     $scope.submitPopover.hide();
   };
   
-  // Called when the "Send Report" button on the submit popover is touched.  Should be used to 
+  // Called when the &quot;Send Report&quot; button on the submit popover is touched.  Should be used to 
   // execute a network call to submit the report.  Currently, just provides a fake success notification
   $scope.submitReport = function() {
-    $ionicLoading.show({template: 'Report Sent Successfully (un-implemented)', noBackdrop: true, duration: 1500});
+    $ionicLoading.show({template: &#x27;Report Sent Successfully (un-implemented)&#x27;, noBackdrop: true, duration: 1500});
     $scope.submitPopover.hide();
   };
 
@@ -102,12 +204,12 @@ angular.module('starter.controllers')
   //--------------------------------------------------------------------------------------
   
   // Create cloudCoverModal from html
-  $ionicModal.fromTemplateUrl('templates/modals/cloud_cover.html', {
+  $ionicModal.fromTemplateUrl(&#x27;templates/modals/cloud_cover.html&#x27;, {
       scope: $scope,
-      animation: 'slide-in-up',
+      animation: &#x27;slide-in-up&#x27;,
   }).then(function(modal) {
       $scope.cloudCoverModal = modal;
-      $scope.cloudCoverModal.selection = "";      
+      $scope.cloudCoverModal.selection = &quot;&quot;;      
   });
   
   // Select a cloud cover value
@@ -118,13 +220,13 @@ angular.module('starter.controllers')
   
   // Save cloud cover selections
   $scope.saveModal1 = function() {
-      $scope.modalHandler.saveModal(document, $scope.cloudCoverModal, "cloud_sum", $scope.convertCategory1, function(str) {return str;});
+      $scope.modalHandler.saveModal(document, $scope.cloudCoverModal, &quot;cloud_sum&quot;, $scope.convertCategory1, function(str) {return str;});
       $scope.report.cloudCover = $scope.convertCategory1($scope.cloudCoverModal.selection);
   };
   
   // Cancel out of the cloud cover modal
   $scope.cancelModal1 = function() {
-      $scope.cloudCoverModal.temp = "";
+      $scope.cloudCoverModal.temp = &quot;&quot;;
       $scope.cloudCoverModal.hide();
   };
 
@@ -136,40 +238,40 @@ angular.module('starter.controllers')
   // Takes the id of the selected item on the cloud cover modal and returns the actual report value
   $scope.convertCategory1 = function(id) {
     
-	var returnValue = "";
+	var returnValue = &quot;&quot;;
     
     // Convert item id to actual report value
     switch(id)
     {
-      case "1opt1":
-        returnValue = "No Clouds";
+      case &quot;1opt1&quot;:
+        returnValue = &quot;No Clouds&quot;;
         break;
-      case "1opt2":
-        returnValue = "1/8th";
+      case &quot;1opt2&quot;:
+        returnValue = &quot;1/8th&quot;;
         break;
-      case "1opt3":
-        returnValue = "2/8ths";
+      case &quot;1opt3&quot;:
+        returnValue = &quot;2/8ths&quot;;
         break;
-      case "1opt4":
-        returnValue = "3/8ths";
+      case &quot;1opt4&quot;:
+        returnValue = &quot;3/8ths&quot;;
         break;
-      case "1opt5":
-        returnValue = "4/8ths";
+      case &quot;1opt5&quot;:
+        returnValue = &quot;4/8ths&quot;;
         break;
-      case "1opt6":
-        returnValue = "5/8ths";
+      case &quot;1opt6&quot;:
+        returnValue = &quot;5/8ths&quot;;
         break;
-      case "1opt7":
-        returnValue = "6/8ths";
+      case &quot;1opt7&quot;:
+        returnValue = &quot;6/8ths&quot;;
         break;
-      case "1opt8":
-        returnValue = "7/8ths";
+      case &quot;1opt8&quot;:
+        returnValue = &quot;7/8ths&quot;;
         break;
-      case "1opt9":
-        returnValue = "8/8ths";
+      case &quot;1opt9&quot;:
+        returnValue = &quot;8/8ths&quot;;
         break; 
-      case "1opt10":
-        returnValue = "Sky Obscured";
+      case &quot;1opt10&quot;:
+        returnValue = &quot;Sky Obscured&quot;;
         break;
       default:
         break;
@@ -183,18 +285,18 @@ angular.module('starter.controllers')
   //-----------------------------------------------------------------------------------------------
   
   // Create precipitation modal from html
-  $ionicModal.fromTemplateUrl('templates/modals/precip_modal.html', {
+  $ionicModal.fromTemplateUrl(&#x27;templates/modals/precip_modal.html&#x27;, {
       scope: $scope,
-      animation: 'slide-in-up',
+      animation: &#x27;slide-in-up&#x27;,
   }).then(function(modal) {
       // Save the modal and initialize the selection and temp variables
       $scope.precipModal = modal;
       
       // Used to save the actual selection made by the user
-      $scope.precipModal.selection = ""; 
+      $scope.precipModal.selection = &quot;&quot;; 
       
       // Used to store any temporary selections made with the modal open
-      $scope.precipModal.temp = "";     
+      $scope.precipModal.temp = &quot;&quot;;     
   });
   
   // Select a precipitation value.  Called when an item on the precipitation modal is selected
@@ -205,13 +307,13 @@ angular.module('starter.controllers')
   
   // Save precipitation modal selections.  Called when the save button on the precip modal is selected.
   $scope.saveModal2 = function() {
-      $scope.modalHandler.saveModal(document, $scope.precipModal, "precip_sum", $scope.convertCategory2, function(str) {return str;});
+      $scope.modalHandler.saveModal(document, $scope.precipModal, &quot;precip_sum&quot;, $scope.convertCategory2, function(str) {return str;});
       $scope.report.precipitation = $scope.convertCategory2($scope.precipModal.selection);
   };
   
   // Cancel out of the precipitation modal.  Called when the cancel button on the precip modal is selected.
   $scope.cancelModal2 = function() {
-      $scope.precipModal.temp = "";
+      $scope.precipModal.temp = &quot;&quot;;
       $scope.precipModal.hide();
   };
 
@@ -222,56 +324,56 @@ angular.module('starter.controllers')
   
   // Converts id for the precip modal to the actual report value
   $scope.convertCategory2 = function(opt) {
-    var returnValue = "";
+    var returnValue = &quot;&quot;;
     switch(opt)
     {
-      case "2opt1":
-        returnValue = "Light Rain";
+      case &quot;2opt1&quot;:
+        returnValue = &quot;Light Rain&quot;;
         break;
-      case "2opt2":
-        returnValue = "Moderate Rain";
+      case &quot;2opt2&quot;:
+        returnValue = &quot;Moderate Rain&quot;;
         break;
-      case "2opt3":
-        returnValue = "Heavy Rain";
+      case &quot;2opt3&quot;:
+        returnValue = &quot;Heavy Rain&quot;;
         break;
-      case "2opt4":
-        returnValue = "Light Snow";
+      case &quot;2opt4&quot;:
+        returnValue = &quot;Light Snow&quot;;
         break;
-      case "2opt5":
-        returnValue = "Moderate Snow";
+      case &quot;2opt5&quot;:
+        returnValue = &quot;Moderate Snow&quot;;
         break;
-      case "2opt6":
-        returnValue = "Heavy Snow";
+      case &quot;2opt6&quot;:
+        returnValue = &quot;Heavy Snow&quot;;
         break;
-      case "2opt7":
-        returnValue = "Freezing Rain";
+      case &quot;2opt7&quot;:
+        returnValue = &quot;Freezing Rain&quot;;
         break;
-      case "2opt8":
-        returnValue = "Heavy Freezing Rain";
+      case &quot;2opt8&quot;:
+        returnValue = &quot;Heavy Freezing Rain&quot;;
         break;
-      case "2opt9":
-        returnValue = "Rain & Snow";
+      case &quot;2opt9&quot;:
+        returnValue = &quot;Rain &amp; Snow&quot;;
         break; 
-      case "2opt10":
-        returnValue = "Heavy Rain & Snow";
+      case &quot;2opt10&quot;:
+        returnValue = &quot;Heavy Rain &amp; Snow&quot;;
         break;
-      case "2opt11":
-        returnValue = "Sleet";
+      case &quot;2opt11&quot;:
+        returnValue = &quot;Sleet&quot;;
         break;
-      case "2opt12":
-        returnValue = "Ice Needles";
+      case &quot;2opt12&quot;:
+        returnValue = &quot;Ice Needles&quot;;
         break;
-      case "2opt13":
-        returnValue = "Freezing Drizzle";
+      case &quot;2opt13&quot;:
+        returnValue = &quot;Freezing Drizzle&quot;;
         break;
-      case "2opt14":
-        returnValue = "Thunderstorm";
+      case &quot;2opt14&quot;:
+        returnValue = &quot;Thunderstorm&quot;;
         break;  
-      case "2opt15":
-        returnValue = "Thundersnow";
+      case &quot;2opt15&quot;:
+        returnValue = &quot;Thundersnow&quot;;
         break;
-      case "2opt16":
-        returnValue = "Virga";
+      case &quot;2opt16&quot;:
+        returnValue = &quot;Virga&quot;;
         break;
       default:
         break;
@@ -284,18 +386,18 @@ angular.module('starter.controllers')
   //-----------------------------------------------------------------------------------------------
 
   // Create visibility modal from html
-  $ionicModal.fromTemplateUrl('templates/modals/visibility_modal.html', {
+  $ionicModal.fromTemplateUrl(&#x27;templates/modals/visibility_modal.html&#x27;, {
       scope: $scope,
-      animation: 'slide-in-up',
+      animation: &#x27;slide-in-up&#x27;,
   }).then(function(modal) {
       // Save modal variable (for later acces)
       $scope.visibilityModal = modal;
       
       // Initialize selection variable.  Used to persist actual user selections
-      $scope.visibilityModal.selection = "";   
+      $scope.visibilityModal.selection = &quot;&quot;;   
       
       // Initialize temp variable.  Used to temporarily store user selections while modal is open
-      $scope.visibilityModal.temp = "";   
+      $scope.visibilityModal.temp = &quot;&quot;;   
   });
   
   // Select an item on the visibility modal
@@ -306,13 +408,13 @@ angular.module('starter.controllers')
   
   // Save visibility modal selections
   $scope.saveModal3 = function() {
-      $scope.modalHandler.saveModal(document, $scope.visibilityModal, "vis_sum", $scope.convertCategory3, function(str) {return str;});
+      $scope.modalHandler.saveModal(document, $scope.visibilityModal, &quot;vis_sum&quot;, $scope.convertCategory3, function(str) {return str;});
       $scope.report.visibility = $scope.convertCategory3($scope.visibilityModal.selection);
   };
   
   // Cancel visibility modal
   $scope.cancelModal3 = function() {
-      $scope.visibilityModal.temp = "";
+      $scope.visibilityModal.temp = &quot;&quot;;
       $scope.visibilityModal.hide();
   };
 
@@ -323,29 +425,29 @@ angular.module('starter.controllers')
   
   // Conversion function for visibility.  Takes in the id of the user selection from the modal and returns the actual report value.
   $scope.convertCategory3 = function(opt) {
-    var returnValue = "";
+    var returnValue = &quot;&quot;;
     switch(opt)
     {
-      case "3opt1":
-        returnValue = "Mist";
+      case &quot;3opt1&quot;:
+        returnValue = &quot;Mist&quot;;
         break;
-      case "3opt3":
-        returnValue = "Patchy Fog";
+      case &quot;3opt3&quot;:
+        returnValue = &quot;Patchy Fog&quot;;
         break;
-      case "3opt3":
-        returnValue = "Fog";
+      case &quot;3opt3&quot;:
+        returnValue = &quot;Fog&quot;;
         break;
-      case "3opt4":
-        returnValue = "Ice Fog";
+      case &quot;3opt4&quot;:
+        returnValue = &quot;Ice Fog&quot;;
         break;
-      case "3opt5":
-        returnValue = "Haze";
+      case &quot;3opt5&quot;:
+        returnValue = &quot;Haze&quot;;
         break;
-      case "3opt6":
-        returnValue = "Blowing Snow";
+      case &quot;3opt6&quot;:
+        returnValue = &quot;Blowing Snow&quot;;
         break;
-      case "3opt7":
-        returnValue = "Smoke";
+      case &quot;3opt7&quot;:
+        returnValue = &quot;Smoke&quot;;
         break;
       default:
         break;
@@ -358,18 +460,18 @@ angular.module('starter.controllers')
   //-----------------------------------------------------------------------------------------------------
   
   // Create pressure modal from html
-  $ionicModal.fromTemplateUrl('templates/modals/pressure_modal.html', {
+  $ionicModal.fromTemplateUrl(&#x27;templates/modals/pressure_modal.html&#x27;, {
       scope: $scope,
-      animation: 'slide-in-up',
+      animation: &#x27;slide-in-up&#x27;,
   }).then(function(modal) {
       // Save modal variable
       $scope.pressureModal = modal;
       
       // Initialize selection and temp variables
-      $scope.pressureModal.selection = "";
-      $scope.pressureModal.temp = "";
-      $scope.pressureModal.input = "";
-      $scope.pressureModal.inputTemp = "";
+      $scope.pressureModal.selection = &quot;&quot;;
+      $scope.pressureModal.temp = &quot;&quot;;
+      $scope.pressureModal.input = &quot;&quot;;
+      $scope.pressureModal.inputTemp = &quot;&quot;;
   });
   
   // Open pressure modal
@@ -377,7 +479,7 @@ angular.module('starter.controllers')
     $scope.modalHandler.openModal(document, $scope.pressureModal);
     
     // Handle any previous pressure value (using angular data binding)
-    if($scope.pressureModal.input && $scope.pressureModal.input != "")
+    if($scope.pressureModal.input &amp;&amp; $scope.pressureModal.input != &quot;&quot;)
     {
       $scope.pressureModal.inputTemp = $scope.pressureModal.input;
     }
@@ -391,37 +493,37 @@ angular.module('starter.controllers')
   
   // Cancel pressure modal
   $scope.cancelModal4 = function() {
-      $scope.pressureModal.temp = "";
-      $scope.pressureModal.inputTemp = "";
+      $scope.pressureModal.temp = &quot;&quot;;
+      $scope.pressureModal.inputTemp = &quot;&quot;;
       $scope.pressureModal.hide();
   };
   
   // Save pressure modal selections
   $scope.saveModal4 = function() {
-      $scope.modalHandler.saveModal(document, $scope.pressureModal, "pressure_sum", $scope.convertCategory4, function(str) {return $scope.pressureModal.inputTemp + " hPa";}, true);
+      $scope.modalHandler.saveModal(document, $scope.pressureModal, &quot;pressure_sum&quot;, $scope.convertCategory4, function(str) {return $scope.pressureModal.inputTemp + &quot; hPa&quot;;}, true);
       
       $scope.pressureModal.input = $scope.pressureModal.inputTemp;
       
       $scope.report.pressureTendency = $scope.convertCategory4($scope.pressureModal.selection);
       $scope.report.pressureValue = $scope.pressureModal.input;
       
-      document.getElementById("pressure_sum").innerText = $scope.pressureModal.input + " hPa";
+      document.getElementById(&quot;pressure_sum&quot;).innerText = $scope.pressureModal.input + &quot; hPa&quot;;
   };
   
   // Conversion function for pressure modal.  Takes in the id of the user selection on the UI and returns the actual
   // report value
   $scope.convertCategory4 = function(opt) {
-    var returnValue = "";
+    var returnValue = &quot;&quot;;
     switch(opt)
     {
-      case "4opt1":
-        returnValue = "Upward";
+      case &quot;4opt1&quot;:
+        returnValue = &quot;Upward&quot;;
         break;
-      case "4opt2":
-        returnValue = "No Change";
+      case &quot;4opt2&quot;:
+        returnValue = &quot;No Change&quot;;
         break;
-      case "4opt3":
-        returnValue = "Downward";
+      case &quot;4opt3&quot;:
+        returnValue = &quot;Downward&quot;;
         break;
       default:
         break;
@@ -434,20 +536,20 @@ angular.module('starter.controllers')
   //-----------------------------------------------------------------------------------------------------
   
   // Create temperature modal from html
-  $ionicModal.fromTemplateUrl('templates/modals/surf_temp_modal.html', {
+  $ionicModal.fromTemplateUrl(&#x27;templates/modals/surf_temp_modal.html&#x27;, {
       scope: $scope,
-      animation: 'slide-in-up',
+      animation: &#x27;slide-in-up&#x27;,
   }).then(function(modal) {
       // Save modal variable (for later access)
       $scope.surfaceTempModal = modal;
       
       // Initialize all input, select, and temp variables
-      $scope.surfaceTempModal.input = "";
-      $scope.surfaceTempModal.inputTemp = "";
+      $scope.surfaceTempModal.input = &quot;&quot;;
+      $scope.surfaceTempModal.inputTemp = &quot;&quot;;
       
       // For units
-      $scope.surfaceTempModal.selectTemp = "";
-      $scope.surfaceTempModal.select = "";
+      $scope.surfaceTempModal.selectTemp = &quot;&quot;;
+      $scope.surfaceTempModal.select = &quot;&quot;;
   });
   
   // Open temperature modal
@@ -455,26 +557,26 @@ angular.module('starter.controllers')
     $scope.modalHandler.openModal(document, $scope.surfaceTempModal);
     
     // Handle any previous temperature value
-    if($scope.surfaceTempModal.input && $scope.surfaceTempModal.input != "")
+    if($scope.surfaceTempModal.input &amp;&amp; $scope.surfaceTempModal.input != &quot;&quot;)
     {
       $scope.surfaceTempModal.inputTemp = $scope.surfaceTempModal.input;
     }
     
     // Handle any previous temperature units selection
-    if($scope.surfaceTempModal.select && $scope.surfaceTempModal.select != "")
+    if($scope.surfaceTempModal.select &amp;&amp; $scope.surfaceTempModal.select != &quot;&quot;)
     {
       $scope.surfaceTempModal.selectTemp = $scope.surfaceTempModal.select;
     }
     else 
     {
-      document.getElementById("tempsel").selectedIndex = 1;
+      document.getElementById(&quot;tempsel&quot;).selectedIndex = 1;
     }
   };
   
   // Cancel temperature modal
   $scope.cancelModal5 = function() {
-      $scope.surfaceTempModal.inputTemp = "";
-      $scope.surfaceTempModal.selectTemp = "";
+      $scope.surfaceTempModal.inputTemp = &quot;&quot;;
+      $scope.surfaceTempModal.selectTemp = &quot;&quot;;
       $scope.surfaceTempModal.hide();
   };
   
@@ -489,7 +591,7 @@ angular.module('starter.controllers')
       $scope.report.temperatureUnits = $scope.surfaceTempModal.select;
       
       // Update the summary on the tab-report.html page
-      document.getElementById('temp_sum').innerText = $scope.report.temperatureValue + " " + $scope.report.temperatureUnits;
+      document.getElementById(&#x27;temp_sum&#x27;).innerText = $scope.report.temperatureValue + &quot; &quot; + $scope.report.temperatureUnits;
       
       $scope.surfaceTempModal.hide();
   };
@@ -499,23 +601,23 @@ angular.module('starter.controllers')
   //-----------------------------------------------------------------------------------------------------
   
   // Create wind modal from html
-  $ionicModal.fromTemplateUrl('templates/modals/wind_modal.html', {
+  $ionicModal.fromTemplateUrl(&#x27;templates/modals/wind_modal.html&#x27;, {
       scope: $scope,
-      animation: 'slide-in-up',
+      animation: &#x27;slide-in-up&#x27;,
   }).then(function(modal) {
       $scope.windModal = modal;
       
       // Wind value variables
-      $scope.windModal.input = "";
-      $scope.windModal.inputTemp = "";
+      $scope.windModal.input = &quot;&quot;;
+      $scope.windModal.inputTemp = &quot;&quot;;
       
       // Wind units variables
-      $scope.windModal.select1Temp = "";
-      $scope.windModal.select1 = "";
+      $scope.windModal.select1Temp = &quot;&quot;;
+      $scope.windModal.select1 = &quot;&quot;;
       
       // Wind direction variables
-      $scope.windModal.select2Temp = "";
-      $scope.windModal.select2 = "";
+      $scope.windModal.select2Temp = &quot;&quot;;
+      $scope.windModal.select2 = &quot;&quot;;
   });
   
   // Open wind modal
@@ -524,24 +626,24 @@ angular.module('starter.controllers')
     $scope.modalHandler.openModal(document, $scope.windModal);
     
     // Handle any previous wind value entries (using angular data binding)
-    if($scope.windModal.input && $scope.windModal.input != "")
+    if($scope.windModal.input &amp;&amp; $scope.windModal.input != &quot;&quot;)
     {
       $scope.windModal.inputTemp = $scope.windModal.input;
     }
     
     // Handle any previous wind units selections
-    if($scope.windModal.select1 && $scope.windModal.select1 != "")
+    if($scope.windModal.select1 &amp;&amp; $scope.windModal.select1 != &quot;&quot;)
     {
       $scope.windModal.select1Temp = $scope.windModal.select1;
     }
     else
     {
       // Default to the 1st value (knots) selected
-      document.getElementById("wind_sel_units").selectedIndex = 1;
+      document.getElementById(&quot;wind_sel_units&quot;).selectedIndex = 1;
     }
     
     // Handle any previous wind direction values
-    if($scope.windModal.select2 && $scope.windModal.select2 != "")
+    if($scope.windModal.select2 &amp;&amp; $scope.windModal.select2 != &quot;&quot;)
     {
       $scope.windModal.select2Temp = $scope.windModal.select2;
     }
@@ -549,9 +651,9 @@ angular.module('starter.controllers')
   
   // Cancel wind modal
   $scope.cancelModal6 = function() {
-      $scope.windModal.inputTemp = "";
-      $scope.windModal.select1Temp = "";
-       $scope.windModal.select2Temp = "";
+      $scope.windModal.inputTemp = &quot;&quot;;
+      $scope.windModal.select1Temp = &quot;&quot;;
+       $scope.windModal.select2Temp = &quot;&quot;;
       $scope.windModal.hide();
   };
   
@@ -572,7 +674,7 @@ angular.module('starter.controllers')
       $scope.report.windDirection = $scope.windModal.select2;
       
       // Update the summary element on the tab-report.html view
-      document.getElementById('wind_sum').innerText = $scope.report.windValue + " " + $scope.report.windUnits + " " + $scope.report.windDirection;
+      document.getElementById(&#x27;wind_sum&#x27;).innerText = $scope.report.windValue + &quot; &quot; + $scope.report.windUnits + &quot; &quot; + $scope.report.windDirection;
       
       // close the modal
       $scope.windModal.hide();
@@ -584,20 +686,20 @@ angular.module('starter.controllers')
   //-----------------------------------------------------------------------------------------------------
   
   // Create Notes modal from html
-  $ionicModal.fromTemplateUrl('templates/modals/notes_modal.html', {
+  $ionicModal.fromTemplateUrl(&#x27;templates/modals/notes_modal.html&#x27;, {
       scope: $scope,
-      animation: 'slide-in-up',
+      animation: &#x27;slide-in-up&#x27;,
   }).then(function(modal) {
       $scope.notesModal = modal;
-      $scope.notesModal.input = "";
-      $scope.notesModal.inputTemp = "";
+      $scope.notesModal.input = &quot;&quot;;
+      $scope.notesModal.inputTemp = &quot;&quot;;
   });
   
   // Open notes modal
   $scope.openModal7 = function() {
     $scope.modalHandler.openModal(document, $scope.notesModal);
     
-    if($scope.notesModal.input && $scope.notesModal.input != "")
+    if($scope.notesModal.input &amp;&amp; $scope.notesModal.input != &quot;&quot;)
     {
       $scope.notesModal.inputTemp = $scope.notesModal.input;
     }
@@ -606,7 +708,7 @@ angular.module('starter.controllers')
   
   // Cancel notes modal
   $scope.cancelModal7 = function() {
-      $scope.notesModal.inputTemp = "";
+      $scope.notesModal.inputTemp = &quot;&quot;;
       $scope.notesModal.hide();
   };
   
@@ -619,7 +721,7 @@ angular.module('starter.controllers')
       $scope.report.notes = $scope.notesModal.input;
       
       // Update summary on tab-report.html
-      document.getElementById('notes_sum').innerText = $scope.report.notes;
+      document.getElementById(&#x27;notes_sum&#x27;).innerText = $scope.report.notes;
       
       // close out the modal
       $scope.notesModal.hide();
@@ -634,9 +736,9 @@ angular.module('starter.controllers')
   };
   
   // Create Camera modal from html
-  $ionicModal.fromTemplateUrl('templates/modals/camera_modal.html', {
+  $ionicModal.fromTemplateUrl(&#x27;templates/modals/camera_modal.html&#x27;, {
       scope: $scope,
-      animation: 'slide-in-up',
+      animation: &#x27;slide-in-up&#x27;,
   }).then(function(modal) {
       $scope.cameraModal = modal;
   });
@@ -644,21 +746,21 @@ angular.module('starter.controllers')
   // Take a picture
   $scope.takePic = function() {
     navigator.device.capture.captureImage(function(mediaFiles) {
-      var image = document.getElementById("modal9preview");
+      var image = document.getElementById(&quot;modal9preview&quot;);
       image.src = mediaFiles[0].fullPath;
       alert(mediaFiles[0].name);
       
-      }, function() {alert("error");}, {limit:1});
+      }, function() {alert(&quot;error&quot;);}, {limit:1});
   };
   
   // Take a video
   $scope.takeVid = function() {
-    navigator.device.capture.captureVideo(function() {alert("success");}, function() {alert("error");}, {limit:1});
+    navigator.device.capture.captureVideo(function() {alert(&quot;success&quot;);}, function() {alert(&quot;error&quot;);}, {limit:1});
   };
   
   // Select a picture from the file browser
   $scope.selectPic = function() {
-    navigator.camera.getPicture(function() {alert("success");}, function() {alert("error");}, {quality: 50, destinationType: Camera.DestinationType.FILE_URI, sourceType: Camera.PictureSourceType.PHOTOLIBRARY})
+    navigator.camera.getPicture(function() {alert(&quot;success&quot;);}, function() {alert(&quot;error&quot;);}, {quality: 50, destinationType: Camera.DestinationType.FILE_URI, sourceType: Camera.PictureSourceType.PHOTOLIBRARY})
   };
   
   // Open the camera modal
@@ -693,16 +795,16 @@ angular.module('starter.controllers')
   //--------------------------------------------------------------------------------------
   
   // Create other modal (aurora borealis and tornado) from html
-  $ionicModal.fromTemplateUrl('templates/modals/other_modal.html', {
+  $ionicModal.fromTemplateUrl(&#x27;templates/modals/other_modal.html&#x27;, {
       scope: $scope,
-      animation: 'slide-in-up',
+      animation: &#x27;slide-in-up&#x27;,
   }).then(function(modal) {
       // Save modal variable for later access
       $scope.otherModal = modal;
       
       // Initialize selection and temp variables
-      $scope.otherModal.selection = "";    
-      $scope.otherModal.temp = "";  
+      $scope.otherModal.selection = &quot;&quot;;    
+      $scope.otherModal.temp = &quot;&quot;;  
   });
   
   // Select an item on the other modal
@@ -713,14 +815,14 @@ angular.module('starter.controllers')
   
   // Save other modal selections
   $scope.saveModal9 = function() {
-      $scope.modalHandler.saveModal(document, $scope.otherModal, "other_sum", $scope.convertCategory9, function(str) {return str;});
+      $scope.modalHandler.saveModal(document, $scope.otherModal, &quot;other_sum&quot;, $scope.convertCategory9, function(str) {return str;});
       $scope.report.other = $scope.convertCategory9($scope.otherModal.selection);
   };
   
   // Cancel out of the other modal
   $scope.cancelModal9 = function() {
       // Reset any temporary selections and close the modal
-      $scope.otherModal.temp = "";
+      $scope.otherModal.temp = &quot;&quot;;
       $scope.otherModal.hide();
   };
 
@@ -731,14 +833,14 @@ angular.module('starter.controllers')
   
   // Takes in an id string representing the item selected in the modal.  Returns the corresponding report string value.
   $scope.convertCategory9 = function(opt) {
-    var returnValue = "";
+    var returnValue = &quot;&quot;;
     switch(opt)
     {
-      case "9opt1":
-        returnValue = "Aurora Borealis";
+      case &quot;9opt1&quot;:
+        returnValue = &quot;Aurora Borealis&quot;;
         break;
-      case "9opt2":
-        returnValue = "Tornado";
+      case &quot;9opt2&quot;:
+        returnValue = &quot;Tornado&quot;;
         break;
       default:
         break;
@@ -752,7 +854,7 @@ angular.module('starter.controllers')
    * @method onDestroy
    * @description Called when the controller is about to be destroyed.  Used here to release all modal resources.
    */
-  $scope.$on('$destroy', function() {
+  $scope.$on(&#x27;$destroy&#x27;, function() {
       // Cleanup all modals
       $scope.cloudCoverModal.remove();
       $scope.precipModal.remove();
@@ -768,3 +870,23 @@ angular.module('starter.controllers')
       $scope.submitPopover.remove();
   });
 });
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>
