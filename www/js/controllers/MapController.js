@@ -42,7 +42,12 @@ angular.module('starter.controllers')
             map: map,
             title: "My Location"
         });
-    });
+    }, function(error) {
+        alert('code: '    + error.code    + '\n' +
+          'message: ' + error.message + '\n');
+    }, {timeout: 10000, enableHighAccuracy: true});
+
+
 
     // Save the map for later access
     $scope.map = map;
