@@ -121,3 +121,13 @@ ion-popover-view.submit {
   width: 80%;
 }
 
+.gmnoprint img {
+    max-width: none; 
+}
+
+#map_canvas {
+  max-width: none;
+  height: 100%;
+  width: 100%;
+}
+
