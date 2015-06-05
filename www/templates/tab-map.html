@@ -4,7 +4,7 @@
   </ion-nav-buttons>
   <ion-nav-buttons side="right">
     <button class="button button-icon ion-android-locate" ng-click="centerOnLocation()"></button>
-      <button class="button button-icon ion-android-more-vertical" ng-click="alert('more');"></button>
+      <button class="button button-icon ion-android-more-vertical" ng-click="openOptionsMenu($event)"></button>
   </ion-nav-buttons>
   <ion-content>
     <div id="map_canvas" data-tap-disabled="true" class="google-map-canvas"></div>

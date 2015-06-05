@@ -15,7 +15,16 @@ angular.module('starter.controllers')
  */
 .controller('MapController', function($scope, $ionicSideMenuDelegate, $ionicPopover) {
     // Set up menu options popover
-    
+    // Create popover from template and save to $scope variable
+      $ionicPopover.fromTemplateUrl('templates/popovers/map-options.html', {
+        scope: $scope
+      }).then(function(popover) {
+        $scope.optionsPopover = popover;
+      });
+      
+      $scope.openOptionsMenu = function($event) {
+          $scope.optionsPopover.show($event);
+      };
     
     // Controller-wide variables
     $scope.map = null;
