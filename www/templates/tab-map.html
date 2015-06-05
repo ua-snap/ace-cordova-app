@@ -2,6 +2,10 @@
   <ion-nav-buttons side="left">
     <button class="button button-icon ion-navicon" ng-click="toggleLeft()"></button>
   </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-icon ion-android-locate" ng-click="centerOnLocation()"></button>
+      <button class="button button-icon ion-android-more-vertical" ng-click="alert('more');"></button>
+  </ion-nav-buttons>
   <ion-content>
     <div id="map_canvas" data-tap-disabled="true" class="google-map-canvas"></div>
     <!--<ui-gmap-google-map center='map.center' zoom='map.zoom'></ui-gmap-google-map>-->

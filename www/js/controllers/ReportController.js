@@ -94,6 +94,21 @@ angular.module('starter.controllers')
   // execute a network call to submit the report.  Currently, just provides a fake success notification
   $scope.submitReport = function() {
     $ionicLoading.show({template: 'Report Sent Successfully (un-implemented)', noBackdrop: true, duration: 1500});
+    
+    // Clear all entered data
+    $scope.report = new WeatherReport();    
+    
+    // Clear modal and summary data
+    $scope.cloudCoverModal.clearData();
+    $scope.precipModal.clearData();
+    $scope.visibilityModal.clearData();
+    $scope.pressureModal.clearData();
+    $scope.surfaceTempModal.clearData();
+    $scope.windModal.clearData();
+    $scope.notesModal.clearData();
+    $scope.otherModal.clearData();
+    
+    // Hide the popover
     $scope.submitPopover.hide();
   };
 
@@ -107,8 +122,21 @@ angular.module('starter.controllers')
       animation: 'slide-in-up',
   }).then(function(modal) {
       $scope.cloudCoverModal = modal;
-      $scope.cloudCoverModal.selection = "";      
+      $scope.cloudCoverModal.temp = "";
+      $scope.cloudCoverModal.selection = "";  
+      
+      // Clear any Cloud Cover information 
+      $scope.cloudCoverModal.clearData = function() {
+        // Clear modal storage
+        $scope.cloudCoverModal.temp = "";
+        $scope.cloudCoverModal.selection = "";
+        
+        // Clear summary display
+        document.getElementById("cloud_sum").innerText = "______";    
+      };    
   });
+  
+  
   
   // Select a cloud cover value
   $scope.selectItemCat1 = function(id) {
@@ -195,7 +223,19 @@ angular.module('starter.controllers')
       
       // Used to store any temporary selections made with the modal open
       $scope.precipModal.temp = "";     
+      
+      // Clear any precip data from modal storage
+      $scope.precipModal.clearData = function() {
+        // Clear modal storage
+        $scope.precipModal.selection = "";
+        $scope.precipModal.temp = "";
+        
+        // Clear summary
+        document.getElementById("precip_sum").innerText = "______";    
+      };
   });
+  
+  
   
   // Select a precipitation value.  Called when an item on the precipitation modal is selected
   $scope.selectItemCat2 = function(id) {
@@ -295,7 +335,17 @@ angular.module('starter.controllers')
       $scope.visibilityModal.selection = "";   
       
       // Initialize temp variable.  Used to temporarily store user selections while modal is open
-      $scope.visibilityModal.temp = "";   
+      $scope.visibilityModal.temp = "";  
+      
+      // Clear visibility data
+      $scope.visibilityModal.clearData = function() {
+        // Clear modal data
+        $scope.visibilityModal.temp = "";
+        $scope.visibilityModal.selection = "";
+        
+        // Clear summary
+        document.getElementById("vis_sum").innerText = "______";
+      }; 
   });
   
   // Select an item on the visibility modal
@@ -370,6 +420,18 @@ angular.module('starter.controllers')
       $scope.pressureModal.temp = "";
       $scope.pressureModal.input = "";
       $scope.pressureModal.inputTemp = "";
+      
+      // Clear out any pressure data
+      $scope.pressureModal.clearData = function() {
+        // Clear modal storage
+        $scope.pressureModal.selection = "";
+        $scope.pressureModal.temp = "";
+        $scope.pressureModal.input = "";
+        $scope.pressureModal.inputTemp = "";
+        
+        // Clear summary
+        document.getElementById("pressure_sum").innerText = "______";
+      };
   });
   
   // Open pressure modal
@@ -448,6 +510,18 @@ angular.module('starter.controllers')
       // For units
       $scope.surfaceTempModal.selectTemp = "";
       $scope.surfaceTempModal.select = "";
+      
+      // Clear out any temperature data
+      $scope.surfaceTempModal.clearData = function() {
+        // Clear modal storage
+        $scope.surfaceTempModal.input = "";
+        $scope.surfaceTempModal.inputTemp = "";
+        $scope.surfaceTempModal.selectTemp = "";
+        $scope.surfaceTempModal.select = "";
+        
+        // Clear summary
+        document.getElementById("temp_sum").innerText = "______";
+      };
   });
   
   // Open temperature modal
@@ -516,7 +590,23 @@ angular.module('starter.controllers')
       // Wind direction variables
       $scope.windModal.select2Temp = "";
       $scope.windModal.select2 = "";
+      
+      // Clear any wind data from modal storage
+      $scope.windModal.clearData =  function() {
+        // Clear modal storage
+        $scope.windModal.input = "";
+        $scope.windModal.inputTemp = "";
+        $scope.windModal.select1Temp = "";
+        $scope.windModal.select1 = "";
+        $scope.windModal.select2Temp = "";
+        $scope.windModal.select2 = "";
+        
+        // Clear summary
+        document.getElementById("wind_sum").innerText = "______";
+      };
+  
   });
+  
   
   // Open wind modal
   $scope.openModal6 = function() {
@@ -591,6 +681,17 @@ angular.module('starter.controllers')
       $scope.notesModal = modal;
       $scope.notesModal.input = "";
       $scope.notesModal.inputTemp = "";
+      
+      // Clear any notes data from modal storage
+      $scope.notesModal.clearData = function() {
+        // Clear modal storage
+        $scope.notesModal.input = "";
+        $scope.notesModal.inputTemp = "";
+        
+        // Clear summary
+        document.getElementById("notes_sum").innerText = "______"; 
+      };
+  
   });
   
   // Open notes modal
@@ -703,6 +804,16 @@ angular.module('starter.controllers')
       // Initialize selection and temp variables
       $scope.otherModal.selection = "";    
       $scope.otherModal.temp = "";  
+      
+      // Clear out "Other" data from the modal
+      $scope.otherModal.clearData = function() {
+        // Clear modal storage
+        $scope.otherModal.selection = "";
+        $scope.otherModal.temp = "";
+        
+        // Clear summary
+        document.getElementById("other_sum").innerText = "______";
+      };
   });
   
   // Select an item on the other modal

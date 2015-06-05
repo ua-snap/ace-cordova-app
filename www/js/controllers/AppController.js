@@ -13,7 +13,7 @@ angular.module('starter.controllers', [])
 /**
  * @class AppController
  */
-.controller('AppController', function($scope, $ionicSideMenuDelegate, $state) {
+.controller('AppController', function($scope, $ionicSideMenuDelegate, $state, $http) {
   
   // Function toggles sliding the left side-menu out and back in
   /**
@@ -66,5 +66,14 @@ angular.module('starter.controllers', [])
       alert('code: '    + error.code    + '\n' +
           'message: ' + error.message + '\n');
     }, {timeout: 10000, enableHighAccuracy: true});
+  };
+  
+  // Testing HTTPS capabilities
+  $scope.test2 = function() {
+    $http.get('https://www.google.com').then(function(resp) {
+      alert('success: ' + resp);
+    }, function(err) {
+        alert('error: ' + err);
+    });
   };
 });
