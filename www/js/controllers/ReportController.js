@@ -79,7 +79,7 @@ angular.module('starter.controllers')
     other.innerText = "Other: " + $scope.report.other;
     
     var notes = document.getElementById("sumcat7");
-    notes.innerText = "Notes:\n" + $scope.report.notes_1;
+    notes.innerText = "Notes:\n" + $scope.report.notes;
     
     var pic = document.getElementById("sumcat8");
     
