@@ -3,8 +3,9 @@
     <button class="button button-icon ion-navicon" ng-click="toggleLeft()"></button>
   </ion-nav-buttons>
   <ion-nav-buttons side="right">
+    <i class="button button-icon ion-android-navigate" ng-click="trackLocation()"></i>
     <button class="button button-icon ion-android-locate" ng-click="centerOnLocation()"></button>
-      <button class="button button-icon ion-android-more-vertical" ng-click="openOptionsMenu($event)"></button>
+    <button class="button button-icon ion-android-more-vertical" ng-click="openOptionsMenu($event)"></button>
   </ion-nav-buttons>
   <ion-content>
     <div id="map_canvas" data-tap-disabled="true" class="google-map-canvas"></div>

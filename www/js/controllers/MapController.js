@@ -39,6 +39,10 @@ angular.module('starter.controllers')
     // If false, watchPosition will not modify the map center
     $scope.centerMap = true;
     
+    var timer = null;
+    
+    var currentLocationMarker;
+    
     // Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
 	$scope.$on('$ionicView.enter', function() {
@@ -46,6 +50,10 @@ angular.module('starter.controllers')
         
         initialize();
 	});
+    
+    $scope.$on('$ionicView.leave', function() {
+        currentLocationMarker = null;
+    });
     
     
     var initialize = function()
@@ -74,42 +82,42 @@ angular.module('starter.controllers')
         
         // Get current position and update map once position is recieved
         navigator.geolocation.watchPosition(function(pos) {
-            if($scope.centerMap === true)
-            {
-                map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-                $scope.centerMap = false;
-            }
+            
+            var position = new Position();
+            position.importGoogleGeoLoc(pos);
             
             // Save the last position to local storage
-            localHandler.set("lastPosition", pos);
+            localHandler.set("lastPosition", position);
             
-            // Push position to array
-            $scope.locationHistory.push(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+            if(!currentLocationMarker)
+            {
+                currentLocationMarker = new google.maps.Marker({
+                    position: new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude),
+                    map: $scope.map,
+                    title: "current_pos"
+                });
+            }
+            else
+            {
+                currentLocationMarker.setPosition(pos);    
+            }        
             
-            // Draw track line
-            var line = new google.maps.Polyline({
-                path: $scope.locationHistory,
-                geodesic: true,
-                strokeColor: '#FF0000',
-                strokeOpacity: 1.0,
-                strokeWeight: 2
-            });
-            
-            line.setMap(map);
-            
-            /*var myLocation = new google.maps.Marker({
-                position: new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude),
-                map: map,
-                title: "My Location",
-            });*/
         }, function(error) {
             alert('code: '    + error.code    + '\n' +
               'message: ' + error.message + '\n');
-        }, {timeout: 10000, enableHighAccuracy: true});
+        }, {timeout: 10000, enableHighAccuracy: true}); 
     };  
     
+    
     $scope.centerOnLocation = function() {
-        // Next watchPosition success will center map on location
-        $scope.centerMap = true;
+        var lastPos = localHandler.get("lastPosition", null);
+        if(lastPos)
+        {
+            $scope.map.setCenter(new google.maps.LatLng(lastPos.coords.latitude, lastPos.coords.longitude));
+        }
     }; 
+    
+    $scope.trackLocation = function() {
+        document.getElementById("trackPosButton").style.backgroundColor = "#0c63eea";
+    };
 });
