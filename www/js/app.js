@@ -67,6 +67,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     }
   })
+  
+  .state('settings', {
+    url: '/settings',
+    templateUrl: 'templates/settings.html',
+    controller: 'SettingsController'
+  })
 
   .state('login', {
     url: '/login',

@@ -22,7 +22,7 @@ angular.module('starter.controllers', [])
    * @return void
    * @throws none
    */
-    $scope.toggleLeft = function() {
+	$scope.toggleLeft = function() {
     $ionicSideMenuDelegate.toggleLeft();
   };
   
@@ -75,5 +75,18 @@ angular.module('starter.controllers', [])
     }, function(err) {
         alert('error: ' + err);
     });
+  };
+  
+  $scope.openSettings = function() {
+    
+    // This function was accessed by sliding out the left menu, so close it back up.
+    $ionicSideMenuDelegate.toggleLeft();
+    
+    // Save previous state (tab)
+    var localHandler = new LocalStorageUtil(window);
+    
+    localHandler.set('previousState', $state.current.name);
+    
+    $state.go('settings');
   };
 });
