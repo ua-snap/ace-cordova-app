@@ -77,16 +77,16 @@ angular.module('starter.controllers', [])
     });
   };
   
-  $scope.openSettings = function() {
-    
+  // Go to the settings state
+  $scope.openSettings = function() {    
     // This function was accessed by sliding out the left menu, so close it back up.
     $ionicSideMenuDelegate.toggleLeft();
     
     // Save previous state (tab)
-    var localHandler = new LocalStorageUtil(window);
-    
+    var localHandler = new LocalStorageUtil(window);    
     localHandler.set('previousState', $state.current.name);
     
+    // Perform the navigation using the $state object
     $state.go('settings');
   };
 });

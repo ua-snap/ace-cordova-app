@@ -38,6 +38,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   })
 
   // Each tab has its own nav history stack:
+  
+  // Report state: this state contains all the reporting views
   .state('tab.report', {
     url: '/report',
     views: {
@@ -48,6 +50,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     }
   })
 
+  // State for the map view
   .state('tab.map', {
       url: '/map',
       views: {
@@ -58,6 +61,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     })
 
+  // State for the workspace view
   .state('tab.workspace', {
     url: '/workspace',
     views: {
@@ -68,12 +72,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     }
   })
   
+  // Settings state
   .state('settings', {
     url: '/settings',
     templateUrl: 'templates/settings.html',
     controller: 'SettingsController'
   })
-
+  
+  // Login state (default initial state)
   .state('login', {
     url: '/login',
     templateUrl: 'templates/login.html',
