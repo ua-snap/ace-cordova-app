@@ -19,11 +19,19 @@ module.exports = function(config) {
       '../www/js/*.js',
       '../www/js/controllers/AppController.js',
       '../www/js/core/*.js',
+      '../www/js/services/*.js',
       '../www/lib/angular-mocks/angular-mocks.js',
+      '../plugins/cordova-sqlite-storage/www/SQLitePlugin.js',
       '**/*test.js'
       
     ],
-
+    
+    cordovaSettings: {
+      platforms: ['android', 'ios'],
+      plugins: [
+        'org.apache.cordova.console'
+      ]
+    },
 
     // list of files to exclude
     exclude: [
@@ -61,7 +69,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['Safari'],
 
 
     // Continuous Integration mode

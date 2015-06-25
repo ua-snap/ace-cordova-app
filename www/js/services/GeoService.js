@@ -2,7 +2,7 @@ angular.module('starter.services')
 
 .service('GeoService', function() {
 	
-	var mUpdateInterval = 1000;
+	var mReportInterval = 1;
 	var mPos = null;
 	var mWatchId;
 	var mWatchCallback;
@@ -31,26 +31,39 @@ angular.module('starter.services')
 			}			
 		},
 		
-		setUpdateInterval: function(updateInterval) {
-			mUpdateInterval = updateInterval;
+		// Sets the interval to submit a location report (and to save a history point on the map)
+		setReportInterval: function(reportInterval) {
+			mReportInterval = reportInterval;
 		},
 		
+		// Sets the callback function for watchPosition success
 		setWatchCallback: function(watchCallback) {
 			mWatchCallback = watchCallback;
 		},
 		
+		// Returns the latest position value
 		getCurrentPosition: function() {
 			return mPos;
 		},
 		
+		// Sets private variable indicating whether or not to follow the user's position on the map (continually 
+		// recenter on user position)
 		setFollowPosition: function(follow) {
 			mFollowPosition = follow;
 		},
 		
+		// Turns on reporting the user's location and displaying their history on the map
 		enableReport: function(frequency) {
+			// If provided set the frequency to submit reports (in seconds)
+			if(frequency)
+			{
+				mReportInterval = frequency;
+			}
+			
+			// Set the interval function
 			setInterval(function() {
 				
-			}, frequency * 1000);
+			}, mReportInterval * 1000);
 		}
 	};
 });

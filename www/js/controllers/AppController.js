@@ -77,6 +77,12 @@ angular.module('starter.controllers', [])
     });
   };
   
+  $scope.testSQLite = function() {
+    var dbHandler = new DbHandler("ace_test.db", window);
+		var result = dbHandler.createTables();
+    alert(result);
+  }
+  
   // Go to the settings state
   $scope.openSettings = function() {    
     // This function was accessed by sliding out the left menu, so close it back up.
