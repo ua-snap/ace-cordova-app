@@ -82,6 +82,10 @@ angular.module('starter.controllers', [])
     
     navigator.geolocation.getCurrentPosition(function(pos) {
       DbService.insertPosition(pos, window);
+      
+      DbService.getAllPositionLogs(window, function(res) {
+        alert(res.rows.length);
+      });
     });
     
   };

@@ -51,4 +51,15 @@ DbHandler.prototype.insertInto = function(tableName, keys, values) {
 	});
 };
 
+DbHandler.prototype.selectAllFrom = function(tableName, callback) {
+	this.mDb.transaction(function(tx) {
+		var sqlString = "SELECT * FROM " + tableName + ";";
+		tx.executeSql(sqlString, [], function(tx, res) {
+			callback.call(this, res);
+		});
+	}, function(error) {
+		alert(error.message);
+	});	
+};
+
 
