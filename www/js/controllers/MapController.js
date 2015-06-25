@@ -13,7 +13,7 @@ angular.module('starter.controllers')
 /**
  * @class MapController
  */
-.controller('MapController', function($scope, $ionicSideMenuDelegate, $ionicPopover) {
+.controller('MapController', function($scope, $ionicSideMenuDelegate, $ionicPopover, GeoService) {
     // Set up menu options popover
     // Create popover from template and save to $scope variable
       $ionicPopover.fromTemplateUrl('templates/popovers/map-options.html', {
@@ -41,83 +41,165 @@ angular.module('starter.controllers')
     
     var timer = null;
     
-    var currentLocationMarker;
+    var currentLocationMarker = null;
+    
+    $scope.curPos = null;
+    
+    $scope.settings = {
+      displayPos: {
+          checked: true
+      },  
+      followPos: false,
+      displayHistory: {
+          checked: false
+      },
+      reportFrequency: 1 
+    };
+    
+    $scope.mapState = {
+        center: null,
+        zoom: null,
+        typeStr: "",
+    };
     
     // Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
 	$scope.$on('$ionicView.enter', function() {
 		$ionicSideMenuDelegate.canDragContent(false);
-        
         initialize();
-	});
+	});    
     
     $scope.$on('$ionicView.leave', function() {
-        currentLocationMarker = null;
+        $scope.saveMapState();
     });
     
+    $scope.saveMapState = function() {
+        // Save map options
+        $scope.mapState.center = $scope.map.getCenter();
+        $scope.mapState.zoom = $scope.map.getZoom();
+        $scope.mapState.typeStr = $scope.map.getMapTypeId();
+        
+        // Save center to local storage
+        var position = new Position();
+        position.importGoogleGeoLoc(GeoService.getCurrentPosition());
+        localHandler.set("lastPosition", position);
+    };
     
     var initialize = function()
     {
-        // default latitude and longitude
-        var lastPosition = localHandler.get("lastPosition", null);
-        var myLatlng = new google.maps.LatLng(37.3000, -120.4833);
-        if(lastPosition)
-        {
-            myLatlng = new google.maps.LatLng(lastPosition.coords.latitude, lastPosition.coords.longitude);
-        }
+        currentLocationMarker = null;
         
-    
-        // Set up map options
-        var mapOptions = {
-            center: myLatlng,
-            zoom: 16,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            scaleControl: true,
-            panControl: false
-        };
+        // Check for last saved map settings
+        var mapOptions;
+        if($scope.mapState.center)
+        {
+            mapOptions = {
+                center: $scope.mapState.center,
+                zoom: $scope.mapState.zoom,
+                mapTypeId: $scope.mapState.typeStr,
+                scaleControl: true,
+                panControl: false
+            };
+        }
+        else
+        {
+            // Check for saved position
+            var localHandler = new LocalStorageUtil(window);
+            var lastPos = localHandler.get("lastPosition", null);
+            
+            var latLng;
+            if(lastPos)
+            {
+                latLng = new google.maps.LatLng(lastPos.coords.latitude, lastPos.coords.longitude);
+            }
+            else
+            {
+                // Default starting position
+                latLng = new google.maps.LatLng(37.3000, -120.4833);
+            }
+            
+            // Set up map options
+            var mapOptions = {
+                center: latLng,
+                zoom: 16,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                scaleControl: true,
+                panControl: false
+            };
+        }      
     
         // Create and save map
         var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
         $scope.map = map;
         
-        // Get current position and update map once position is recieved
-        navigator.geolocation.watchPosition(function(pos) {
-            
-            var position = new Position();
-            position.importGoogleGeoLoc(pos);
-            
-            // Save the last position to local storage
-            localHandler.set("lastPosition", position);
-            
-            if(!currentLocationMarker)
+        GeoService.enableWatchPosition(navigator.geolocation, updateMarker);
+        
+    };
+    
+    var updateMarker = function(pos, follow) {
+        if(currentLocationMarker)
+        {
+            currentLocationMarker.setPosition(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+            if(follow)
             {
-                currentLocationMarker = new google.maps.Marker({
-                    position: new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude),
+                var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                $scope.map.setCenter(latlng);
+            }
+        }
+        else 
+        {
+            var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            currentLocationMarker = new google.maps.Marker({
+                    position: latlng,
                     map: $scope.map,
                     title: "current_pos"
-                });
-            }
-            else
-            {
-                currentLocationMarker.setPosition(pos);    
-            }        
-            
-        }, function(error) {
-            alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
-        }, {timeout: 10000, enableHighAccuracy: true}); 
-    };  
-    
-    
-    $scope.centerOnLocation = function() {
-        var lastPos = localHandler.get("lastPosition", null);
-        if(lastPos)
-        {
-            $scope.map.setCenter(new google.maps.LatLng(lastPos.coords.latitude, lastPos.coords.longitude));
+            });
+            $scope.map.setCenter(latlng);
         }
-    }; 
+    };
     
-    $scope.trackLocation = function() {
-        document.getElementById("trackPosButton").style.backgroundColor = "#0c63eea";
+    $scope.displayPosChanged = function() {
+      //alert($scope.settings.displayPos.checked); 
+      if($scope.settings.displayPos.checked)
+      {
+          GeoService.setWatchCallback(updateMarker);
+      } 
+      else 
+      {
+          // Remove the current location marker and clear the reference
+          currentLocationMarker.setMap(null);
+          currentLocationMarker = null;
+          
+          // Clear the callback function (that updates the marker)
+          GeoService.setWatchCallback(null);
+          
+          // Make sure follow position setting is false
+          if($scope.settings.followPos)
+          {
+              $scope.toggleFollowPosition();
+          }          
+      }
+    };
+    
+    $scope.centerOnPosition = function() {
+        var pos = GeoService.getCurrentPosition();
+        var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+        $scope.map.setCenter(latlng);
+    };
+    
+    $scope.toggleFollowPosition = function() {
+        // toggle setting
+        if($scope.settings.followPos)
+        {
+            $scope.settings.followPos = false;
+            document.getElementById("followBtn").style.color = "";
+        }
+        else 
+        {
+            $scope.settings.followPos = true;
+            document.getElementById("followBtn").style.color = "#66cc33";
+        }
+        // set in service
+        GeoService.setFollowPosition($scope.settings.followPos);
     };
 });
