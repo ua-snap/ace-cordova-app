@@ -13,7 +13,7 @@ angular.module('starter.controllers', [])
 /**
  * @class AppController
  */
-.controller('AppController', function($scope, $ionicSideMenuDelegate, $state, $http) {
+.controller('AppController', function($scope, $ionicSideMenuDelegate, $state, $http, DbService) {
   
   // Function toggles sliding the left side-menu out and back in
   /**
@@ -78,10 +78,13 @@ angular.module('starter.controllers', [])
   };
   
   $scope.testSQLite = function() {
-    var dbHandler = new DbHandler("ace_test.db", window);
-		var result = dbHandler.createTables();
-    alert(result);
-  }
+    DbService.openDatabase(window);
+    
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      DbService.insertPosition(pos, window);
+    });
+    
+  };
   
   // Go to the settings state
   $scope.openSettings = function() {    
