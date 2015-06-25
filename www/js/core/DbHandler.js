@@ -62,4 +62,26 @@ DbHandler.prototype.selectAllFrom = function(tableName, callback) {
 	});	
 };
 
+DbHandler.prototype.selectNum = function(tableName, numResults, orderByCol, ascending, callback) {
+	var sqlString = "SELECT * FROM " + tableName + " ORDER BY " + orderByCol;
+	if(ascending)
+	{
+		sqlString = sqlString + " ASC";
+	} 	
+	else 
+	{
+		sqlString = sqlString + " DESC ";
+	}
+	
+	sqlString = sqlString + "LIMIT " + numResults;
+	
+	this.mDb.transaction(function(tx) {
+		tx.executeSql(sqlString, [], function(tx, res) {
+			callback.call(this, res);
+		});
+	}, function(error) {
+		alert(error.message);
+	});
+};
+
 

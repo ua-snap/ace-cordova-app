@@ -24,6 +24,11 @@ angular.module('starter.services')
 		getAllPositionLogs: function(window, callback) {
 			var dbHandler = new DbHandler("ace.db", window);
 			dbHandler.selectAllFrom("position_history", callback);
+		},
+		
+		getRecentPositionLogs: function(window, numLogs, callback) {
+			var dbHandler = new DbHandler("ace.db", window);
+			dbHandler.selectNum("position_history", numLogs, "timestamp", false, callback);	
 		}
 	};
 });

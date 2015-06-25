@@ -86,6 +86,12 @@ angular.module('starter.controllers', [])
       DbService.getAllPositionLogs(window, function(res) {
         alert(res.rows.length);
       });
+      
+      DbService.getRecentPositionLogs(window, 3, function(res) {
+        alert(res.rows.length);
+        var i = 0;
+        i++;
+      });
     });
     
   };
