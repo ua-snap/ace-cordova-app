@@ -95,6 +95,9 @@ angular.module('starter.controllers')
   $scope.submitReport = function() {
     $ionicLoading.show({template: 'Report Sent Successfully (un-implemented)', noBackdrop: true, duration: 1500});
     
+    // Save report to database
+    
+    
     // Clear all entered data
     $scope.report = new WeatherReport();    
     
@@ -120,6 +123,20 @@ angular.module('starter.controllers')
     // Open Db and create tables if necessary
     DbService.openDatabase(window);
     DbService.createTables(window);
+  };
+  
+  // Additional Options
+  //--------------------------------------------------------------------------------------
+  // Set up menu options popover
+  // Create popover from template and save to $scope variable
+  $ionicPopover.fromTemplateUrl('templates/popovers/report-options.html', {
+    scope: $scope
+  }).then(function(popover) {
+    $scope.optionsPopover = popover;
+  });
+  
+  $scope.openOptionsMenu = function($event) {
+      $scope.optionsPopover.show($event);
   };
 
 

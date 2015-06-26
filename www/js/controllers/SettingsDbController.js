@@ -13,9 +13,9 @@
   */
 angular.module('starter.controllers')
 
-.controller('SettingsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state) {
-	
-	// Adding beforeEnter event listener.  This function will be called just before every view load,
+.controller('SettingsDbController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, DbService) {
+  
+  // Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
 	$scope.$on('$ionicView.enter', function() {
 		// Enable dragging of the side menu
@@ -53,7 +53,11 @@ angular.module('starter.controllers')
 		}
 	};
 	
-	$scope.dbSettingsClicked = function() {
-		$state.go('settings-db');	
+	$scope.deleteClicked = function() {
+		// Delete the database
+		DbService.deleteDatabase(window);
+		
+		// Recreate the database
+		DbService.createTables(window);
 	};
 });

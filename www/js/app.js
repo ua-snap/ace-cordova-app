@@ -79,6 +79,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     controller: 'SettingsController'
   })
   
+  // Database settings state
+  .state('settings-db', {
+    url: '/settings_db',
+    templateUrl: 'templates/settings_db.html',
+    controller: 'SettingsDbController'
+  })
+  
   // Login state (default initial state)
   .state('login', {
     url: '/login',

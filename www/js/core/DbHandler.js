@@ -16,7 +16,7 @@ DbHandler.prototype.deleteDb = function() {
 	window.sqlitePlugin.deleteDatabase({name: this.mDbName, location: 1});
 };
 
-DbHandler.prototype.insertInto = function(tableName, keys, values) {
+DbHandler.prototype.insertInto = function(tableName, keys, values, callback) {
 	this.mDb.transaction(function(tx) {
 		var sqlString = "INSERT INTO " + tableName + " (";
 		for(var i = 0; i < keys.length; i++)
@@ -44,7 +44,10 @@ DbHandler.prototype.insertInto = function(tableName, keys, values) {
 		}
 		
 		tx.executeSql(sqlString, values, function(tx, res) {
-			//alert(res.rowsAffected);
+			if(callback)
+			{
+				callback.call(this, res);
+			}
 		});
 	}, function(error) {
 		alert(error.message);
