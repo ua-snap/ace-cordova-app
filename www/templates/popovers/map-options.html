@@ -6,6 +6,7 @@
 		<div class="list">
 			<ion-toggle ng-model="settings.displayPos.checked" ng-change="displayPosChanged()">Display Position</ion-toggle>
 			<ion-toggle ng-model="settings.displayHistory.checked" ng-change="displayHistoryChanged()">Display History</ion-toggle>
+			<ion-toggle ng-model="settings.enableReporting.checked" ng-change="enableReportingChanged()">Enable Reporting</ion-toggle>
 			<label class="item item-input">
 				<span class="input-label">Report Frequency</span>
 				<input type="tel" ng-model="settings.reportFrequency">

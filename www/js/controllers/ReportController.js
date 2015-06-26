@@ -15,7 +15,7 @@ angular.module('starter.controllers')
  * @description Controller for the Report view.  This controller contains all the
  * UI functionality for entering and saving reports.
  */
-.controller('ReportController', function($scope, $ionicSideMenuDelegate, $ionicModal, $ionicPopover, $ionicLoading) {
+.controller('ReportController', function($scope, $ionicSideMenuDelegate, $ionicModal, $ionicPopover, $ionicLoading, DbService) {
   
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
@@ -110,6 +110,16 @@ angular.module('starter.controllers')
     
     // Hide the popover
     $scope.submitPopover.hide();
+  };
+  
+  // DB setup
+  //-------------------------------------------------------------------------------------
+  document.addEventListener("deviceready", onDeviceReady, false);
+  
+  function onDeviceReady() {
+    // Open Db and create tables if necessary
+    DbService.openDatabase(window);
+    DbService.createTables(window);
   };
 
 

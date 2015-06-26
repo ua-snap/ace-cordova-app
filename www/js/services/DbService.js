@@ -1,5 +1,5 @@
 angular.module('starter.services')
-
+ 
 .service('DbService', function() {
 	return {
 		openDatabase: function(window) {
@@ -29,6 +29,15 @@ angular.module('starter.services')
 		getRecentPositionLogs: function(window, numLogs, callback) {
 			var dbHandler = new DbHandler("ace.db", window);
 			dbHandler.selectNum("position_history", numLogs, "timestamp", false, callback);	
+		},
+		
+		convertPositionArrayToLatLng: function(positions) {
+			var latLngArr = [];
+			for(var i = 0; i < positions.length; i++)
+			{
+				latLngArr.push(new google.maps.LatLng(positions.item(i).latitude, positions.item(i).longitude));
+			}
+			return latLngArr;
 		}
 	};
 });

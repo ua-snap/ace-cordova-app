@@ -1,19 +1,19 @@
 // MapController.js
-
+ 
 /**
  * @module starter.controllers
  */
 angular.module('starter.controllers')
-
+ 
 // MapController
 //--------------------------------------------------------------
-
-
+ 
+ 
 // MapController (controller for the Map tab)
 /**
  * @class MapController
  */
-.controller('MapController', function($scope, $ionicSideMenuDelegate, $ionicPopover, GeoService) {
+.controller('MapController', function($scope, $ionicSideMenuDelegate, $ionicPopover, GeoService, DbService) {
     // Set up menu options popover
     // Create popover from template and save to $scope variable
       $ionicPopover.fromTemplateUrl('templates/popovers/map-options.html', {
@@ -42,6 +42,7 @@ angular.module('starter.controllers')
     var timer = null;
     
     var currentLocationMarker = null;
+    var historyLine = null;
     
     $scope.curPos = null;
     
@@ -53,7 +54,10 @@ angular.module('starter.controllers')
       displayHistory: {
           checked: false
       },
-      reportFrequency: 1 
+      reportFrequency: 1 ,
+      enableReporting: {
+          checked: false
+      }
     };
     
     $scope.mapState = {
@@ -158,6 +162,17 @@ angular.module('starter.controllers')
         }
     };
     
+    $scope.enableReportingChanged = function() {
+        if($scope.settings.enableReporting.checked)
+        {
+            GeoService.enableReport($scope.settings.reportFrequency, null);
+        }
+        else
+        {
+            GeoService.disableReport();
+        }
+    };
+    
     $scope.displayPosChanged = function() {
       //alert($scope.settings.displayPos.checked); 
       if($scope.settings.displayPos.checked)
@@ -179,6 +194,46 @@ angular.module('starter.controllers')
               $scope.toggleFollowPosition();
           }          
       }
+    };
+    
+    $scope.displayHistoryChanged = function() {
+      if($scope.settings.displayHistory.checked)
+      {
+          // Draw the history line
+          $scope.drawHistoryLine();
+          
+          // Set up the report callback to include drawing the polyline
+          GeoService.setReportCallback($scope.historyLineAddPoint);
+      }  
+      else
+      {
+          if(historyLine)
+          {
+            // remove the history line
+            historyLine.setMap(null);    
+          }          
+      }
+    };
+    
+    // Add one point to the history line
+    $scope.historyLineAddPoint = function(pos) {
+        var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+        var path = historyLine.getPath();
+        path.push(latlng);
+    };
+    
+    $scope.drawHistoryLine = function() {
+        // Grab last 100 position entries
+        var posArr = DbService.getRecentPositionLogs(window, 100, function(res) {
+            var latLngArr = DbService.convertPositionArrayToLatLng(res.rows);
+            historyLine = new google.maps.Polyline({
+                path: latLngArr,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2                
+            });
+            historyLine.setMap($scope.map);
+        });
     };
     
     $scope.centerOnPosition = function() {

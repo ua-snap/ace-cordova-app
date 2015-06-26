@@ -44,7 +44,7 @@ DbHandler.prototype.insertInto = function(tableName, keys, values) {
 		}
 		
 		tx.executeSql(sqlString, values, function(tx, res) {
-			alert(res.rowsAffected);
+			//alert(res.rowsAffected);
 		});
 	}, function(error) {
 		alert(error.message);

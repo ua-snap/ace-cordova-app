@@ -1,12 +1,14 @@
 angular.module('starter.services')
 
-.service('GeoService', function() {
+.service('GeoService', function(DbService) {
 	
 	var mReportInterval = 1;
 	var mPos = null;
 	var mWatchId;
 	var mWatchCallback;
 	var mFollowPosition = false;
+	var mTimerId;
+	var mReportCallback;
 	
 	return {
 		// Track the position of the device and update mPos with each available update
@@ -52,8 +54,13 @@ angular.module('starter.services')
 			mFollowPosition = follow;
 		},
 		
-		// Turns on reporting the user's location and displaying their history on the map
-		enableReport: function(frequency) {
+		// Turns on reporting the user's location
+		enableReport: function(frequency, reportCallback) {
+			if(reportCallback)
+			{
+				mReportCallback = reportCallback;	
+			}
+			
 			// If provided set the frequency to submit reports (in seconds)
 			if(frequency)
 			{
@@ -61,9 +68,25 @@ angular.module('starter.services')
 			}
 			
 			// Set the interval function
-			setInterval(function() {
+			mTimerId = setInterval(function() {
+				DbService.insertPosition(mPos, window); 
 				
+				if(mReportCallback)
+				{
+					mReportCallback.call(this, mPos);	
+				}
+				     
 			}, mReportInterval * 1000);
+		},
+		
+		// Turns off reporting user's location
+		disableReport: function() {
+			clearInterval(mTimerId);	
+		},
+		
+		// Set the report callback
+		setReportCallback: function(reportCallback) {
+			mReportCallback = reportCallback;
 		}
 	};
 });
