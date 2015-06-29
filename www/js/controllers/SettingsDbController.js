@@ -1,15 +1,15 @@
-// SettingsController.js
+// SettingsDbController.js
 
 /**
  * @module starter.controllers
  */
  
- // SettingsController.js
+ // SettingsDbController.js
  //-----------------------------------------------------------------------------------------------
  
  // Controller for the settings view
  /**
-  * @class SettingsController
+  * @class SettingsDbController
   */
 angular.module('starter.controllers')
 

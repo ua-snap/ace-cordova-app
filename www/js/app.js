@@ -86,6 +86,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     controller: 'SettingsDbController'
   })
   
+  // GPS settings state
+  .state('settings-gps', {
+    url: '/settings_gps',
+    templateUrl: 'templates/settings_gps.html',
+    controller: 'SettingsGpsController'
+  })
+  
   // Login state (default initial state)
   .state('login', {
     url: '/login',

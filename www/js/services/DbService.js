@@ -14,11 +14,10 @@ angular.module('starter.services')
 			
 			// Create reports table
 			createString = createString + "CREATE TABLE IF NOT EXISTS reports (id integer primary key, positionId integer, cloudCover text, precipitation text, visibility text, pressureTendency text, pressureValue text, temperatureValue text, temperatureUnits text, windValue text, windUnits text, windDirection text, notes text, camera text, other text); ";
+			dbHandler.executeSql(createString);
 			
-			createString = createString + "CREATE TABLE IF NOT EXISTS positions (id integer primary key, timestamp integer, latitude real, longitude real, accuracy data_num, altitude real, altitudeAccuracy real, heading real, speed real); ";
-			
-			// Actually create both tables
-			dbHandler.createTables(createString);	
+			createString = "CREATE TABLE IF NOT EXISTS positions (id integer primary key, timestamp integer, latitude real, longitude real, accuracy data_num, altitude real, altitudeAccuracy real, heading real, speed real); ";
+			dbHandler.executeSql(createString);	
 		},
 		
 		deleteDatabase: function(window) {

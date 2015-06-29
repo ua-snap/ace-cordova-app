@@ -4,15 +4,6 @@ var DbHandler = function(name, window) {
 	this.mDbName = name;
 };
 
-DbHandler.prototype.createTables = function(createString) {
-	this.mDb.transaction(function(tx) {
-		tx.executeSql(createString);
-	}, function(error) {
-		// error condition on entire transaction
-		alert(error.message);
-	});	
-};
-
 DbHandler.prototype.deleteDb = function() {
 	window.sqlitePlugin.deleteDatabase({name: this.mDbName, location: 1});
 };
@@ -72,7 +63,11 @@ DbHandler.prototype.executeSql = function(sqlString, callback) {
 	var self = this;
 	this.mDb.transaction(function(tx) {
 		tx.executeSql(sqlString, [], function(tx, res) {
-			callback.call(this, res);
+			if(callback)
+			{
+				callback.call(this, res);
+			}
+			
 		}, function(error) {
 			self.errorHandler(error);
 		});

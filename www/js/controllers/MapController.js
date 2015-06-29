@@ -145,12 +145,6 @@ angular.module('starter.controllers')
         
     };
     
-    $scope.getReportIcon = function() {
-        return {
-            url: 'img/document-text_small_grn.png'
-        };  
-    };
-    
     var updateMarker = function(pos, follow) {
         if(currentLocationMarker)
         {
@@ -227,15 +221,66 @@ angular.module('starter.controllers')
       }
     };
     
+    $scope.makeInfoWindowString = function(report) {        
+        // Grab the date
+        var date = new Date(report.position.timestamp);
+        
+        var htmlString = '<div id="content"><div id="siteNotice"></div>' + 
+            '<h5 id="firstHeading" class="firstHeading">' + date + '</h5>' + '<div id="bodyContent">' + 
+            '<p>Cloud Cover: ' + report.cloudCover + '<br>' +
+            'Precipitation: ' + report.precipitation + '<br>' +
+            'Visibility: ' + report.visibility + '<br>' +
+            'Pressure Trend: ' + report.pressureTrend + '<br>' +
+            'Surface Pressure: ' + report.surfacePressure + '<br>' +
+            'Surface Temperature: ' + report.surfaceTemperature + '<br>' + 
+            'Wind Speed: ' + report.windSpeed + '<br>' +
+            'Wind Direction: ' + report.windDirection + '<br>' +
+            'Other: ' + report.other + '<br>' + 
+            'Notes: ' + report.notes + '<br>' + '</p></div></div>';
+            
+            return htmlString
+    };
+    
     // Called when the display reports option is changed
     $scope.displayReportsChanged = function() {
+       var self = this;
 	   if($scope.settings.displayReports.checked)
        {
            // Show reports on the map
+           // Get all reports
+           DbService.getReportsAndPositions(window, function(reports) {
+              if(reports)
+              {
+                 var image = 'img/document-text_small_grn.png';
+                  for(var i = 0; i < reports.length; i++)
+                  {
+                      var pos = new google.maps.LatLng(reports[i].position.coords.latitude, reports[i].position.coords.longitude);
+                      var marker = new google.maps.Marker({
+                         position: pos,
+                         map: self.map,
+                         icon: image,
+                         title: 'report_marker'
+                      });
+                      self.reportMarkers.push(marker);
+                      var htmlString = self.makeInfoWindowString(reports[i]);
+                      var infoWindow = new google.maps.InfoWindow({
+                        content: htmlString
+                      });
+                      
+                      google.maps.event.addListener(marker, 'click', function() {
+                          infoWindow.open(self.map, marker);
+                      });
+                  } 
+              }              
+           });
        }
        else
        {
            // remove all reports from the map
+           for(var i = 0; i < $scope.reportMarkers.length; i++)
+           {
+               $scope.reportMarkers[i].setMap(null);
+           }
        }
     };
     

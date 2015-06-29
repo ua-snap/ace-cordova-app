@@ -1,21 +1,21 @@
-// SettingsController.js
+// SettingsGpsController.js
 
 /**
  * @module starter.controllers
  */
  
- // SettingsController.js
+ // SettingsGpsController.js
  //-----------------------------------------------------------------------------------------------
  
  // Controller for the settings view
  /**
-  * @class SettingsController
+  * @class SettingsGpsController
   */
 angular.module('starter.controllers')
 
-.controller('SettingsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state) {
-	
-	// Adding beforeEnter event listener.  This function will be called just before every view load,
+.controller('SettingsGpsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, DbService) {
+  
+  // Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
 	$scope.$on('$ionicView.enter', function() {
 		// Enable dragging of the side menu
@@ -51,13 +51,5 @@ angular.module('starter.controllers')
 			// Default to the report tab
 			$state.go('tab.report');
 		}
-	};
-	
-	$scope.dbSettingsClicked = function() {
-		$state.go('settings-db');	
-	};
-	
-	$scope.gpsSettingsClicked = function() {
-		$state.go('settings-gps');
 	};
 });
