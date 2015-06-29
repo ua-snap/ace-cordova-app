@@ -39,6 +39,8 @@ angular.module('starter.controllers')
     // If false, watchPosition will not modify the map center
     $scope.centerMap = true;
     
+    $scope.reportMarkers = [];
+    
     var timer = null;
     
     var currentLocationMarker = null;
@@ -54,8 +56,11 @@ angular.module('starter.controllers')
       displayHistory: {
           checked: false
       },
-      reportFrequency: 1 ,
-      enableReporting: {
+      trackFrequency: 1 ,
+      enablePosTracking: {
+          checked: false
+      },
+      displayReports: {
           checked: false
       }
     };
@@ -140,6 +145,12 @@ angular.module('starter.controllers')
         
     };
     
+    $scope.getReportIcon = function() {
+        return {
+            url: 'img/document-text_small_grn.png'
+        };  
+    };
+    
     var updateMarker = function(pos, follow) {
         if(currentLocationMarker)
         {
@@ -153,23 +164,24 @@ angular.module('starter.controllers')
         else 
         {
             var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            
             currentLocationMarker = new google.maps.Marker({
                     position: latlng,
                     map: $scope.map,
-                    title: "current_pos"
+                    title: "current_pos",
             });
             $scope.map.setCenter(latlng);
         }
     };
     
-    $scope.enableReportingChanged = function() {
-        if($scope.settings.enableReporting.checked)
+    $scope.enablePosTrackingChanged = function() {
+        if($scope.settings.enablePosTracking.checked)
         {
-            GeoService.enableReport($scope.settings.reportFrequency, null);
+            GeoService.enableTracking($scope.settings.trackingFrequency, null);
         }
         else
         {
-            GeoService.disableReport();
+            GeoService.disableTracking();
         }
     };
     
@@ -203,7 +215,7 @@ angular.module('starter.controllers')
           $scope.drawHistoryLine();
           
           // Set up the report callback to include drawing the polyline
-          GeoService.setReportCallback($scope.historyLineAddPoint);
+          GeoService.setTrackingCallback($scope.historyLineAddPoint);
       }  
       else
       {
@@ -213,6 +225,18 @@ angular.module('starter.controllers')
             historyLine.setMap(null);    
           }          
       }
+    };
+    
+    // Called when the display reports option is changed
+    $scope.displayReportsChanged = function() {
+	   if($scope.settings.displayReports.checked)
+       {
+           // Show reports on the map
+       }
+       else
+       {
+           // remove all reports from the map
+       }
     };
     
     // Add one point to the history line

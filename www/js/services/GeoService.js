@@ -2,13 +2,13 @@ angular.module('starter.services')
 
 .service('GeoService', function(DbService) {
 	
-	var mReportInterval = 1;
+	var mTrackingInterval = 1;
 	var mPos = null;
 	var mWatchId;
 	var mWatchCallback;
 	var mFollowPosition = false;
 	var mTimerId;
-	var mReportCallback;
+	var mTrackingCallback;
 	
 	return {
 		// Track the position of the device and update mPos with each available update
@@ -34,8 +34,8 @@ angular.module('starter.services')
 		},
 		
 		// Sets the interval to submit a location report (and to save a history point on the map)
-		setReportInterval: function(reportInterval) {
-			mReportInterval = reportInterval;
+		setTrackingInterval: function(trackingInterval) {
+			mTrackingInterval = trackingInterval;
 		},
 		
 		// Sets the callback function for watchPosition success
@@ -55,38 +55,38 @@ angular.module('starter.services')
 		},
 		
 		// Turns on reporting the user's location
-		enableReport: function(frequency, reportCallback) {
-			if(reportCallback)
+		enableTracking: function(frequency, trackingCallback) {
+			if(trackingCallback)
 			{
-				mReportCallback = reportCallback;	
+				mtrackingCallback = trackingCallback;	
 			}
 			
 			// If provided set the frequency to submit reports (in seconds)
 			if(frequency)
 			{
-				mReportInterval = frequency;
+				mTrackingInterval = frequency;
 			}
 			
 			// Set the interval function
 			mTimerId = setInterval(function() {
 				DbService.insertPosition(mPos, window); 
 				
-				if(mReportCallback)
+				if(mTrackingCallback)
 				{
-					mReportCallback.call(this, mPos);	
+					mTrackingCallback.call(this, mPos);	
 				}
 				     
-			}, mReportInterval * 1000);
+			}, mTrackingInterval * 1000);
 		},
 		
 		// Turns off reporting user's location
-		disableReport: function() {
+		disableTracking: function() {
 			clearInterval(mTimerId);	
 		},
 		
 		// Set the report callback
-		setReportCallback: function(reportCallback) {
-			mReportCallback = reportCallback;
+		setTrackingCallback: function(trackingCallback) {
+			mTrackingCallback = trackingCallback;
 		}
 	};
 });

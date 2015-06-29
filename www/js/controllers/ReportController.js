@@ -93,7 +93,7 @@ angular.module('starter.controllers')
   // Called when the "Send Report" button on the submit popover is touched.  Should be used to 
   // execute a network call to submit the report.  Currently, just provides a fake success notification
   $scope.submitReport = function() {
-    $ionicLoading.show({template: 'Report Sent Successfully (un-implemented)', noBackdrop: true, duration: 1500});
+    //$ionicLoading.show({template: 'Report Sent Successfully (un-implemented)', noBackdrop: true, duration: 1500});
     
     // Save report to database
     DbService.insertReport($scope.report, window);

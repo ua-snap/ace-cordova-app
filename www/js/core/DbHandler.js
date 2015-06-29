@@ -18,6 +18,7 @@ DbHandler.prototype.deleteDb = function() {
 };
 
 DbHandler.prototype.insertInto = function(tableName, keys, values, callback) {
+	var self = this;
 	this.mDb.transaction(function(tx) {
 		var sqlString = "INSERT INTO " + tableName + " (";
 		for(var i = 0; i < keys.length; i++)
@@ -51,22 +52,35 @@ DbHandler.prototype.insertInto = function(tableName, keys, values, callback) {
 			}
 		});
 	}, function(error) {
-		alert(error.message);
+		self.errorHandler(error);
 	});
 };
 
 DbHandler.prototype.selectAllFrom = function(tableName, callback) {
+	var self = this;
 	this.mDb.transaction(function(tx) {
 		var sqlString = "SELECT * FROM " + tableName + ";";
 		tx.executeSql(sqlString, [], function(tx, res) {
 			callback.call(this, res);
 		});
 	}, function(error) {
-		alert(error.message);
+		self.errorHandler(error);
+	});	
+};
+
+DbHandler.prototype.executeSql = function(sqlString, callback) {
+	var self = this;
+	this.mDb.transaction(function(tx) {
+		tx.executeSql(sqlString, [], function(tx, res) {
+			callback.call(this, res);
+		}, function(error) {
+			self.errorHandler(error);
+		});
 	});	
 };
 
 DbHandler.prototype.selectNum = function(tableName, numResults, orderByCol, ascending, callback) {
+	var self = this;
 	var sqlString = "SELECT * FROM " + tableName + " ORDER BY " + orderByCol;
 	if(ascending)
 	{
@@ -84,8 +98,24 @@ DbHandler.prototype.selectNum = function(tableName, numResults, orderByCol, asce
 			callback.call(this, res);
 		});
 	}, function(error) {
-		alert(error.message);
+		self.errorHandler(error);
 	});
+};
+
+DbHandler.prototype.getId = function(tableName, id, callback) {
+	var self = this;
+	var sqlString = "SELECT * FROM " + tableName + " WHERE id='" + id + "'";
+	this.mDb.transaction(function(tx) {
+		tx.executeSql(sqlString, [], function(tx, res) {
+			callback.call(this, res);
+		});
+	}, function(error) {
+		self.errorHandler(error);
+	});	
+};
+
+DbHandler.prototype.errorHandler = function(error) {
+	alert(error.message);
 };
 
 

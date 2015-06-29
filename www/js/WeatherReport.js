@@ -125,3 +125,19 @@ var WeatherReport = function() {
 	 */
 	this.other = "";
 };
+
+WeatherReport.prototype.importSqlRow = function(sqlRow) {
+	this.cloudCover = sqlRow.cloudCover;
+	this.precipitation = sqlRow.precipitation;
+	this.visibility = sqlRow.visibility;
+	this.pressureTendency = sqlRow.pressureTendency;
+	this.pressureValue = sqlRow.pressureValue;
+	this.temperatureValue = sqlRow.temperatureValue;
+	this.temperatureUnits = sqlRow.temperatureUnits;
+	this.windValue = sqlRow.windValue;
+	this.windUnits = sqlRow.windUnits;
+	this.windDirection = sqlRow.windDirection;
+	this.notes = sqlRow.notes;
+	this.camera = sqlRow.camera;
+	this.other = sqlRow.other;	
+};

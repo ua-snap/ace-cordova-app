@@ -1,6 +1,6 @@
 angular.module('starter.services')
  
-.service('DbService', function() {
+.service('DbService', function($ionicLoading) {
 	return {
 		openDatabase: function(window) {
 			var dbHandler = new DbHandler("ace.db", window);
@@ -17,16 +17,8 @@ angular.module('starter.services')
 			
 			createString = createString + "CREATE TABLE IF NOT EXISTS positions (id integer primary key, timestamp integer, latitude real, longitude real, accuracy data_num, altitude real, altitudeAccuracy real, heading real, speed real); ";
 			
-			
 			// Actually create both tables
-			try
-			{
-				dbHandler.createTables(createString);	
-			}			
-			catch(error)
-			{
-				alert(error.message);
-			}
+			dbHandler.createTables(createString);	
 		},
 		
 		deleteDatabase: function(window) {
@@ -57,7 +49,9 @@ angular.module('starter.services')
 			
 					var values = [posId, report.cloudCover, report.precipitation, report.visibility, report.pressureTendency, report.pressureValue, report.temperatureValue, report.temperatureUnits, report.windValue, report.windDirection, report.notes, report.camera, report.other];
 			
-					dbHandler.insertInto("reports", keys, values);
+					dbHandler.insertInto("reports", keys, values, function(res) {
+						$ionicLoading.show({template: 'Report Sent Successfully (saved to db)', noBackdrop: true, duration: 1500});
+					});
 				})
 			}, function(error) {
 				alert(error.message);
@@ -67,6 +61,33 @@ angular.module('starter.services')
 		getAllPositionLogs: function(window, callback) {
 			var dbHandler = new DbHandler("ace.db", window);
 			dbHandler.selectAllFrom("positions", callback);
+		},
+		
+		getAllReports: function(window, callback) {
+			var dbHandler = new DbHandler("ace.db", window);
+			dbHandler.selectAllFrom("reports", callback);
+		},
+		
+		getReportsAndPositions: function(window, callback) {
+			var sqlString = "SELECT * FROM reports INNER JOIN positions ON reports.positionId=positions.id;";
+			var dbHandler = new DbHandler("ace.db", window);
+			dbHandler.executeSql(sqlString, function(res) {
+				var reports = [];
+				for(var i = 0; i < res.rows.length; i++)
+				{
+					var tempReport = new WeatherReport();
+					tempReport.importSqlRow(res.rows.item(i));
+					var tempPosition = new Position();
+					tempPosition.importSqlRow(res.rows.item(i));
+					tempReport.position = tempPosition;
+					reports.push(tempReport);					
+				}
+				
+				if(callback)
+				{
+					callback.call(this, reports);	
+				}				
+			});
 		},
 		
 		getRecentPositionLogs: function(window, numLogs, callback) {

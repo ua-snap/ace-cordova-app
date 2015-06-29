@@ -92,8 +92,15 @@ angular.module('starter.controllers', [])
         var i = 0;
         i++;
       });
+    });    
+  };
+  
+  $scope.testReportPosition = function() {
+    DbService.getReportsAndPositions(window, function(reports) {
+      var i = 0;
+      i++;
+      i++;
     });
-    
   };
   
   // Go to the settings state
