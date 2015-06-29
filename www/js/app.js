@@ -93,6 +93,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     controller: 'SettingsGpsController'
   })
   
+  // Report Browser State
+  .state('browse-reports', {
+    url: '/report_browser',
+    templateUrl: 'templates/browse_reports.html',
+    controller: 'BrowseReportsController'
+  })
+  
   // Login state (default initial state)
   .state('login', {
     url: '/login',

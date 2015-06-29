@@ -1,0 +1,10 @@
+<ion-view view-title="Previous Reports">
+	<ion-nav-buttons side="left">
+    	<button class="button button-icon ion-android-arrow-back" ng-click="goBack()"></button>
+	</ion-nav-buttons>
+	<ion-content>
+		<ion-item collection-repeat="report in reports">
+			{{report.date.toString()}}
+		</ion-item>
+	</ion-content>
+</ion-view>

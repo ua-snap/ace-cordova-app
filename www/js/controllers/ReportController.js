@@ -15,7 +15,7 @@ angular.module('starter.controllers')
  * @description Controller for the Report view.  This controller contains all the
  * UI functionality for entering and saving reports.
  */
-.controller('ReportController', function($scope, $ionicSideMenuDelegate, $ionicModal, $ionicPopover, $ionicLoading, DbService) {
+.controller('ReportController', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopover, $ionicLoading, DbService) {
   
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
@@ -138,7 +138,13 @@ angular.module('starter.controllers')
   $scope.openOptionsMenu = function($event) {
       $scope.optionsPopover.show($event);
   };
-
+  
+  // Additional options
+  //--------------------------------------------------------------------------------------
+  $scope.browseReportsClicked = function() {
+    $scope.optionsPopover.hide();
+    $state.go("browse-reports");
+  };
 
   // Cloud Cover Modal Functions
   //--------------------------------------------------------------------------------------

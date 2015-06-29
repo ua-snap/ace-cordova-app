@@ -267,8 +267,7 @@ angular.module('starter.controllers')
                          infoWindow: infowindow
                       });
                       self.reportMarkers.push(marker);
-                      
-                      
+                                         
                       google.maps.event.addListener(marker, 'click', function() {
                         this.infoWindow.open(this.getMap(), this);                         
                       });
