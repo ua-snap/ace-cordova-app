@@ -96,7 +96,7 @@ angular.module('starter.controllers')
     $ionicLoading.show({template: 'Report Sent Successfully (un-implemented)', noBackdrop: true, duration: 1500});
     
     // Save report to database
-    
+    DbService.insertReport($scope.report, window);
     
     // Clear all entered data
     $scope.report = new WeatherReport();    

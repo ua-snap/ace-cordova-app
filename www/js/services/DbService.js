@@ -10,13 +10,23 @@ angular.module('starter.services')
 			var dbHandler = new DbHandler("ace.db", window);
 			
 			// Create positions table
-			var createString = "CREATE TABLE IF NOT EXISTS positions (id integer primary key, timestamp integer, latitude real, longitude real, accuracy data_num, altitude real, altitudeAccuracy real, heading real, speed real)";
+			var createString = "";
 			
 			// Create reports table
-			createString = createString + "CREATE TABLE IF NOT EXISTS reports (id integer primary key, positionId integer, cloudCover text, precipitation text, visibility text, pressureTendency text, pressureValue text, temperatureValue text, temperatureUnits text, windValue text, windUnits text, windDirection text, notes text, camera text, other text)";
+			createString = createString + "CREATE TABLE IF NOT EXISTS reports (id integer primary key, positionId integer, cloudCover text, precipitation text, visibility text, pressureTendency text, pressureValue text, temperatureValue text, temperatureUnits text, windValue text, windUnits text, windDirection text, notes text, camera text, other text); ";
 			
-			// Actually create both tables			
-			dbHandler.createTables(createString);
+			createString = createString + "CREATE TABLE IF NOT EXISTS positions (id integer primary key, timestamp integer, latitude real, longitude real, accuracy data_num, altitude real, altitudeAccuracy real, heading real, speed real); ";
+			
+			
+			// Actually create both tables
+			try
+			{
+				dbHandler.createTables(createString);	
+			}			
+			catch(error)
+			{
+				alert(error.message);
+			}
 		},
 		
 		deleteDatabase: function(window) {
@@ -38,11 +48,11 @@ angular.module('starter.services')
 		// Insert report into database
 		insertReport: function(report, window) {
 			var dbHandler = new DbHandler("ace.db", window);
-			var insertFunction = this.insertPosition;						
+			var self = this;					
 			navigator.geolocation.getCurrentPosition(function(pos) {
-				insertFunction(pos, window, function(res) {
-					var posId = res.rows.item(0).id;
-					alert(posId);
+				self.insertPosition(pos, window, function(res) {
+					var posId = res.insertId;
+					//alert(posId);
 					var keys = ["positionId", "cloudCover", "precipitation", "visibility", "pressureTendency", "pressureValue", "temperatureValue", "temperatureUnits", "windValue", "windDirection", "notes", "camera", "other"];
 			
 					var values = [posId, report.cloudCover, report.precipitation, report.visibility, report.pressureTendency, report.pressureValue, report.temperatureValue, report.temperatureUnits, report.windValue, report.windDirection, report.notes, report.camera, report.other];
@@ -50,8 +60,8 @@ angular.module('starter.services')
 					dbHandler.insertInto("reports", keys, values);
 				})
 			}, function(error) {
-				
-			}, {timeout: 5000, enableHighAccuracy: true})
+				alert(error.message);
+			}, {timeout: 15000, enableHighAccuracy: true})
 		},
 		
 		getAllPositionLogs: function(window, callback) {

@@ -9,6 +9,7 @@ DbHandler.prototype.createTables = function(createString) {
 		tx.executeSql(createString);
 	}, function(error) {
 		// error condition on entire transaction
+		alert(error.message);
 	});	
 };
 
