@@ -255,20 +255,22 @@ angular.module('starter.controllers')
                   for(var i = 0; i < reports.length; i++)
                   {
                       var pos = new google.maps.LatLng(reports[i].position.coords.latitude, reports[i].position.coords.longitude);
+                      var htmlString = self.makeInfoWindowString(reports[i]);
+                      var infowindow = new google.maps.InfoWindow({
+                        content: htmlString
+                      });
                       var marker = new google.maps.Marker({
                          position: pos,
                          map: self.map,
                          icon: image,
-                         title: 'report_marker'
+                         title: 'report_marker',
+                         infoWindow: infowindow
                       });
                       self.reportMarkers.push(marker);
-                      var htmlString = self.makeInfoWindowString(reports[i]);
-                      var infoWindow = new google.maps.InfoWindow({
-                        content: htmlString
-                      });
+                      
                       
                       google.maps.event.addListener(marker, 'click', function() {
-                          infoWindow.open(self.map, marker);
+                        this.infoWindow.open(this.getMap(), this);                         
                       });
                   } 
               }              
