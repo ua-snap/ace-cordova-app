@@ -1,12 +1,21 @@
 angular.module('starter.controllers')
 
-.controller('ViewReportController', function($scope, DataShareService) {
+.controller('ViewReportController', function($scope, $state, DataShareService) {
+	$scope.report = null;
+	
 	$scope.$on('$ionicView.beforeEnter', function() {
-		var report = DataShareService.getItem("selectedReport", null);
+		$scope.report = DataShareService.getItem("selectedReport", null);
+		
 		
 		// Fill in view
-		$scope.fillFromReport(report);
+		$scope.fillFromReport($scope.report);
 	});
+	
+	// Fill in template
+	$scope.useTemplateClicked = function() {
+		DataShareService.setItem("template", $scope.report);
+		$state.go("tab.report");
+	};
 	
 	$scope.fillFromReport = function(report) {
 		// Fill in each report element

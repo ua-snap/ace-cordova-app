@@ -15,16 +15,25 @@ angular.module('starter.controllers')
  * @description Controller for the Report view.  This controller contains all the
  * UI functionality for entering and saving reports.
  */
-.controller('ReportController', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopover, $ionicLoading, DbService, GeoService) {
+.controller('ReportController', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
   
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
   
-  // Adding beforeEnter event listener.  This function will be called just before every view load,
+  // Adding enter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.  Here, this is used to enable the side menu drag functionality.
 	$scope.$on('$ionicView.enter', function() {
 		$ionicSideMenuDelegate.canDragContent(true);
 	});
+  
+  // Check if sent here from template view
+  $scope.$on('$ionicView.beforeEnter', function() {
+    var template =  DataShareService.getItem("template", null);
+    if(template)
+    {
+      $scope.importReport(template);
+    }
+  });
   
   /**
    * Field holds the contents of the current report that is being entered
@@ -113,6 +122,54 @@ angular.module('starter.controllers')
     
     // Hide the popover
     $scope.submitPopover.hide();
+  };
+  
+  // Function to import a report object (from template selection)
+  //-------------------------------------------------------------------------------------
+  $scope.importReport = function(report) {
+    // Set report object
+    $scope.report = report;
+    
+    // Update UI
+    if(report.cloudCover && report.cloudCover !== "")
+    {
+      document.getElementById("cloud_sum").innerText = report.cloudCover;
+    }
+    
+    if(report.precipitation && report.precipitation !== "")
+    {
+      document.getElementById("precip_sum").innerText = report.precipitation;
+    }
+    
+    if(report.visibility && report.visibility !== "")
+    {
+      document.getElementById("vis_sum").innerText = report.visibility;
+    }
+    
+    if(report.pressureValue && report.pressureValue != "")
+    {
+      document.getElementById("pressure_sum").innerText = report.pressureValue + " hPa";
+    }
+    
+    if(report.temperatureValue && report.temperatureValue !== "")
+    {
+      document.getElementById("temp_sum").innerText = report.temperatureValue + " " + report.temperatureUnits;
+    }
+    
+    if(report.windValue && report.windValue != "")
+    {
+      document.getElementById("wind_sum").innerText = report.windValue + " " + report.windUnits + " " + report.windDirection;
+    }
+    
+    if(report.notes && report.notes != "")
+    {
+      document.getElementById("notes_sum").innerText = report.notes;
+    }
+    
+    if(report.other && report.other != "")
+    {
+      document.getElementById("other_sum").innerText = report.other;
+    }    
   };
   
   // Function called when the application opens (every time)
