@@ -100,6 +100,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     controller: 'BrowseReportsController'
   })
   
+  // View Report (From report browser)
+  .state('browse-reports-view', {
+    url: '/report_browser_view',
+    templateUrl: 'templates/browse_reports_view.html',
+    controller: 'ViewReportController'
+  })
+  
   // Login state (default initial state)
   .state('login', {
     url: '/login',

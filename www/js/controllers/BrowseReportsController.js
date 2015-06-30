@@ -13,7 +13,7 @@
   */
 angular.module('starter.controllers')
 
-.controller('BrowseReportsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, DbService) {
+.controller('BrowseReportsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, DbService, DataShareService) {
   
   // Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
@@ -68,6 +68,12 @@ angular.module('starter.controllers')
 			$state.go('tab.report');
 		}
 	};
+	
+	$scope.elementClicked = function(report) {
+		//alert(report.date);
+		DataShareService.setItem("selectedReport", report);
+		$state.go("browse-reports-view");
+ 	};
 	
 	$scope.deleteClicked = function() {
 		// Delete the database

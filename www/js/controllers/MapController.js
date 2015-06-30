@@ -326,9 +326,10 @@ angular.module('starter.controllers')
     };
     
     $scope.centerOnPosition = function() {
-        var pos = GeoService.getCurrentPosition();
-        var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-        $scope.map.setCenter(latlng);
+        GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
+            var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            $scope.map.setCenter(latlng);
+        });        
     };
     
     $scope.toggleFollowPosition = function() {

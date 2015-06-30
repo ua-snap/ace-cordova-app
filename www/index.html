@@ -31,12 +31,14 @@
     <script src="js/controllers/SettingsDbController.js"></script>
     <script src="js/controllers/SettingsGpsController.js"></script>
     <script src="js/controllers/BrowseReportsController.js"></script>
+    <script src="js/controllers/ViewReportController.js"></script>
 
     <!-- Service js files (LoginService.js first - init function) -->
     <script src="js/services/LoginService.js"></script>
     <script src="js/services/GeoService.js"></script>
     <script src="js/services/DbService.js"></script>
     <script src="js/services/SettingsService.js"></script>
+    <script src="js/services/DataShareService.js"></script>
 
     <!-- Core ACE API js files -->
     <script src="js/core/LocalStorageUtil.js"></script>
@@ -88,7 +90,7 @@
             Test SQLite
           </ion-item>
           <ion-item ng-click="testReportPosition()">
-            Test Report & Position Db
+            Test Report &amp; Position Db
           </ion-item>
           <ion-item ng-click="openSettings()">
             Settings
