@@ -97,7 +97,6 @@ angular.module('starter.controllers')
         $scope.mapState.typeStr = $scope.map.getMapTypeId();
         $scope.mapState.displayHistory = $scope.settings.displayHistory.checked;
         $scope.mapState.displayReports = $scope.settings.displayReports.checked;
-        $scope.mapState.displayMarker = $scope.settings.displayPos.checked;
         
         // Save center to local storage
         var position = new Position();
@@ -159,28 +158,24 @@ angular.module('starter.controllers')
         GeoService.enableWatchPosition(navigator.geolocation, updateMarker);
         
         // Check if history was displayed
-        if($scope.mapState.displayHistory)
+        if($scope.mapState.displayHistory !== null)
         {
-            $scope.settings.displayHistory.checked = true;
+            $scope.settings.displayHistory.checked = $scope.mapState.displayHistory;
             $scope.displayHistoryChanged();
-        }
+        }        
         
         // Check for reports
-        if($scope.mapState.displayReports)
+        if($scope.mapState.displayReports !== null)
         {
-            $scope.settings.displayReports.checked = true;
+            $scope.settings.displayReports.checked = $scope.mapState.displayReports;
             $scope.displayReportsChanged();
         } 
         
-        // Check for marker display
-        if($scope.mapState.displayMarker)
-        {
-            $scope.settings.displayPos.checked = true;
-            $scope.displayPosChanged();
-        }       
+        // Always display marker
+        $scope.settings.displayPos.checked = true;
     };
     
-    var updateMarker = function(pos, follow) {
+    var updateMarker = function(pos, follow) {        
         if(currentLocationMarker)
         {
             currentLocationMarker.setPosition(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
