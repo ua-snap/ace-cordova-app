@@ -66,6 +66,9 @@ angular.module('starter.controllers')
         center: null,
         zoom: null,
         typeStr: "",
+        displayHistory: false,
+        displayReports: false,
+        displayMarker: true
     };
     
     // Adding enter event listener.  This function will be called just before every view load,
@@ -92,6 +95,9 @@ angular.module('starter.controllers')
         $scope.mapState.center = $scope.map.getCenter();
         $scope.mapState.zoom = $scope.map.getZoom();
         $scope.mapState.typeStr = $scope.map.getMapTypeId();
+        $scope.mapState.displayHistory = $scope.settings.displayHistory.checked;
+        $scope.mapState.displayReports = $scope.settings.displayReports.checked;
+        $scope.mapState.displayMarker = $scope.settings.displayPos.checked;
         
         // Save center to local storage
         var position = new Position();
@@ -149,8 +155,29 @@ angular.module('starter.controllers')
         var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
         $scope.map = map;
         
+        // Start watching position
         GeoService.enableWatchPosition(navigator.geolocation, updateMarker);
         
+        // Check if history was displayed
+        if($scope.mapState.displayHistory)
+        {
+            $scope.settings.displayHistory.checked = true;
+            $scope.displayHistoryChanged();
+        }
+        
+        // Check for reports
+        if($scope.mapState.displayReports)
+        {
+            $scope.settings.displayReports.checked = true;
+            $scope.displayReportsChanged();
+        } 
+        
+        // Check for marker display
+        if($scope.mapState.displayMarker)
+        {
+            $scope.settings.displayPos.checked = true;
+            $scope.displayPosChanged();
+        }       
     };
     
     var updateMarker = function(pos, follow) {

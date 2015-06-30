@@ -179,12 +179,11 @@ angular.module('starter.services')
 					if(shouldRecord)
 					{
 						DbService.insertPosition(position, window);	
-					}
-					 
-				
-					if(mTrackingCallback)
-					{
-						mTrackingCallback.call(this, mPos);	
+						
+						if(mTrackingCallback)
+						{
+							mTrackingCallback.call(this, mPos);	
+						}
 					}
 				});			     
 			}, mTrackingInterval * 1000);
