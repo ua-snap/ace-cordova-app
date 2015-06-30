@@ -19,7 +19,7 @@ angular.module('starter.controllers')
 	// regardless of controller and state caching.
 	$scope.$on('$ionicView.enter', function() {
 		// Enable dragging of the side menu
-		$ionicSideMenuDelegate.canDragContent(true);
+		$ionicSideMenuDelegate.canDragContent(false);
 	});
 	
 	// Function toggles sliding the left side-menu out and back in

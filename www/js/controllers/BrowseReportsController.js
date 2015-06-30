@@ -19,9 +19,7 @@ angular.module('starter.controllers')
 	// regardless of controller and state caching.
 	$scope.$on('$ionicView.enter', function() {
 		// Enable dragging of the side menu
-		$ionicSideMenuDelegate.canDragContent(true);
-		
-		
+		$ionicSideMenuDelegate.canDragContent(false);
 	});
 	
 	// Ensure that the reports info is correct when the view is FIRST displayed.

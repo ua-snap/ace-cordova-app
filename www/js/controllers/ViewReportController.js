@@ -1,7 +1,14 @@
 angular.module('starter.controllers')
 
-.controller('ViewReportController', function($scope, $state, DataShareService) {
+.controller('ViewReportController', function($ionicSideMenuDelegate, $scope, $state, DataShareService) {
 	$scope.report = null;
+	
+	// Adding beforeEnter event listener.  This function will be called just before every view load,
+	// regardless of controller and state caching.
+	$scope.$on('$ionicView.enter', function() {
+		// Enable dragging of the side menu
+		$ionicSideMenuDelegate.canDragContent(false);
+	});
 	
 	$scope.$on('$ionicView.beforeEnter', function() {
 		$scope.report = DataShareService.getItem("selectedReport", null);

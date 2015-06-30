@@ -15,6 +15,13 @@ angular.module('starter.controllers')
 
 .controller('SettingsGpsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, GeoService, DbService, SettingsService) {
   	
+	// Adding beforeEnter event listener.  This function will be called just before every view load,
+	// regardless of controller and state caching.
+	$scope.$on('$ionicView.enter', function() {
+		// Enable dragging of the side menu
+		$ionicSideMenuDelegate.canDragContent(false);
+	});
+	  
 	$scope.gpsSettings = {
 		highAccuracy: {
           checked: true
