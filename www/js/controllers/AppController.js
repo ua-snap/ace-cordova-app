@@ -13,7 +13,7 @@ angular.module('starter.controllers', [])
 /**
  * @class AppController
  */
-.controller('AppController', function($scope, $ionicSideMenuDelegate, $state, $http, DbService) {
+.controller('AppController', function($scope, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
   
   // Function toggles sliding the left side-menu out and back in
   /**
@@ -46,6 +46,9 @@ angular.module('starter.controllers', [])
     // Disable dragging the left-menu (since we are about to switch to the login screen)
     $ionicSideMenuDelegate.canDragContent(false);
     
+    // Turn off any active position tracking
+    GeoService.disableTracking();
+    
     // Kick the user back out to the login screen
     $state.go('login');
   };
@@ -53,7 +56,7 @@ angular.module('starter.controllers', [])
   // Function provides test access
   $scope.test = function() {
     // Try out getting geolocation
-    navigator.geolocation.getCurrentPosition(function(position) {
+    /*navigator.geolocation.getCurrentPosition(function(position) {
       alert('Latitude: '          + position.coords.latitude          + '\n' +
           'Longitude: '         + position.coords.longitude         + '\n' +
           'Altitude: '          + position.coords.altitude          + '\n' +
@@ -65,7 +68,20 @@ angular.module('starter.controllers', [])
     }, function(error) {
       alert('code: '    + error.code    + '\n' +
           'message: ' + error.message + '\n');
-    }, {timeout: 10000, enableHighAccuracy: true});
+    }, {timeout: 10000, enableHighAccuracy: true});*/
+    GeoService.getCurrentPosition(navigator.geolocation, function(position) {
+      alert('Latitude: '          + position.coords.latitude          + '\n' +
+          'Longitude: '         + position.coords.longitude         + '\n' +
+          'Altitude: '          + position.coords.altitude          + '\n' +
+          'Accuracy: '          + position.coords.accuracy          + '\n' +
+          'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+          'Heading: '           + position.coords.heading           + '\n' +
+          'Speed: '             + position.coords.speed             + '\n' +
+          'Timestamp: '         + position.timestamp                + '\n');
+    }, function(error) {
+      alert('code: '    + error.code    + '\n' +
+          'message: ' + error.message + '\n');
+    });
   };
   
   // Testing HTTPS capabilities
@@ -80,7 +96,7 @@ angular.module('starter.controllers', [])
   $scope.testSQLite = function() {
     DbService.openDatabase(window);
     
-    navigator.geolocation.getCurrentPosition(function(pos) {
+    /*navigator.geolocation.getCurrentPosition(function(pos) {
       DbService.insertPosition(pos, window);
       
       DbService.getAllPositionLogs(window, function(res) {
@@ -92,7 +108,21 @@ angular.module('starter.controllers', [])
         var i = 0;
         i++;
       });
-    });    
+    });*/
+    
+    GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
+      DbService.insertPosition(pos, window);
+      
+      DbService.getAllPositionLogs(window, function(res) {
+        alert(res.rows.length);
+      });
+      
+      DbService.getRecentPositionLogs(window, 3, function(res) {
+        alert(res.rows.length);
+        var i = 0;
+        i++;
+      });
+    });   
   };
   
   $scope.testReportPosition = function() {

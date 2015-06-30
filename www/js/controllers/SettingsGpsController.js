@@ -13,13 +13,73 @@
   */
 angular.module('starter.controllers')
 
-.controller('SettingsGpsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, DbService) {
-  
-  // Adding beforeEnter event listener.  This function will be called just before every view load,
+.controller('SettingsGpsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, GeoService, DbService, SettingsService) {
+  	
+	$scope.gpsSettings = {
+		highAccuracy: {
+          checked: true
+      	},
+		timeout: 10,
+		enablePositionTracking: {
+			checked: true
+		},
+		trackingInterval: 1
+	};
+	
+	$scope.enableHighAccuracy = function() {		
+		// Update global settings
+		var settings = SettingsService.getSettings(window);
+		settings.gps.highAccuracy = $scope.gpsSettings.highAccuracy.checked;
+		SettingsService.updateSettings(window, settings);
+	};
+	
+	$scope.timeoutChanged = function() {
+		var settings = SettingsService.getSettings(window);
+		settings.gps.timeout = $scope.gpsSettings.timeout;
+		SettingsService.updateSettings(window, settings);
+	};
+	
+	$scope.enablePosTrackingChanged = function() {
+		var settings = SettingsService.getSettings(window);
+		settings.gps.positionTrackingEnabled = $scope.gpsSettings.enablePositionTracking.checked;
+		SettingsService.updateSettings(window, settings);
+		
+        if(settings.gps.positionTrackingEnabled)
+        {
+            GeoService.enableTracking(settings.gps.trackingInterval, null);
+        }
+        else
+        {
+            GeoService.disableTracking();
+        }
+	};
+	
+	$scope.trackingFrequencyChanged = function() {
+		var settings = SettingsService.getSettings(window);
+		settings.gps.trackingInterval = $scope.gpsSettings.trackingInterval;
+		SettingsService.updateSettings(window, settings);	
+		
+		// Update tracking interval in geo service
+		if(settings.positionTrackingEnabled)
+		{
+			GeoService.disableTracking();
+			GeoService.enableTracking(settings.gps.trackingInterval, null);
+		}
+	};
+	
+  	// Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
 	$scope.$on('$ionicView.enter', function() {
 		// Enable dragging of the side menu
 		$ionicSideMenuDelegate.canDragContent(true);
+	});
+	
+	$scope.$on('$ionicView.beforeEnter', function() {
+		var settings = SettingsService.getSettings(window);
+		$scope.gpsSettings.highAccuracy.checked = settings.gps.highAccuracy;
+		$scope.gpsSettings.timeout = settings.gps.timeout;
+		$scope.gpsSettings.enablePositionTracking.checked= settings.gps.positionTrackingEnabled;
+		$scope.gpsSettings.trackingInterval = settings.gps.trackingInterval;
 	});
 	
 	// Function toggles sliding the left side-menu out and back in

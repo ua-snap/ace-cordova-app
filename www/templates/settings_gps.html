@@ -4,8 +4,16 @@
   </ion-nav-buttons>
   <ion-content>
     <ion-list>
-      
-      
+      <label class="item item-input">
+				<span class="input-label">GPS Timeout (s)</span>
+				<input type="tel" ng-model="gpsSettings.timeout" ng-change="timeoutChanged()">
+			</label>
+      <ion-toggle ng-model="gpsSettings.highAccuracy.checked" ng-change="enableHighAccuracy()">High Accuracy</ion-toggle>
+      <ion-toggle ng-model="gpsSettings.enablePositionTracking.checked" ng-change="enablePosTrackingChanged()">Enable Position Tracking</ion-toggle>
+			<label class="item item-input">
+				<span class="input-label">Position Tracking Interval (s)</span>
+				<input type="tel" ng-model="gpsSettings.trackingInterval" ng-change="trackingIntervalChanged()">
+			</label>    
     </ion-list>
   </ion-content>
 </ion-view>

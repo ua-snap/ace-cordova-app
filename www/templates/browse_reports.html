@@ -3,7 +3,7 @@
     	<button class="button button-icon ion-android-arrow-back" ng-click="goBack()"></button>
 	</ion-nav-buttons>
 	<ion-content>
-		<ion-item collection-repeat="report in reports">
+		<ion-item collection-repeat="report in reports" ng-click="">
 			{{report.date.toString()}}
 		</ion-item>
 	</ion-content>

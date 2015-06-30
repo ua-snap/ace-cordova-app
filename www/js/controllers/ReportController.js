@@ -15,7 +15,7 @@ angular.module('starter.controllers')
  * @description Controller for the Report view.  This controller contains all the
  * UI functionality for entering and saving reports.
  */
-.controller('ReportController', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopover, $ionicLoading, DbService) {
+.controller('ReportController', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopover, $ionicLoading, DbService, GeoService) {
   
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
@@ -115,7 +115,7 @@ angular.module('starter.controllers')
     $scope.submitPopover.hide();
   };
   
-  // DB setup
+  // Function called when the application opens (every time)
   //-------------------------------------------------------------------------------------
   document.addEventListener("deviceready", onDeviceReady, false);
   
@@ -123,6 +123,25 @@ angular.module('starter.controllers')
     // Open Db and create tables if necessary
     DbService.openDatabase(window);
     DbService.createTables(window);
+    
+    // Grab and set settings
+    var localHandler = new LocalStorageUtil(window);
+    var settings = localHandler.get("settings", null);
+    if(settings === null)
+    {
+      settings = new Settings();
+      localHandler.set("settings", settings);
+    }
+    
+    // check settings and enable position tracking if necessary
+    if(settings.gps.positionTrackingEnabled)
+    {
+      GeoService.enableTracking(settings.gps.trackingInterval);
+    }
+    else
+    {
+      GeoService.disableTracking();
+    }
   };
   
   // Additional Options

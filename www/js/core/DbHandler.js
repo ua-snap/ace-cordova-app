@@ -5,6 +5,7 @@ var DbHandler = function(name, window) {
 };
 
 DbHandler.prototype.deleteDb = function() {
+	window.sqlitePlugin.close();
 	window.sqlitePlugin.deleteDatabase({name: this.mDbName, location: 1});
 };
 

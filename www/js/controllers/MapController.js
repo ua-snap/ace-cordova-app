@@ -45,6 +45,7 @@ angular.module('starter.controllers')
     
     var currentLocationMarker = null;
     var historyLine = null;
+    var settings = null;
     
     $scope.curPos = null;
     
@@ -54,10 +55,6 @@ angular.module('starter.controllers')
       },  
       followPos: false,
       displayHistory: {
-          checked: false
-      },
-      trackFrequency: 1 ,
-      enablePosTracking: {
           checked: false
       },
       displayReports: {
@@ -71,15 +68,23 @@ angular.module('starter.controllers')
         typeStr: "",
     };
     
-    // Adding beforeEnter event listener.  This function will be called just before every view load,
+    // Adding enter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
-	$scope.$on('$ionicView.enter', function() {
+	$scope.$on('$ionicView.enter', function() { 
+        
+        // Disable left swipe menu
 		$ionicSideMenuDelegate.canDragContent(false);
+        
+        // Initialize the map
         initialize();
 	});    
     
     $scope.$on('$ionicView.leave', function() {
+        // Save the state of the map
         $scope.saveMapState();
+        
+        // Disable watching position
+        GeoService.disableWatchPosition(navigator.geolocation);
     });
     
     $scope.saveMapState = function() {
@@ -90,8 +95,11 @@ angular.module('starter.controllers')
         
         // Save center to local storage
         var position = new Position();
-        position.importGoogleGeoLoc(GeoService.getCurrentPosition());
-        localHandler.set("lastPosition", position);
+        
+        GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
+            position.importGoogleGeoLoc(pos);
+            localHandler.set("lastPosition", position);
+        });
     };
     
     var initialize = function()
@@ -165,17 +173,6 @@ angular.module('starter.controllers')
                     title: "current_pos",
             });
             $scope.map.setCenter(latlng);
-        }
-    };
-    
-    $scope.enablePosTrackingChanged = function() {
-        if($scope.settings.enablePosTracking.checked)
-        {
-            GeoService.enableTracking($scope.settings.trackingFrequency, null);
-        }
-        else
-        {
-            GeoService.disableTracking();
         }
     };
     

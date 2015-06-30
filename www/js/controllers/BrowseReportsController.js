@@ -21,6 +21,11 @@ angular.module('starter.controllers')
 		// Enable dragging of the side menu
 		$ionicSideMenuDelegate.canDragContent(true);
 		
+		
+	});
+	
+	// Ensure that the reports info is correct when the view is FIRST displayed.
+	$scope.$on('$ionicView.beforeEnter', function() {
 		// Set up reports item
 		DbService.getReportsAndPositions(window, function(reports) {
 			for(var i = 0; i < reports.length; i++)
