@@ -133,6 +133,16 @@ angular.module('starter.controllers', [])
     });
   };
   
+  $scope.test3 = function() {
+    GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
+      $http.post("http://192.168.1.8:4999", pos).success(function(data, status, headers, config) {
+        alert(data);
+      }).error(function(data, status, headers, config) {
+        alert(status);
+      });
+    });
+  };
+  
   // Go to the settings state
   $scope.openSettings = function() {    
     // This function was accessed by sliding out the left menu, so close it back up.
