@@ -54,10 +54,13 @@ angular.module('starter.controllers')
 	};
 	
 	$scope.deleteClicked = function() {
-		// Delete the database
+		/*// Delete the database
 		DbService.deleteDatabase(window);
 		
 		// Recreate the database
+		DbService.createTables(window);*/
+		
+		DbService.clearDatabase(window);
 		DbService.createTables(window);
 	};
 });

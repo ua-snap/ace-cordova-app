@@ -25,6 +25,12 @@ angular.module('starter.services')
 			dbHandler.deleteDb();
 		},
 		
+		clearDatabase: function(window) {
+			var dbHandler = new DbHandler("ace.db", window);
+			var clearString = "DROP TABLE IF EXISTS reports; DROP TABLE IF EXISTS positions;";
+			dbHandler.executeSql(clearString);
+		},
+		
 		// Insert position into database
 		insertPosition: function(pos, window, callback) {
 			var dbHandler = new DbHandler("ace.db", window);
@@ -55,6 +61,21 @@ angular.module('starter.services')
 			}, function(error) {
 				alert(error.message);
 			}, {timeout: 15000, enableHighAccuracy: true})
+		},
+		
+		insertReportAndPosition: function(report, position, window) {
+			var dbHandler = new DbHandler("ace.db", window);
+			var self = this;
+			self.insertPosition(position, window, function(res) {
+				var posId = res.insertId;
+				var keys = ["positionId", "cloudCover", "precipitation", "visibility", "pressureTendency", "pressureValue", "temperatureValue", "temperatureUnits", "windValue", "windDirection", "notes", "camera", "other"];
+			
+				var values = [posId, report.cloudCover, report.precipitation, report.visibility, report.pressureTendency, report.pressureValue, report.temperatureValue, report.temperatureUnits, report.windValue, report.windDirection, report.notes, report.camera, report.other];
+		
+				dbHandler.insertInto("reports", keys, values, function(res) {
+					$ionicLoading.show({template: 'Report Sent Successfully (saved to db)', noBackdrop: true, duration: 1500});
+				});
+			});	
 		},
 		
 		getAllPositionLogs: function(window, callback) {
