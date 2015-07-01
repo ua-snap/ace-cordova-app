@@ -94,6 +94,7 @@ angular.module('starter.controllers')
 		$scope.gpsSettings.timeout = settings.gps.timeout;
 		$scope.gpsSettings.enablePositionTracking.checked= settings.gps.positionTrackingEnabled;
 		$scope.gpsSettings.trackingInterval = settings.gps.trackingInterval;
+		$scope.gpsSettings.historyPointNum = settings.gps.displayedHistoryPoints;
 	});
 	
 	// Function toggles sliding the left side-menu out and back in

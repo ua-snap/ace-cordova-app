@@ -325,7 +325,7 @@ angular.module('starter.controllers')
         var posArr = DbService.getRecentPositionLogs(window, settings.gps.displayedHistoryPoints, function(res) {
             var latLngArr = DbService.convertPositionArrayToLatLng(res.rows);
             historyLine = new google.maps.Polyline({
-                path: latLngArr,
+                path: latLngArr.reverse(),
                 strokeColor: '#FF0000',
                 strokeOpacity: 1.0,
                 strokeWeight: 2                

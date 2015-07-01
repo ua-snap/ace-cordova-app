@@ -9,6 +9,7 @@ angular.module('starter.services')
 	var mFollowPosition = false;
 	var mTimerId;
 	var mTrackingCallback;
+	var lastPos = null;
 	
 	return {		
 		// Track the position of the device and update mPos with each available update
@@ -17,6 +18,7 @@ angular.module('starter.services')
 			mWatchCallback = watchSuccessCallback;
 			var settings = SettingsService.getSettings(window);
 			mWatchId = geolocationObj.watchPosition(function(pos) {
+					lastPos = mPos;
 					mPos = pos;
 					if(mWatchCallback)
 					{
@@ -128,9 +130,9 @@ angular.module('starter.services')
 			
 			// Set the interval function
 			mTimerId = setInterval(function() {
-				self.getCurrentPosition(navigator.geolocation, function(position) {				
+				self.getCurrentPosition(navigator.geolocation, function(position) {			
 					
-					if(position != null)
+					if((position !== null) && (position !== lastPos))
 					{
 						DbService.insertPosition(position, window);	
 					
