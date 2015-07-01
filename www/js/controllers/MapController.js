@@ -13,7 +13,7 @@ angular.module('starter.controllers')
 /**
  * @class MapController
  */
-.controller('MapController', function($scope, $ionicSideMenuDelegate, $ionicPopover, GeoService, DbService) {
+.controller('MapController', function($scope, $ionicSideMenuDelegate, $ionicPopover, GeoService, DbService, SettingsService) {
     // Set up menu options popover
     // Create popover from template and save to $scope variable
       $ionicPopover.fromTemplateUrl('templates/popovers/map-options.html', {
@@ -87,7 +87,8 @@ angular.module('starter.controllers')
         $scope.saveMapState();
         
         // Disable watching position
-        GeoService.disableWatchPosition(navigator.geolocation);
+        //GeoService.disableWatchPosition(navigator.geolocation);
+        GeoService.setWatchCallback(null);
     });
     
     $scope.saveMapState = function() {
@@ -155,7 +156,8 @@ angular.module('starter.controllers')
         $scope.map = map;
         
         // Start watching position
-        GeoService.enableWatchPosition(navigator.geolocation, updateMarker);
+        //GeoService.enableWatchPosition(navigator.geolocation, updateMarker);
+        GeoService.setWatchCallback(updateMarker);
         
         // Check if history was displayed
         if($scope.mapState.displayHistory !== null)
@@ -234,8 +236,11 @@ angular.module('starter.controllers')
       {
           if(historyLine)
           {
-            // remove the history line
-            historyLine.setMap(null);    
+              // Remove tracking callback (positions will still be recorded)
+              GeoService.setTrackingCallback(null);
+                
+              // remove the history line
+              historyLine.setMap(null);    
           }          
       }
     };
@@ -307,13 +312,17 @@ angular.module('starter.controllers')
     // Add one point to the history line
     $scope.historyLineAddPoint = function(pos) {
         var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-        var path = historyLine.getPath();
-        path.push(latlng);
+        if(historyLine)
+        {
+            var path = historyLine.getPath();
+            path.push(latlng);    
+        }        
     };
     
     $scope.drawHistoryLine = function() {
-        // Grab last 100 position entries
-        var posArr = DbService.getRecentPositionLogs(window, 100, function(res) {
+        // Grab last position entries
+        var settings = SettingsService.getSettings(window);
+        var posArr = DbService.getRecentPositionLogs(window, settings.gps.displayedHistoryPoints, function(res) {
             var latLngArr = DbService.convertPositionArrayToLatLng(res.rows);
             historyLine = new google.maps.Polyline({
                 path: latLngArr,

@@ -88,25 +88,16 @@ angular.module('starter.services')
 			}
 			else
 			{
-				// If not currently watching position, request a new position
-				var settings = SettingsService.getSettings(window);
-				geolocationObj.getCurrentPosition(function(pos) {
+				// If not currently watching position, start a watch
+				self.enableWatchPosition(geolocationObj, function(position) {
+					// Make the callback only run once
+					self.setWatchCallback(null);
 					if(successCallback)
 					{
-						successCallback.call(this, pos);	
-					}					
-				}, function(error) {
-					if(errorCallback)
-					{
-						errorCallback.call(this, error);
+						successCallback.call(this, position);
 					}
-					else
-					{
-						self.gpsErrorHandler(error);	
-					}					
-				}, {timeout: settings.gps.timeout * 1000, enableHighAccuracy: settings.gps.highAccuracy});
-			}
-			
+				});
+			}			
 		},
 		
 		// Common GPS error handler
@@ -137,54 +128,17 @@ angular.module('starter.services')
 			
 			// Set the interval function
 			mTimerId = setInterval(function() {
-				self.getCurrentPosition(navigator.geolocation, function(position) {
-					if(mPos && position)
-					{
-						if((mPos.coords.latitude !== position.coords.latitude) || mPos.coords.longitude !== position.coords.longitude)
-						{
-							var breakpointspot = 0;
-						}
-					}	
-
-					var shouldRecord = false;
+				self.getCurrentPosition(navigator.geolocation, function(position) {				
 					
-
-					// If no prior measurement exists, record
-					if(mPos === null)
-					{
-						shouldRecord = true;
-					}
-					// If position reading is null (shouldn't be), don't record
-					else if(position === null)
-					{
-						shouldRecord = false;
-					}
-					// If new measurement is more accurate, record
-					else if(position.coords.accuracy < mPos.coords.accuracy)
-					{
-						shouldRecord = true;
-					}
-					// Finally, if change is larger than known possible error, record
-					else
-					{
-						// Check difference in points
-						var difference = self.getDistanceHaversine(mPos, position);
-						if(difference > position.coords.accuracy)
-						{
-							shouldRecord = true;
-						}
-					}					
-					 
-					mPos = position;
-					if(shouldRecord)
+					if(position != null)
 					{
 						DbService.insertPosition(position, window);	
-						
+					
 						if(mTrackingCallback)
 						{
 							mTrackingCallback.call(this, mPos);	
 						}
-					}
+					}					
 				});			     
 			}, mTrackingInterval * 1000);
 		},

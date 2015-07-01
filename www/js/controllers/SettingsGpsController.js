@@ -30,7 +30,8 @@ angular.module('starter.controllers')
 		enablePositionTracking: {
 			checked: true
 		},
-		trackingInterval: 1
+		trackingInterval: 1,
+		historyPointNum: 100
 	};
 	
 	$scope.enableHighAccuracy = function() {		
@@ -72,6 +73,12 @@ angular.module('starter.controllers')
 			GeoService.disableTracking();
 			GeoService.enableTracking(settings.gps.trackingInterval, null);
 		}
+	};
+	
+	$scope.histPointNumChanged = function() {
+		var settings = SettingsService.getSettings(window);
+		settings.gps.displayedHistoryPoints = $scope.gpsSettings.historyPointNum;
+		SettingsService.updateSettings(window, settings);	
 	};
 	
   	// Adding beforeEnter event listener.  This function will be called just before every view load,

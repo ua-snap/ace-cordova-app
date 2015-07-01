@@ -5,6 +5,7 @@ var Settings = function() {
 		timeout: 10,
 		highAccuracy: true,
 		positionTrackingEnabled: true,
-		trackingInterval: 1
+		trackingInterval: 1,
+		displayedHistoryPoints: 100
 	};
 };

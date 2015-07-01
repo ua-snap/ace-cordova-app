@@ -80,7 +80,7 @@ DbHandler.prototype.selectNum = function(tableName, numResults, orderByCol, asce
 	var sqlString = "SELECT * FROM " + tableName + " ORDER BY " + orderByCol;
 	if(ascending)
 	{
-		sqlString = sqlString + " ASC";
+		sqlString = sqlString + " ASC ";
 	} 	
 	else 
 	{

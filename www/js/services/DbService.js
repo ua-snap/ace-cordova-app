@@ -91,7 +91,7 @@ angular.module('starter.services')
 		
 		getRecentPositionLogs: function(window, numLogs, callback) {
 			var dbHandler = new DbHandler("ace.db", window);
-			dbHandler.selectNum("positions", numLogs, "timestamp", false, callback);	
+			dbHandler.selectNum("positions", numLogs, "timestamp", true, callback);	
 		},
 		
 		convertPositionArrayToLatLng: function(positions) {

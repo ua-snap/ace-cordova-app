@@ -13,6 +13,10 @@
 			<label class="item item-input">
 				<span class="input-label">Position Tracking Interval (s)</span>
 				<input type="tel" ng-model="gpsSettings.trackingInterval" ng-change="trackingIntervalChanged()">
+			</label>  
+      <label class="item item-input">
+				<span class="input-label">Displayed Position History Points</span>
+				<input type="tel" ng-model="gpsSettings.historyPointNum" ng-change="histPointNumChanged()">
 			</label>    
     </ion-list>
   </ion-content>
