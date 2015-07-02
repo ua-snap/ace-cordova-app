@@ -46,7 +46,7 @@ angular.module('starter.controllers')
      * @throws none
      */
     $scope.login = function() {
-        LoginService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
+        LoginService.loginUser($scope.data.username, $scope.data.password, function(data, status, headers, config) {
             // Save the username locally
             var storageHandler = new LocalStorageUtil(window);
             storageHandler.set("username", $scope.data.username);
@@ -57,7 +57,7 @@ angular.module('starter.controllers')
             // Re-enable the ability to drag the side menu out (disabled on 
             // previous logouts)
             $ionicSideMenuDelegate.canDragContent(true);
-        }).error(function(data) {
+        }, function(data, status, headers, config) {
             // Notify the user of the failed login and do not login
             $ionicPopup.alert({
                 title: 'Login failed!',

@@ -49,6 +49,21 @@ angular.module('starter.controllers', [])
     // Turn off any active position tracking
     GeoService.disableTracking();
     
+    // Server logout call
+    // Set up authorization header
+    var config = {
+      headers: {
+        authorization: $http.defaults.headers.common['X-Auth-Token']
+      }
+    };
+    
+    $http.post("http://192.168.1.2:3000/api/Users/logout", {}, config).success(function(data, status, headers, config) {
+      // Clear out user access token
+      $http.defaults.headers.common['X-Auth-Token'] = undefined;
+    }).error(function(data, status, headers, config) {
+      alert(status);
+    });
+    
     // Kick the user back out to the login screen
     $state.go('login');
   };
