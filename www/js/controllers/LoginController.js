@@ -14,12 +14,11 @@ angular.module('starter.controllers')
  * @class LoginController
  * @constructor
  */
-.controller('LoginController', function($scope, LoginService, AuthService, $ionicPopup, $state, $ionicSideMenuDelegate) {
+.controller('LoginController', function($scope, LoginService, LocalStorageService, AuthService, $ionicPopup, $state, $ionicSideMenuDelegate) {
 
     // This function will be called every time that the login view
     // is displayed, so check for auser already logged in
-    var localStorageHandler = new LocalStorageUtil(window);
-    var oldUsername = localStorageHandler.get("username", "");
+    var oldUsername = LocalStorageService.getItem("username", "", window);
     
     // If a user was logged in, skip the login screen and take them 
     // directly to the default view (report view)
@@ -52,8 +51,7 @@ angular.module('starter.controllers')
             $scope.data.password = "";
             
             // Save the username locally
-            var storageHandler = new LocalStorageUtil(window);
-            storageHandler.set("username", $scope.data.username);
+            LocalStorageService.setItem("username", $scope.data.username, window);
             
             // Move the user to the default view (tab.report)
             $state.go('tab.report');

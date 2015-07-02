@@ -13,7 +13,7 @@
   */
 angular.module('starter.controllers')
 
-.controller('BrowseReportsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, DbService, DataShareService) {
+.controller('BrowseReportsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, LocalStorageService, DbService, DataShareService) {
   
   // Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
@@ -52,8 +52,7 @@ angular.module('starter.controllers')
 	// of simple back navigation using the nav stack.
 	$scope.goBack = function() {
 		// Get the previous state (saved in the AppController toggleLeft() function)
-		var localHandler = new LocalStorageUtil(window);
-		var previousState = localHandler.get('previousState', null);
+		var previousState = LocalStorageService.getItem('previousState', null, window);
 		
 		// If a previous state exists, navigate back to it
 		if(previousState)

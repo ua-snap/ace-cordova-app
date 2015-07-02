@@ -13,7 +13,7 @@ angular.module('starter.controllers', [])
 /**
  * @class AppController
  */
-.controller('AppController', function($scope, AuthService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
+.controller('AppController', function($scope, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
   
   // Function toggles sliding the left side-menu out and back in
   /**
@@ -154,8 +154,7 @@ angular.module('starter.controllers', [])
     $ionicSideMenuDelegate.toggleLeft();
     
     // Save previous state (tab)
-    var localHandler = new LocalStorageUtil(window);    
-    localHandler.set('previousState', $state.current.name);
+    LocalStorageService.setItem('previousState', $state.current.name, window);
     
     // Perform the navigation using the $state object
     $state.go('settings');
