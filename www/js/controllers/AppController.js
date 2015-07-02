@@ -13,7 +13,7 @@ angular.module('starter.controllers', [])
 /**
  * @class AppController
  */
-.controller('AppController', function($scope, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
+.controller('AppController', function($scope, AuthService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
   
   // Function toggles sliding the left side-menu out and back in
   /**
@@ -26,7 +26,7 @@ angular.module('starter.controllers', [])
     $ionicSideMenuDelegate.toggleLeft();
   };
   
-  // Function logs out the current user by removing them from local storage
+  // Function logs out the current user 
   /**
    * @method logout
    * @description Function logs out the current user by removing them from local storage
@@ -34,39 +34,29 @@ angular.module('starter.controllers', [])
    * @throws none
    */
   $scope.logout = function() {
-    // Grab a new instance of LocalStorageUtil
-    var localStorageHandler = new LocalStorageUtil(window);
+      // Make server logout call
+      AuthService.logoutUser(function(data, status, headers, config) {
+          // Success      
+          // This function was accessed by sliding out the left menu, so close it back up.
+        $ionicSideMenuDelegate.toggleLeft();
     
-    // Clear the username variable (where the current user's identity is stored)
-    localStorageHandler.set("username", "");
+        // Disable dragging the left-menu (since we are about to switch to the login screen)
+        $ionicSideMenuDelegate.canDragContent(false);
     
-    // This function was accessed by sliding out the left menu, so close it back up.
-    $ionicSideMenuDelegate.toggleLeft();
-    
-    // Disable dragging the left-menu (since we are about to switch to the login screen)
-    $ionicSideMenuDelegate.canDragContent(false);
-    
-    // Turn off any active position tracking
-    GeoService.disableTracking();
-    
-    // Server logout call
-    // Set up authorization header
-    var config = {
-      headers: {
-        authorization: $http.defaults.headers.common['X-Auth-Token']
-      }
+        // Turn off any active position tracking
+        GeoService.disableTracking();
+        
+        // Stop watching position
+        GeoService.disableWatchPosition(navigator.geolocation);
+        
+        // Kick the user back out to the login screen
+        $state.go('login');
+      
+      }, function(data, status, headers, config) {
+          // Error
+          alert(status);
+      });
     };
-    
-    $http.post("http://192.168.1.2:3000/api/Users/logout", {}, config).success(function(data, status, headers, config) {
-      // Clear out user access token
-      $http.defaults.headers.common['X-Auth-Token'] = undefined;
-    }).error(function(data, status, headers, config) {
-      alert(status);
-    });
-    
-    // Kick the user back out to the login screen
-    $state.go('login');
-  };
   
   // Function provides test access
   $scope.test = function() {
