@@ -12,7 +12,8 @@ DbHandler.prototype.deleteDb = function() {
 DbHandler.prototype.insertInto = function(tableName, keys, values, callback) {
 	var self = this;
 	this.mDb.transaction(function(tx) {
-		var sqlString = "INSERT INTO " + tableName + " (";
+		var sqlString = "INSERT OR IGNORE INTO " + tableName + " (";
+		
 		for(var i = 0; i < keys.length; i++)
 		{
 			if(i !== (keys.length - 1))

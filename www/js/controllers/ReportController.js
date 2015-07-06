@@ -15,7 +15,7 @@ angular.module('starter.controllers')
  * @description Controller for the Report view.  This controller contains all the
  * UI functionality for entering and saving reports.
  */
-.controller('ReportController', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
+.controller('ReportController', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
   
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
@@ -33,6 +33,18 @@ angular.module('starter.controllers')
     {
       $scope.importReport(template);
     }
+    
+    // Turn tracking back on (if necessary)
+    var settings = SettingsService.getSettings(window);
+    if(!GeoService.isTrackingEnabled() && settings.gps.positionTrackingEnabled)
+    {
+        GeoService.enableTracking(settings.gps.trackingInterval);
+    }
+    else
+    {
+        GeoService.disableTracking();
+    }
+    
   });
   
   /**

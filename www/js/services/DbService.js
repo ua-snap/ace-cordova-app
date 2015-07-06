@@ -19,7 +19,7 @@ angular.module('starter.services')
 			createString = "CREATE TABLE IF NOT EXISTS positions (id integer primary key, userId integer, timestamp integer, latitude real, longitude real, accuracy data_num, altitude real, altitudeAccuracy real, heading real, speed real); ";
 			dbHandler.executeSql(createString);	
 			
-			createString = "CREATE TABLE IF NOT EXISTS users (id integer primary key, username text, email text, groupId integer)";
+			createString = "CREATE TABLE IF NOT EXISTS users (id integer primary key, username text unique, email text, groupId integer)";
 			dbHandler.executeSql(createString);
 		},
 		

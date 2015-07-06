@@ -148,6 +148,18 @@ angular.module('starter.services')
 		// Turns off reporting user's location
 		disableTracking: function() {
 			clearInterval(mTimerId);	
+			mTimerId = null;
+		},
+		
+		isTrackingEnabled: function() {
+			if(mTimerId && mWatchId)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		},
 		
 		// Set the report callback
