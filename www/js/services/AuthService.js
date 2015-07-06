@@ -1,6 +1,6 @@
 angular.module('starter.services')
 
-.service('AuthService', function($http, DbService, LocalStorageService, User) {
+.service('AuthService', function($http, DbService, LocalStorageService, User, Group, AsyncTaskService) {
 	return {
 		loginUser: function(name, pw, successCallback, errorCallback) {
             
@@ -11,9 +11,20 @@ angular.module('starter.services')
             
             User.login(credentials, function(value, responseHeaders) {
                 // success 
-                // Save username and userId
-                LocalStorageService.setItem("userId", value.user.userId, window);
-                LocalStorageService.setItem("userName", value.user.userName, window);
+                // Save user data
+                LocalStorageService.setItem("currentUser", value.user, window);
+                
+                // Fill the user's table with all group member's data
+                Group.groupId({id: value.user.groupId}, function(value, responseHeaders) {
+                    // Group members in "value"
+                    if(value)
+                    {
+                        for(var i = 0; i < value.length; i++)
+                        {
+                            DbService.insertUser(value[i], window, null);
+                        }
+                    }                 
+                });
                 
                 // execute callback
                 if(successCallback)

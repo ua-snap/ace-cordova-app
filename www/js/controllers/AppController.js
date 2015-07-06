@@ -13,7 +13,7 @@ angular.module('starter.controllers', [])
 /**
  * @class AppController
  */
-.controller('AppController', function($scope, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
+.controller('AppController', function($scope, Group, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
   
   // Function toggles sliding the left side-menu out and back in
   /**
@@ -139,22 +139,20 @@ angular.module('starter.controllers', [])
   };
   
   $scope.test3 = function() {
-      var userId = LocalStorageService.getItem("userId", null, window);
+      /*var user = LocalStorageService.getItem("currentUser", null, window);
       
-      var config = {
-          headers: {
-              Authorization: $http.defaults.headers.common['access_token']
-          }
-      };
-      var reqString = "http://192.168.1.2:3000/api/Users/:id?access_token=" + config.headers.Authorization
-     
+      Group.groupId({id: user.groupId}, function(value, responseHeaders) {
+          var i = 0;
+          i++;
+      }, function(httpResponse) {
+          var i = 0; i++;
+      });*/
+      DbService.getAllUsers(window, function(res) {
+         var i = 0;
+         i = res; 
+         i = null;
+      });
       
-    // Grab the current user's information
-    $http.get(reqString, {id: userId}, config).success(function(data, status, headers, config) {
-        alert(data);
-    }).error(function(data, status, headers, config) {
-        alert(data);
-    });
   };
   
   // Go to the settings state

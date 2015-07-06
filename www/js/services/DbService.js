@@ -136,6 +136,12 @@ angular.module('starter.services')
 				latLngArr.push(new google.maps.LatLng(positions.item(i).latitude, positions.item(i).longitude));
 			}
 			return latLngArr;
+		},
+		
+		getAllUsers: function(window, callback) {
+			var sqlString = "SELECT * FROM users";
+			var dbHandler = new DbHandler("ace.db", window);
+			dbHandler.executeSql(sqlString, callback);
 		}
 	};
 });
