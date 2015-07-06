@@ -13,11 +13,14 @@ angular.module('starter.services')
 			var createString = "";
 			
 			// Create reports table
-			createString = createString + "CREATE TABLE IF NOT EXISTS reports (id integer primary key, positionId integer, cloudCover text, precipitation text, visibility text, pressureTendency text, pressureValue text, temperatureValue text, temperatureUnits text, windValue text, windUnits text, windDirection text, notes text, camera text, other text); ";
+			createString = createString + "CREATE TABLE IF NOT EXISTS reports (id integer primary key, positionId integer, userId integer, cloudCover text, precipitation text, visibility text, pressureTendency text, pressureValue text, temperatureValue text, temperatureUnits text, windValue text, windUnits text, windDirection text, notes text, camera text, other text); ";
 			dbHandler.executeSql(createString);
 			
-			createString = "CREATE TABLE IF NOT EXISTS positions (id integer primary key, timestamp integer, latitude real, longitude real, accuracy data_num, altitude real, altitudeAccuracy real, heading real, speed real); ";
+			createString = "CREATE TABLE IF NOT EXISTS positions (id integer primary key, userId integer, timestamp integer, latitude real, longitude real, accuracy data_num, altitude real, altitudeAccuracy real, heading real, speed real); ";
 			dbHandler.executeSql(createString);	
+			
+			createString = "CREATE TABLE IF NOT EXISTS users (id integer primary key, username text, email text, groupId integer)";
+			dbHandler.executeSql(createString);
 		},
 		
 		deleteDatabase: function(window) {
@@ -27,7 +30,7 @@ angular.module('starter.services')
 		
 		clearDatabase: function(window) {
 			var dbHandler = new DbHandler("ace.db", window);
-			var clearString = "DROP TABLE IF EXISTS reports; DROP TABLE IF EXISTS positions;";
+			var clearString = "DROP TABLE IF EXISTS reports; DROP TABLE IF EXISTS positions; DROP TABLE IF EXISTS users";
 			dbHandler.executeSql(clearString);
 		},
 		
@@ -40,6 +43,17 @@ angular.module('starter.services')
 			var values = [pos.timestamp, pos.coords.speed, pos.coords.heading, pos.coords.altitudeAccuracy, pos.coords.altitude, pos.coords.accuracy, pos.coords.longitude, pos.coords.latitude];
 			
 			dbHandler.insertInto("positions", keys, values, callback);
+		},
+		
+		// Insert user into database
+		insertUser: function(user, window, callback) {
+			var dbHandler = new DbHandler("ace.db", window);
+			
+			var keys = ["username", "email", "groupId"];
+			
+			var values = [user.username, user.email, user.groupId];
+			
+			dbHandler.insertInto("users", keys, values, callback);
 		},
 		
 		// Insert report into database

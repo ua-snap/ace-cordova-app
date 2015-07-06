@@ -319,6 +319,7 @@ angular.module('starter.controllers')
         }        
     };
     
+    // Draws a line on the map where the user has traveled
     $scope.drawHistoryLine = function() {
         // Grab last position entries
         var settings = SettingsService.getSettings(window);

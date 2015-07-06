@@ -35,7 +35,7 @@ angular.module('starter.controllers', [])
    */
   $scope.logout = function() {
       // Make server logout call
-      AuthService.logoutUser(function(data, status, headers, config) {
+      AuthService.logoutUser(function(value, responseHeaders) {
           // Success      
           // This function was accessed by sliding out the left menu, so close it back up.
         $ionicSideMenuDelegate.toggleLeft();
@@ -52,9 +52,9 @@ angular.module('starter.controllers', [])
         // Kick the user back out to the login screen
         $state.go('login');
       
-      }, function(data, status, headers, config) {
-          // Error
-          alert(status);
+      }, function(data, httpResponse) {
+          // Error (already alerted in AuthService)
+          //alert(httpResponse.data);
       });
     };
   
@@ -139,12 +139,21 @@ angular.module('starter.controllers', [])
   };
   
   $scope.test3 = function() {
-    GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
-      $http.post("http://192.168.1.8:4999", pos).success(function(data, status, headers, config) {
+      var userId = LocalStorageService.getItem("userId", null, window);
+      
+      var config = {
+          headers: {
+              Authorization: $http.defaults.headers.common['access_token']
+          }
+      };
+      var reqString = "http://192.168.1.2:3000/api/Users/:id?access_token=" + config.headers.Authorization
+     
+      
+    // Grab the current user's information
+    $http.get(reqString, {id: userId}, config).success(function(data, status, headers, config) {
         alert(data);
-      }).error(function(data, status, headers, config) {
-        alert(status);
-      });
+    }).error(function(data, status, headers, config) {
+        alert(data);
     });
   };
   

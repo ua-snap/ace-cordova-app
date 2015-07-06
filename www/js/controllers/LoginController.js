@@ -14,7 +14,7 @@ angular.module('starter.controllers')
  * @class LoginController
  * @constructor
  */
-.controller('LoginController', function($scope, LoginService, LocalStorageService, AuthService, $ionicPopup, $state, $ionicSideMenuDelegate) {
+.controller('LoginController', function($scope, LocalStorageService, AuthService, $ionicPopup, $state, $ionicSideMenuDelegate) {
 
     // This function will be called every time that the login view
     // is displayed, so check for auser already logged in
@@ -45,13 +45,10 @@ angular.module('starter.controllers')
      * @throws none
      */
     $scope.login = function() {
-        AuthService.loginUser($scope.data.username, $scope.data.password, function(data, status, headers, config) {
+        AuthService.loginUser($scope.data.username, $scope.data.password, function(user) {
             // Clear out username and password
             $scope.data.username = "";
             $scope.data.password = "";
-            
-            // Save the username locally
-            LocalStorageService.setItem("username", $scope.data.username, window);
             
             // Move the user to the default view (tab.report)
             $state.go('tab.report');
@@ -67,7 +64,7 @@ angular.module('starter.controllers')
             // Notify the user of the failed login and do not login
             $ionicPopup.alert({
                 title: 'Login failed!',
-                template: 'Please check your credentials!'
+                template: 'Please check your credentials.'
             });
         });
     };
