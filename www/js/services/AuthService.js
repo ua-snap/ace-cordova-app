@@ -1,6 +1,6 @@
 angular.module('starter.services')
 
-.service('AuthService', function($http, DbService, LocalStorageService, User, Group, AsyncTaskService) {
+.service('AuthService', function($http, DbService, LocalStorageService, User, Group) {
 	return {
 		loginUser: function(name, pw, successCallback, errorCallback) {
             
