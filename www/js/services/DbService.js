@@ -277,7 +277,7 @@ angular.module('starter.services')
 		  * @throws none
 		  */
 		 getUnuploadedReportsWithPositions: function(window, callback) {
-			var sqlString = "SELECT * FROM reports INNER JOIN positions ON reports.positionId=positions.id WHERE reports.uploaded=0;"
+			var sqlString = "SELECT reports.id as reportId, positions.id as positionId, * FROM reports INNER JOIN positions ON reports.positionId=positions.id WHERE reports.uploaded=0;"
 			var dbHandler = new DbHandler("ace.db", window);
 			dbHandler.executeSql(sqlString, callback); 
 		 },
