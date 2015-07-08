@@ -10,7 +10,8 @@ angular.module('starter.services')
  */
 .service('UploadService', function(DbService, Weather_report, LocalStorageService, Position) {
 	var mTimerId;
-	var mRows;
+	var mReportRows;
+	var mPositionRows;
 	
 	return {
 		enableAutoUpload: function(interval) {
@@ -26,20 +27,14 @@ angular.module('starter.services')
 		},
 		
 		uploadPositionsAndMark: function() {
-	
-		},
-		
-		
-		uploadReportsAndMark: function() {		
 			var self = this;
-			DbService.getUnuploadedReportsWithPositions(window, function(res) {		
-				self.mRows = res.rows;
-				for(var i = 0; i < res.rows.length; i++)
+			DbService.getUnuploaded("positions", window, function(res) {
+				// Save the resulting rows to a variable in the service scope (to access later in callbacks)
+				self.mPositionRows = res.rows;
+				
+				for(var i = 0; i < self.mPositionRows.length; i++)
 				{
-					// Grab a reference to the current item
-					// Each row will contain the joined results of a query on the reports and positions table, with
-					// some aliases to separate out the id's
-					var row = self.mRows.item(i);
+					var row = self.mPositionRows.item(i);
 					
 					// get the position object
 					var position = {
@@ -56,10 +51,56 @@ angular.module('starter.services')
 					(function(j) {
 						// Execute position create call (Loopback api)
 						Position.create(position, function(value, responseHeaders) {
-							var row2 = self.mRows.item(j);
+							var row2 = self.mPositionRows.item(j);
+							
+							// Mark position as uploaded
+							DbService.markUploaded([row2.positionId], "positions", window);
+						}, function(httpResponse) {
+							alert(httpResponse.data.error.message);
+						});
+					})(i);
+				}
+				
+			});
+		},
+		
+		/**
+		 * Function uploads all unuploaded reports and their associated positions.
+		 * 
+		 * @method uploadReportsAndMark
+		 * @return void
+		 * @throws none
+		 */
+		uploadReportsAndMark: function() {		
+			var self = this;
+			DbService.getUnuploadedReportsWithPositions(window, function(res) {		
+				self.mReportRows = res.rows;
+				for(var i = 0; i < res.rows.length; i++)
+				{
+					// Grab a reference to the current item
+					// Each row will contain the joined results of a query on the reports and positions table, with
+					// some aliases to separate out the id's
+					var row = self.mReportRows.item(i);
+					
+					// get the position object
+					var position = {
+						userId: row.userId,
+						latlng: {lat: row.latitude, lng: row.longitude},
+						timestamp: new Date(row.timestamp),
+						accuracy: row.accuracy,
+						altitude: row.altitude,
+						altitudeAccuracy: row.altitudeAccuracy,
+						heading: row.heading,
+						speed: row.speed	
+					};
+					
+					(function(j) {
+						// Execute position create call (Loopback api)
+						Position.create(position, function(value, responseHeaders) {
+							var row2 = self.mReportRows.item(j);
 							
 							// Mark positions as uploaded
-							DbService.markUploaded([row.positionId], "positions", window);
+							DbService.markUploaded([row2.positionId], "positions", window);
 		
 							// Get returned positionId
 							var posId = value.id;
@@ -86,7 +127,7 @@ angular.module('starter.services')
 							(function(k) {
 								// execute weather report create call (Loopback api)
 								Weather_report.create(report, function(value, responseHeaders) {
-									var row3 = self.mRows.item(k);
+									var row3 = self.mReportRows.item(k);
 									
 									// success, mark local copy as uploaded
 									DbService.markUploaded([row3.reportId], "reports", window);
