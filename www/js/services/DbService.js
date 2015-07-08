@@ -9,7 +9,7 @@ angular.module('starter.services')
 		/**
 		 * @method openDatabase
 		 * @description Opens the default ACE database 
-		 * @param {htmlDocument} window The window object from the current scope
+		 * @param {Window} window The window object from the current scope
 		 * @return void
 		 * @throws none
 		 */
@@ -20,7 +20,7 @@ angular.module('starter.services')
 		/**
 		 * @method createTables
 		 * @description Creates all required tables in the ACE database using "CREATE TABLE IF NOT EXISTS"
-		 * @param {htmlDocument} window The window object from the current scope
+		 * @param {Window} window The window object from the current scope
 		 * @return void
 		 * @throws none
 		 */
@@ -44,7 +44,7 @@ angular.module('starter.services')
 		/**
 		 * @method deleteDatabase
 		 * @description Performs a hard delete on the ACE database (may cause errors, use #clearDatabase() instead)
-		 * @param {htmlDocument} window The window object from the current scope
+		 * @param {Window} window The window object from the current scope
 		 * @return void
 		 * @throws none
 		 */
@@ -56,7 +56,7 @@ angular.module('starter.services')
 		/**
 		 * @method clearDatabase
 		 * @description Drops all tables from the ACE database, and then re-creates them by calling #createTables()
-		 * @param {htmlDocument} window The window object from the current scope
+		 * @param {Window} window The window object from the current scope
 		 * @return void
 		 * @throws none
 		 */
@@ -72,7 +72,7 @@ angular.module('starter.services')
 		 * @description Inserts the provided "pos" position argument into the ACE database
 		 * @param {Position} pos The position (either the standard object returned from the HTML navigator.geolocation functions
 		 * 		or a {{#crossLink "Position"}}{{/crossLink}} object)
-		 * @param {htmlDocument} window The window object from the current scope
+		 * @param {Window} window The window object from the current scope
 		 * @param {functon} callback Success callback executed on a successful insert.  Recieves the "res" (result) object that 
 		 * 		contains the id of the just inserted position.
 		 * @return void
@@ -83,7 +83,7 @@ angular.module('starter.services')
 			
 			var keys = ["timestamp", "userId", "speed", "heading", "altitudeAccuracy", "altitude", "accuracy", "longitude", "latitude", "uploaded"];
 			
-			var userId = LocalStorageService.getItem("userId", null, window);
+			var userId = LocalStorageService.getItem("currentUser", null, window).id;
 			
 			var values = [pos.timestamp, userId, pos.coords.speed, pos.coords.heading, pos.coords.altitudeAccuracy, pos.coords.altitude, pos.coords.accuracy, pos.coords.longitude, pos.coords.latitude, 0];
 			
@@ -94,7 +94,7 @@ angular.module('starter.services')
 		 * @method insertUser
 		 * @description Inserts the provided user into the ACE database
 		 * @param {User} user The user object to insert, containing a username, email, and groupId
-		 * @param {htmlDocument} window The window object from the current scope
+		 * @param {Window} window The window object from the current scope
 		 * @param {function} callback Success callback executed on a successful insert.  Recieves the "res" (result) object that 
 		 * 		contains the id of the just inserted position.
 		 * @return void
@@ -111,39 +111,6 @@ angular.module('starter.services')
 		},
 		
 		/**
-		 * Inserts the provided report into the ACE database.  First, requests the current location using {{crossLink GeoService/getCurrentPosition}}{{/crossLink}.
-		 * Then, in the callback of a successful position returned, inserts that position into the database using {{crossLink DbService/insertPosition}}{{/crossLink}}.
-		 * In the success callback of that function, the original report parameter is inserted into the database.
-		 * 
-		 * @method insertReport
-		 * @param {WeatherReport} The report object to insert
-		 * @param {htmlDocument} window The window object from the current scope
-		 * @return void
-		 * @throws none
-		 */
-		/*insertReport: function(report, window) {
-			var dbHandler = new DbHandler("ace.db", window);
-			var self = this;		
-			GeoService.getCurrentLocation(navigator.geolocation, function(pos) {
-				self.insertPosition(pos, window, function(res) {
-					var posId = res.insertId;
-					
-					var userId = LocalStorageService.getItem("userId", null, window);
-					
-					var keys = ["positionId", "userId", "cloudCover", "precipitation", "visibility", "pressureTendency", "pressureValue", "temperatureValue", "temperatureUnits", "windValue", "windDirection", "notes", "camera", "other", "uploaded"];
-			
-					var values = [posId, userId, report.cloudCover, report.precipitation, report.visibility, report.pressureTendency, report.pressureValue, report.temperatureValue, report.temperatureUnits, report.windValue, report.windDirection, report.notes, report.camera, report.other, 0];
-			
-					dbHandler.insertInto("reports", keys, values, function(res) {
-						$ionicLoading.show({template: 'Report Sent Successfully (saved to db)', noBackdrop: true, duration: 1500});
-					});
-				})
-			}, function(error) {
-				alert(error.message);
-			});			
-		},*/
-		
-		/**
 		 * Function inserts a report and position simultaneously.  Use this function if you already have a position and want to insert
 		 * a report marked to that position.
 		 * 
@@ -151,7 +118,7 @@ angular.module('starter.services')
 		 * @param {WeatherReport} report The report object to insert into the default ACE db.
 		 * @param {Position} pos The position (either the standard object returned from the HTML navigator.geolocation functions
 		 * 		or a {{#crossLink "Position"}}{{/crossLink}} object)
-		 * @param {htmlDocument} window The window object from the current scope
+		 * @param {Window} window The window object from the current scope
 		 * @return void
 		 * @throws none
 		 */
@@ -160,9 +127,11 @@ angular.module('starter.services')
 			var self = this;
 			self.insertPosition(position, window, function(res) {
 				var posId = res.insertId;
-				var keys = ["positionId", "cloudCover", "precipitation", "visibility", "pressureTendency", "pressureValue", "temperatureValue", "temperatureUnits", "windValue", "windDirection", "notes", "camera", "other", "uploaded"];
-			
-				var values = [posId, report.cloudCover, report.precipitation, report.visibility, report.pressureTendency, report.pressureValue, report.temperatureValue, report.temperatureUnits, report.windValue, report.windDirection, report.notes, report.camera, report.other, 0];
+				var keys = ["positionId", "userId", "cloudCover", "precipitation", "visibility", "pressureTendency", "pressureValue", "temperatureValue", "temperatureUnits", "windValue", "windDirection", "notes", "camera", "other", "uploaded"];
+				
+				var userId = LocalStorageService.getItem("currentUser", null, window).id;
+				
+				var values = [posId, userId, report.cloudCover, report.precipitation, report.visibility, report.pressureTendency, report.pressureValue, report.temperatureValue, report.temperatureUnits, report.windValue, report.windDirection, report.notes, report.camera, report.other, 0];
 		
 				dbHandler.insertInto("reports", keys, values, function(res) {
 					$ionicLoading.show({template: 'Report Sent Successfully (saved to db)', noBackdrop: true, duration: 1500});
@@ -175,7 +144,7 @@ angular.module('starter.services')
 		 * as a parameter to the provided callback function.
 		 * 
 		 * @method getAllPositionLogs
-		 * @param {htmlDocument} window The window object from the current scope
+		 * @param {Window} window The window object from the current scope
 		 * @param {function} callback Success callback that recieves the result of the SQL query which contains all the position log information
 		 * @return void
 		 * @throws none 
@@ -190,7 +159,7 @@ angular.module('starter.services')
 		 * parameter to the provided callback function.
 		 * 
 		 * @method getAllReports
-		 * @param {htmlDocument} window The window object from the current scope
+		 * @param {Window} window The window object from the current scope
 		 * @param {function} callback Success callback that recieves the result of the SQL query with contains all the reports
 		 * @return void
 		 * @throws none
@@ -204,7 +173,7 @@ angular.module('starter.services')
 		 * Function executes a SQL query to retrieve all the reports in the database and joins them with their associated position objects.
 		 * 
 		 * @method getReportsAndPositions
-		 * @param {htmlDocument} window The window object from the current scope
+		 * @param {Window} window The window object from the current scope
 		 * @param callback Success callback that recieves the result of the SQL query (all reports and their associated positions)
 		 * @return void
 		 * @throws none
@@ -236,7 +205,7 @@ angular.module('starter.services')
 		 * the provided callback function.  The exact number of logs to return is determined by the numLogs parameter
 		 * 
 		 * @method getRecentPositionLogs
-		 * @param {htmlDocument} window The window object from the current scope
+		 * @param {Window} window The window object from the current scope
 		 * @param {Integer} numLogs The number of position logs to return
 		 * @param {function} callback Success callback that recieves the result ("res") of the SQL query.
 		 * @return void
@@ -269,7 +238,7 @@ angular.module('starter.services')
 		 * function.
 		 * 
 		 * @method getAllUsers
-		 * @param {htmlDocument} window The window object from the current scope
+		 * @param {Window} window The window object from the current scope
 		 * @param {function} callback Success callback that recieves the result ("res") of the SQL query.
 		 * @return void
 		 * @throws none
@@ -278,6 +247,59 @@ angular.module('starter.services')
 			var sqlString = "SELECT * FROM users";
 			var dbHandler = new DbHandler("ace.db", window);
 			dbHandler.executeSql(sqlString, callback);
-		}
+		},
+		
+		/**
+		 * Function gets all un-uploaded objects in the provided table from the ACE db and passes the result ("res") as an argument to the provided
+		 * callback.  
+		 * 
+		 * @method getUnuploaded
+		 * @param {String} tableName The name of the table to draw the un-uploaded objects from
+		 * @param {Window} window The window object from the current scope
+		 * @param {function} callback Success callback that recieves the result ("res") of the SQL query.
+		 * @return void
+		 * @throws none
+		 */
+		 getUnuploaded: function(tableName, window, callback) {
+			 var sqlString = "SELECT * FROM " + tableName + " WHERE uploaded=0;"
+			 var dbHandler = new DbHandler("ace.db", window);
+			 dbHandler.executeSql(sqlString, callback);
+		 },
+		 
+		 /**
+		  * Function gets all unuploaded reports with their associated positions attached and passes the result ("res")
+		  * to the provided callback.
+		  * 
+		  * @method getUnuploadedReportsWithPositions
+		  * @param {Window} window The window object from the current scope
+		  * @param {function} callback Success callback that recieves the result ("res") of the SQL query.
+		  * @return void
+		  * @throws none
+		  */
+		 getUnuploadedReportsWithPositions: function(window, callback) {
+			var sqlString = "SELECT * FROM reports INNER JOIN positions ON reports.positionId=positions.id WHERE reports.uploaded=0;"
+			var dbHandler = new DbHandler("ace.db", window);
+			dbHandler.executeSql(sqlString, callback); 
+		 },
+		 
+		 /**
+		  * Function marks all the database rows with an id in the provided idArray in the provided table as uploaded.
+		  * 
+		  * @method markUploaded
+		  * @param {Array} idArray The array of id's of the rows to mark as uploaded
+		  * @param {String} tableName The name of the table to mark
+		  * @param {Window} window The window object from the current scope
+		  * @return void
+		  * @throws none
+		  */
+		  markUploaded: function(idArray, tableName, window)
+		  {
+			  var dbHandler = new DbHandler("ace.db", window);
+			  for(var i = 0; i < idArray.length; i++)
+			  {
+				  var sqlString = "UPDATE " + tableName + " SET uploaded=1 WHERE id=" + idArray[i];
+				  dbHandler.executeSql(sqlString);
+			  }
+		  }
 	};
 });

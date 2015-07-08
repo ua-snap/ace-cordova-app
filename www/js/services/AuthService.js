@@ -1,6 +1,6 @@
 angular.module('starter.services')
 
-.service('AuthService', function($http, DbService, LocalStorageService, User, Group) {
+.service('AuthService', function($http, DbService, LocalStorageService, WebApiService, Group) {
 	return {
 		loginUser: function(name, pw, successCallback, errorCallback) {
             
@@ -9,13 +9,13 @@ angular.module('starter.services')
                 password: pw
             };
             
-            User.login(credentials, function(value, responseHeaders) {
+            WebApiService.authorizeUser(credentials, function(value, responseHeaders) {
                 // success 
                 // Save user data
                 LocalStorageService.setItem("currentUser", value.user, window);
                 
                 // Fill the user's table with all group member's data
-                Group.groupId({id: value.user.groupId}, function(value, responseHeaders) {
+                Group.MobileUsers({id: value.user.groupId}, function(value, responseHeaders) {
                     // Group members in "value"
                     if(value)
                     {
@@ -40,7 +40,7 @@ angular.module('starter.services')
 		
 		logoutUser: function(successCallback, errorCallback) {            
             
-            User.logout(function(value, responseHeaders) {
+            WebApiService.deAuthorizeUser(function(value, responseHeaders) {
                 // success
                 // Execute callback
                 if(successCallback)

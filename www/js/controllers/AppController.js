@@ -13,7 +13,7 @@ angular.module('starter.controllers', [])
 /**
  * @class AppController
  */
-.controller('AppController', function($scope, Group, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
+.controller('AppController', function($scope, Group, UploadService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
   
   // Function toggles sliding the left side-menu out and back in
   /**
@@ -147,11 +147,12 @@ angular.module('starter.controllers', [])
       }, function(httpResponse) {
           var i = 0; i++;
       });*/
-      DbService.getAllUsers(window, function(res) {
+      /*DbService.getAllUsers(window, function(res) {
          var i = 0;
          i = res; 
          i = null;
-      });
+      });*/
+      UploadService.uploadReportsAndMark();
       
   };
   

@@ -17,13 +17,13 @@ var module = angular.module("lbServices", ['ngResource']);
 
 /**
  * @ngdoc object
- * @name lbServices.User
- * @header lbServices.User
+ * @name lbServices.Weather_report
+ * @header lbServices.Weather_report
  * @object
  *
  * @description
  *
- * A $resource object for interacting with the `User` model.
+ * A $resource object for interacting with the `Weather_report` model.
  *
  * ## Example
  *
@@ -33,269 +33,29 @@ var module = angular.module("lbServices", ['ngResource']);
  *
  */
 module.factory(
-  "User",
+  "Weather_report",
   ['LoopBackResource', 'LoopBackAuth', '$injector', function(Resource, LoopBackAuth, $injector) {
     var R = Resource(
-      urlBase + "/Users/:id",
+      urlBase + "/WeatherReports/:id",
       { 'id': '@id' },
       {
 
-        /**
-         * @ngdoc method
-         * @name lbServices.User#prototype$__findById__accessTokens
-         * @methodOf lbServices.User
-         *
-         * @description
-         *
-         * Find a related item by id for accessTokens.
-         *
-         * @param {Object=} parameters Request parameters.
-         *
-         *  - `id` – `{*}` - User id
-         *
-         *  - `fk` – `{*}` - Foreign key for accessTokens
-         *
-         * @param {function(Object,Object)=} successCb
-         *   Success callback with two arguments: `value`, `responseHeaders`.
-         *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *   `httpResponse`.
-         *
-         * @returns {Object} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         *
-         * <em>
-         * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
-         * </em>
-         */
-        "prototype$__findById__accessTokens": {
-          params: {
-          'fk': '@fk'
-          },
-          url: urlBase + "/Users/:id/accessTokens/:fk",
+        // INTERNAL. Use Weather_report.Position() instead.
+        "prototype$__get__Position": {
+          url: urlBase + "/WeatherReports/:id/Position",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Weather_report.MobileUser() instead.
+        "prototype$__get__MobileUser": {
+          url: urlBase + "/WeatherReports/:id/MobileUser",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.User#prototype$__destroyById__accessTokens
-         * @methodOf lbServices.User
-         *
-         * @description
-         *
-         * Delete a related item by id for accessTokens.
-         *
-         * @param {Object=} parameters Request parameters.
-         *
-         *  - `id` – `{*}` - User id
-         *
-         *  - `fk` – `{*}` - Foreign key for accessTokens
-         *
-         * @param {function(Object,Object)=} successCb
-         *   Success callback with two arguments: `value`, `responseHeaders`.
-         *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *   `httpResponse`.
-         *
-         * @returns {Object} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         *
-         * This method returns no data.
-         */
-        "prototype$__destroyById__accessTokens": {
-          params: {
-          'fk': '@fk'
-          },
-          url: urlBase + "/Users/:id/accessTokens/:fk",
-          method: "DELETE"
-        },
-
-        /**
-         * @ngdoc method
-         * @name lbServices.User#prototype$__updateById__accessTokens
-         * @methodOf lbServices.User
-         *
-         * @description
-         *
-         * Update a related item by id for accessTokens.
-         *
-         * @param {Object=} parameters Request parameters.
-         *
-         *  - `id` – `{*}` - User id
-         *
-         *  - `fk` – `{*}` - Foreign key for accessTokens
-         *
-         * @param {Object} postData Request data.
-         *
-         * This method expects a subset of model properties as request parameters.
-         *
-         * @param {function(Object,Object)=} successCb
-         *   Success callback with two arguments: `value`, `responseHeaders`.
-         *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *   `httpResponse`.
-         *
-         * @returns {Object} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         *
-         * <em>
-         * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
-         * </em>
-         */
-        "prototype$__updateById__accessTokens": {
-          params: {
-          'fk': '@fk'
-          },
-          url: urlBase + "/Users/:id/accessTokens/:fk",
-          method: "PUT"
-        },
-
-        /**
-         * @ngdoc method
-         * @name lbServices.User#prototype$__get__accessTokens
-         * @methodOf lbServices.User
-         *
-         * @description
-         *
-         * Queries accessTokens of User.
-         *
-         * @param {Object=} parameters Request parameters.
-         *
-         *  - `id` – `{*}` - User id
-         *
-         *  - `filter` – `{object=}` - 
-         *
-         * @param {function(Array.<Object>,Object)=} successCb
-         *   Success callback with two arguments: `value`, `responseHeaders`.
-         *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *   `httpResponse`.
-         *
-         * @returns {Array.<Object>} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         *
-         * <em>
-         * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
-         * </em>
-         */
-        "prototype$__get__accessTokens": {
-          isArray: true,
-          url: urlBase + "/Users/:id/accessTokens",
-          method: "GET"
-        },
-
-        /**
-         * @ngdoc method
-         * @name lbServices.User#prototype$__create__accessTokens
-         * @methodOf lbServices.User
-         *
-         * @description
-         *
-         * Creates a new instance in accessTokens of this model.
-         *
-         * @param {Object=} parameters Request parameters.
-         *
-         *  - `id` – `{*}` - User id
-         *
-         * @param {Object} postData Request data.
-         *
-         * This method expects a subset of model properties as request parameters.
-         *
-         * @param {function(Object,Object)=} successCb
-         *   Success callback with two arguments: `value`, `responseHeaders`.
-         *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *   `httpResponse`.
-         *
-         * @returns {Object} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         *
-         * <em>
-         * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
-         * </em>
-         */
-        "prototype$__create__accessTokens": {
-          url: urlBase + "/Users/:id/accessTokens",
-          method: "POST"
-        },
-
-        /**
-         * @ngdoc method
-         * @name lbServices.User#prototype$__delete__accessTokens
-         * @methodOf lbServices.User
-         *
-         * @description
-         *
-         * Deletes all accessTokens of this model.
-         *
-         * @param {Object=} parameters Request parameters.
-         *
-         *  - `id` – `{*}` - User id
-         *
-         * @param {function(Object,Object)=} successCb
-         *   Success callback with two arguments: `value`, `responseHeaders`.
-         *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *   `httpResponse`.
-         *
-         * @returns {Object} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         *
-         * This method returns no data.
-         */
-        "prototype$__delete__accessTokens": {
-          url: urlBase + "/Users/:id/accessTokens",
-          method: "DELETE"
-        },
-
-        /**
-         * @ngdoc method
-         * @name lbServices.User#prototype$__count__accessTokens
-         * @methodOf lbServices.User
-         *
-         * @description
-         *
-         * Counts accessTokens of User.
-         *
-         * @param {Object=} parameters Request parameters.
-         *
-         *  - `id` – `{*}` - User id
-         *
-         *  - `where` – `{object=}` - Criteria to match model instances
-         *
-         * @param {function(Object,Object)=} successCb
-         *   Success callback with two arguments: `value`, `responseHeaders`.
-         *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *   `httpResponse`.
-         *
-         * @returns {Object} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         *
-         * Data properties:
-         *
-         *  - `count` – `{number=}` - 
-         */
-        "prototype$__count__accessTokens": {
-          url: urlBase + "/Users/:id/accessTokens/count",
-          method: "GET"
-        },
-
-        /**
-         * @ngdoc method
-         * @name lbServices.User#create
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#create
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -322,18 +82,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
+         * This usually means the response is a `Weather_report` object.)
          * </em>
          */
         "create": {
-          url: urlBase + "/Users",
+          url: urlBase + "/WeatherReports",
           method: "POST"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.User#createMany
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#createMany
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -360,19 +120,19 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
+         * This usually means the response is a `Weather_report` object.)
          * </em>
          */
         "createMany": {
           isArray: true,
-          url: urlBase + "/Users",
+          url: urlBase + "/WeatherReports",
           method: "POST"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.User#upsert
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#upsert
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -399,18 +159,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
+         * This usually means the response is a `Weather_report` object.)
          * </em>
          */
         "upsert": {
-          url: urlBase + "/Users",
+          url: urlBase + "/WeatherReports",
           method: "PUT"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.User#exists
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#exists
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -435,14 +195,14 @@ module.factory(
          *  - `exists` – `{boolean=}` - 
          */
         "exists": {
-          url: urlBase + "/Users/:id/exists",
+          url: urlBase + "/WeatherReports/:id/exists",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.User#findById
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#findById
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -466,18 +226,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
+         * This usually means the response is a `Weather_report` object.)
          * </em>
          */
         "findById": {
-          url: urlBase + "/Users/:id",
+          url: urlBase + "/WeatherReports/:id",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.User#find
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#find
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -499,19 +259,19 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
+         * This usually means the response is a `Weather_report` object.)
          * </em>
          */
         "find": {
           isArray: true,
-          url: urlBase + "/Users",
+          url: urlBase + "/WeatherReports",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.User#findOne
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#findOne
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -533,18 +293,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
+         * This usually means the response is a `Weather_report` object.)
          * </em>
          */
         "findOne": {
-          url: urlBase + "/Users/findOne",
+          url: urlBase + "/WeatherReports/findOne",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.User#updateAll
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#updateAll
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -571,14 +331,14 @@ module.factory(
          * This method returns no data.
          */
         "updateAll": {
-          url: urlBase + "/Users/update",
+          url: urlBase + "/WeatherReports/update",
           method: "POST"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.User#deleteById
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#deleteById
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -601,14 +361,14 @@ module.factory(
          * This method returns no data.
          */
         "deleteById": {
-          url: urlBase + "/Users/:id",
+          url: urlBase + "/WeatherReports/:id",
           method: "DELETE"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.User#count
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#count
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -633,14 +393,14 @@ module.factory(
          *  - `count` – `{number=}` - 
          */
         "count": {
-          url: urlBase + "/Users/count",
+          url: urlBase + "/WeatherReports/count",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.User#prototype$updateAttributes
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#prototype$updateAttributes
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -648,7 +408,8 @@ module.factory(
          *
          * @param {Object=} parameters Request parameters.
          *
-         *  - `id` – `{*}` - User id
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
          *
          * @param {Object} postData Request data.
          *
@@ -666,278 +427,72 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
+         * This usually means the response is a `Weather_report` object.)
          * </em>
          */
         "prototype$updateAttributes": {
-          url: urlBase + "/Users/:id",
+          url: urlBase + "/WeatherReports/:id",
           method: "PUT"
         },
 
-        /**
-         * @ngdoc method
-         * @name lbServices.User#login
-         * @methodOf lbServices.User
-         *
-         * @description
-         *
-         * Login a user with username/email and password.
-         *
-         * @param {Object=} parameters Request parameters.
-         *
-         *  - `include` – `{string=}` - Related objects to include in the response. See the description of return value for more details.
-         *   Default value: `user`.
-         *
-         *  - `rememberMe` - `boolean` - Whether the authentication credentials
-         *     should be remembered in localStorage across app/browser restarts.
-         *     Default: `true`.
-         *
-         * @param {Object} postData Request data.
-         *
-         * This method expects a subset of model properties as request parameters.
-         *
-         * @param {function(Object,Object)=} successCb
-         *   Success callback with two arguments: `value`, `responseHeaders`.
-         *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *   `httpResponse`.
-         *
-         * @returns {Object} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         *
-         * The response body contains properties of the AccessToken created on login.
-         * Depending on the value of `include` parameter, the body may contain additional properties:
-         * 
-         *   - `user` - `{User}` - Data of the currently logged in user. (`include=user`)
-         * 
-         *
-         */
-        "login": {
-          params: {
-            include: "user"
-          },
-          interceptor: {
-            response: function(response) {
-              var accessToken = response.data;
-              LoopBackAuth.setUser(accessToken.id, accessToken.userId, accessToken.user);
-              LoopBackAuth.rememberMe = response.config.params.rememberMe !== false;
-              LoopBackAuth.save();
-              return response.resource;
-            }
-          },
-          url: urlBase + "/Users/login",
-          method: "POST"
-        },
-
-        /**
-         * @ngdoc method
-         * @name lbServices.User#logout
-         * @methodOf lbServices.User
-         *
-         * @description
-         *
-         * Logout a user with access token
-         *
-         * @param {Object=} parameters Request parameters.
-         *
-         *   This method does not accept any parameters.
-         *   Supply an empty object or omit this argument altogether.
-         *
-         * @param {Object} postData Request data.
-         *
-         *  - `access_token` – `{string}` - Do not supply this argument, it is automatically extracted from request headers.
-         *
-         * @param {function(Object,Object)=} successCb
-         *   Success callback with two arguments: `value`, `responseHeaders`.
-         *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *   `httpResponse`.
-         *
-         * @returns {Object} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         *
-         * This method returns no data.
-         */
-        "logout": {
-          interceptor: {
-            response: function(response) {
-              LoopBackAuth.clearUser();
-              LoopBackAuth.clearStorage();
-              return response.resource;
-            }
-          },
-          url: urlBase + "/Users/logout",
-          method: "POST"
-        },
-
-        /**
-         * @ngdoc method
-         * @name lbServices.User#confirm
-         * @methodOf lbServices.User
-         *
-         * @description
-         *
-         * Confirm a user registration with email verification token
-         *
-         * @param {Object=} parameters Request parameters.
-         *
-         *  - `uid` – `{string}` - 
-         *
-         *  - `token` – `{string}` - 
-         *
-         *  - `redirect` – `{string=}` - 
-         *
-         * @param {function(Object,Object)=} successCb
-         *   Success callback with two arguments: `value`, `responseHeaders`.
-         *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *   `httpResponse`.
-         *
-         * @returns {Object} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         *
-         * This method returns no data.
-         */
-        "confirm": {
-          url: urlBase + "/Users/confirm",
-          method: "GET"
-        },
-
-        /**
-         * @ngdoc method
-         * @name lbServices.User#resetPassword
-         * @methodOf lbServices.User
-         *
-         * @description
-         *
-         * Reset password for a user with email
-         *
-         * @param {Object=} parameters Request parameters.
-         *
-         *   This method does not accept any parameters.
-         *   Supply an empty object or omit this argument altogether.
-         *
-         * @param {Object} postData Request data.
-         *
-         * This method expects a subset of model properties as request parameters.
-         *
-         * @param {function(Object,Object)=} successCb
-         *   Success callback with two arguments: `value`, `responseHeaders`.
-         *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *   `httpResponse`.
-         *
-         * @returns {Object} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         *
-         * This method returns no data.
-         */
-        "resetPassword": {
-          url: urlBase + "/Users/reset",
-          method: "POST"
-        },
-
-        // INTERNAL. Use Group.groupId.findById() instead.
-        "::findById::group::groupId": {
+        // INTERNAL. Use Mobile_user.WeatherReports.findById() instead.
+        "::findById::mobile_user::WeatherReports": {
           params: {
           'fk': '@fk'
           },
-          url: urlBase + "/groups/:id/groupId/:fk",
+          url: urlBase + "/MobileUsers/:id/WeatherReports/:fk",
           method: "GET"
         },
 
-        // INTERNAL. Use Group.groupId.destroyById() instead.
-        "::destroyById::group::groupId": {
+        // INTERNAL. Use Mobile_user.WeatherReports.destroyById() instead.
+        "::destroyById::mobile_user::WeatherReports": {
           params: {
           'fk': '@fk'
           },
-          url: urlBase + "/groups/:id/groupId/:fk",
+          url: urlBase + "/MobileUsers/:id/WeatherReports/:fk",
           method: "DELETE"
         },
 
-        // INTERNAL. Use Group.groupId.updateById() instead.
-        "::updateById::group::groupId": {
+        // INTERNAL. Use Mobile_user.WeatherReports.updateById() instead.
+        "::updateById::mobile_user::WeatherReports": {
           params: {
           'fk': '@fk'
           },
-          url: urlBase + "/groups/:id/groupId/:fk",
+          url: urlBase + "/MobileUsers/:id/WeatherReports/:fk",
           method: "PUT"
         },
 
-        // INTERNAL. Use Group.groupId() instead.
-        "::get::group::groupId": {
+        // INTERNAL. Use Mobile_user.WeatherReports() instead.
+        "::get::mobile_user::WeatherReports": {
           isArray: true,
-          url: urlBase + "/groups/:id/groupId",
+          url: urlBase + "/MobileUsers/:id/WeatherReports",
           method: "GET"
         },
 
-        // INTERNAL. Use Group.groupId.create() instead.
-        "::create::group::groupId": {
-          url: urlBase + "/groups/:id/groupId",
+        // INTERNAL. Use Mobile_user.WeatherReports.create() instead.
+        "::create::mobile_user::WeatherReports": {
+          url: urlBase + "/MobileUsers/:id/WeatherReports",
           method: "POST"
         },
 
-        // INTERNAL. Use Group.groupId.createMany() instead.
-        "::createMany::group::groupId": {
+        // INTERNAL. Use Mobile_user.WeatherReports.createMany() instead.
+        "::createMany::mobile_user::WeatherReports": {
           isArray: true,
-          url: urlBase + "/groups/:id/groupId",
+          url: urlBase + "/MobileUsers/:id/WeatherReports",
           method: "POST"
         },
 
-        // INTERNAL. Use Group.groupId.destroyAll() instead.
-        "::delete::group::groupId": {
-          url: urlBase + "/groups/:id/groupId",
+        // INTERNAL. Use Mobile_user.WeatherReports.destroyAll() instead.
+        "::delete::mobile_user::WeatherReports": {
+          url: urlBase + "/MobileUsers/:id/WeatherReports",
           method: "DELETE"
         },
 
-        // INTERNAL. Use Group.groupId.count() instead.
-        "::count::group::groupId": {
-          url: urlBase + "/groups/:id/groupId/count",
+        // INTERNAL. Use Mobile_user.WeatherReports.count() instead.
+        "::count::mobile_user::WeatherReports": {
+          url: urlBase + "/MobileUsers/:id/WeatherReports/count",
           method: "GET"
         },
-
-        /**
-         * @ngdoc method
-         * @name lbServices.User#getCurrent
-         * @methodOf lbServices.User
-         *
-         * @description
-         *
-         * Get data of the currently logged user. Fail with HTTP result 401
-         * when there is no user logged in.
-         *
-         * @param {function(Object,Object)=} successCb
-         *    Success callback with two arguments: `value`, `responseHeaders`.
-         *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *    `httpResponse`.
-         *
-         * @returns {Object} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         */
-        "getCurrent": {
-           url: urlBase + "/Users" + "/:id",
-           method: "GET",
-           params: {
-             id: function() {
-              var id = LoopBackAuth.currentUserId;
-              if (id == null) id = '__anonymous__';
-              return id;
-            },
-          },
-          interceptor: {
-            response: function(response) {
-              LoopBackAuth.currentUserData = response.data;
-              return response.resource;
-            }
-          },
-          __isGetCurrentUser__ : true
-        }
       }
     );
 
@@ -945,8 +500,8 @@ module.factory(
 
         /**
          * @ngdoc method
-         * @name lbServices.User#updateOrCreate
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#updateOrCreate
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -973,15 +528,15 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
+         * This usually means the response is a `Weather_report` object.)
          * </em>
          */
         R["updateOrCreate"] = R["upsert"];
 
         /**
          * @ngdoc method
-         * @name lbServices.User#update
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#update
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -1011,8 +566,8 @@ module.factory(
 
         /**
          * @ngdoc method
-         * @name lbServices.User#destroyById
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#destroyById
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -1038,8 +593,8 @@ module.factory(
 
         /**
          * @ngdoc method
-         * @name lbServices.User#removeById
-         * @methodOf lbServices.User
+         * @name lbServices.Weather_report#removeById
+         * @methodOf lbServices.Weather_report
          *
          * @description
          *
@@ -1063,58 +618,89 @@ module.factory(
          */
         R["removeById"] = R["deleteById"];
 
-        /**
-         * @ngdoc method
-         * @name lbServices.User#getCachedCurrent
-         * @methodOf lbServices.User
-         *
-         * @description
-         *
-         * Get data of the currently logged user that was returned by the last
-         * call to {@link lbServices.User#login} or
-         * {@link lbServices.User#getCurrent}. Return null when there
-         * is no user logged in or the data of the current user were not fetched
-         * yet.
-         *
-         * @returns {Object} A User instance.
-         */
-        R.getCachedCurrent = function() {
-          var data = LoopBackAuth.currentUserData;
-          return data ? new R(data) : null;
-        };
-
-        /**
-         * @ngdoc method
-         * @name lbServices.User#isAuthenticated
-         * @methodOf lbServices.User
-         *
-         * @returns {boolean} True if the current user is authenticated (logged in).
-         */
-        R.isAuthenticated = function() {
-          return this.getCurrentId() != null;
-        };
-
-        /**
-         * @ngdoc method
-         * @name lbServices.User#getCurrentId
-         * @methodOf lbServices.User
-         *
-         * @returns {Object} Id of the currently logged-in user or null.
-         */
-        R.getCurrentId = function() {
-          return LoopBackAuth.currentUserId;
-        };
 
     /**
     * @ngdoc property
-    * @name lbServices.User#modelName
-    * @propertyOf lbServices.User
+    * @name lbServices.Weather_report#modelName
+    * @propertyOf lbServices.Weather_report
     * @description
     * The name of the model represented by this $resource,
-    * i.e. `User`.
+    * i.e. `Weather_report`.
     */
-    R.modelName = "User";
+    R.modelName = "Weather_report";
 
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Weather_report#Position
+         * @methodOf lbServices.Weather_report
+         *
+         * @description
+         *
+         * Fetches belongsTo relation Position.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         *  - `refresh` – `{boolean=}` - 
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Position` object.)
+         * </em>
+         */
+        R.Position = function() {
+          var TargetResource = $injector.get("Position");
+          var action = TargetResource["::get::weather_report::Position"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Weather_report#MobileUser
+         * @methodOf lbServices.Weather_report
+         *
+         * @description
+         *
+         * Fetches belongsTo relation MobileUser.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         *  - `refresh` – `{boolean=}` - 
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Mobile_user` object.)
+         * </em>
+         */
+        R.MobileUser = function() {
+          var TargetResource = $injector.get("Mobile_user");
+          var action = TargetResource["::get::weather_report::MobileUser"];
+          return action.apply(R, arguments);
+        };
 
     return R;
   }]);
@@ -1140,9 +726,15 @@ module.factory(
   "Position",
   ['LoopBackResource', 'LoopBackAuth', '$injector', function(Resource, LoopBackAuth, $injector) {
     var R = Resource(
-      urlBase + "/positions/:id",
+      urlBase + "/Positions/:id",
       { 'id': '@id' },
       {
+
+        // INTERNAL. Use Position.MobileUser() instead.
+        "prototype$__get__MobileUser": {
+          url: urlBase + "/Positions/:id/MobileUser",
+          method: "GET"
+        },
 
         /**
          * @ngdoc method
@@ -1178,7 +770,7 @@ module.factory(
          * </em>
          */
         "create": {
-          url: urlBase + "/positions",
+          url: urlBase + "/Positions",
           method: "POST"
         },
 
@@ -1217,7 +809,7 @@ module.factory(
          */
         "createMany": {
           isArray: true,
-          url: urlBase + "/positions",
+          url: urlBase + "/Positions",
           method: "POST"
         },
 
@@ -1255,7 +847,7 @@ module.factory(
          * </em>
          */
         "upsert": {
-          url: urlBase + "/positions",
+          url: urlBase + "/Positions",
           method: "PUT"
         },
 
@@ -1287,7 +879,7 @@ module.factory(
          *  - `exists` – `{boolean=}` - 
          */
         "exists": {
-          url: urlBase + "/positions/:id/exists",
+          url: urlBase + "/Positions/:id/exists",
           method: "GET"
         },
 
@@ -1322,7 +914,7 @@ module.factory(
          * </em>
          */
         "findById": {
-          url: urlBase + "/positions/:id",
+          url: urlBase + "/Positions/:id",
           method: "GET"
         },
 
@@ -1356,7 +948,7 @@ module.factory(
          */
         "find": {
           isArray: true,
-          url: urlBase + "/positions",
+          url: urlBase + "/Positions",
           method: "GET"
         },
 
@@ -1389,7 +981,7 @@ module.factory(
          * </em>
          */
         "findOne": {
-          url: urlBase + "/positions/findOne",
+          url: urlBase + "/Positions/findOne",
           method: "GET"
         },
 
@@ -1423,7 +1015,7 @@ module.factory(
          * This method returns no data.
          */
         "updateAll": {
-          url: urlBase + "/positions/update",
+          url: urlBase + "/Positions/update",
           method: "POST"
         },
 
@@ -1453,7 +1045,7 @@ module.factory(
          * This method returns no data.
          */
         "deleteById": {
-          url: urlBase + "/positions/:id",
+          url: urlBase + "/Positions/:id",
           method: "DELETE"
         },
 
@@ -1485,7 +1077,7 @@ module.factory(
          *  - `count` – `{number=}` - 
          */
         "count": {
-          url: urlBase + "/positions/count",
+          url: urlBase + "/Positions/count",
           method: "GET"
         },
 
@@ -1523,8 +1115,73 @@ module.factory(
          * </em>
          */
         "prototype$updateAttributes": {
-          url: urlBase + "/positions/:id",
+          url: urlBase + "/Positions/:id",
           method: "PUT"
+        },
+
+        // INTERNAL. Use Weather_report.Position() instead.
+        "::get::weather_report::Position": {
+          url: urlBase + "/WeatherReports/:id/Position",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions.findById() instead.
+        "::findById::mobile_user::Positions": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/MobileUsers/:id/Positions/:fk",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions.destroyById() instead.
+        "::destroyById::mobile_user::Positions": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/MobileUsers/:id/Positions/:fk",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions.updateById() instead.
+        "::updateById::mobile_user::Positions": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/MobileUsers/:id/Positions/:fk",
+          method: "PUT"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions() instead.
+        "::get::mobile_user::Positions": {
+          isArray: true,
+          url: urlBase + "/MobileUsers/:id/Positions",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions.create() instead.
+        "::create::mobile_user::Positions": {
+          url: urlBase + "/MobileUsers/:id/Positions",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions.createMany() instead.
+        "::createMany::mobile_user::Positions": {
+          isArray: true,
+          url: urlBase + "/MobileUsers/:id/Positions",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions.destroyAll() instead.
+        "::delete::mobile_user::Positions": {
+          url: urlBase + "/MobileUsers/:id/Positions",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions.count() instead.
+        "::count::mobile_user::Positions": {
+          url: urlBase + "/MobileUsers/:id/Positions/count",
+          method: "GET"
         },
       }
     );
@@ -1663,18 +1320,54 @@ module.factory(
     R.modelName = "Position";
 
 
+        /**
+         * @ngdoc method
+         * @name lbServices.Position#MobileUser
+         * @methodOf lbServices.Position
+         *
+         * @description
+         *
+         * Fetches belongsTo relation MobileUser.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         *  - `refresh` – `{boolean=}` - 
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Mobile_user` object.)
+         * </em>
+         */
+        R.MobileUser = function() {
+          var TargetResource = $injector.get("Mobile_user");
+          var action = TargetResource["::get::position::MobileUser"];
+          return action.apply(R, arguments);
+        };
+
     return R;
   }]);
 
 /**
  * @ngdoc object
- * @name lbServices.Report
- * @header lbServices.Report
+ * @name lbServices.Mobile_user
+ * @header lbServices.Mobile_user
  * @object
  *
  * @description
  *
- * A $resource object for interacting with the `Report` model.
+ * A $resource object for interacting with the `Mobile_user` model.
  *
  * ## Example
  *
@@ -1684,17 +1377,379 @@ module.factory(
  *
  */
 module.factory(
-  "Report",
+  "Mobile_user",
   ['LoopBackResource', 'LoopBackAuth', '$injector', function(Resource, LoopBackAuth, $injector) {
     var R = Resource(
-      urlBase + "/reports/:id",
+      urlBase + "/MobileUsers/:id",
       { 'id': '@id' },
       {
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#create
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#prototype$__findById__accessTokens
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Find a related item by id for accessTokens.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `fk` – `{*}` - Foreign key for accessTokens
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Mobile_user` object.)
+         * </em>
+         */
+        "prototype$__findById__accessTokens": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/MobileUsers/:id/accessTokens/:fk",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#prototype$__destroyById__accessTokens
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Delete a related item by id for accessTokens.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `fk` – `{*}` - Foreign key for accessTokens
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        "prototype$__destroyById__accessTokens": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/MobileUsers/:id/accessTokens/:fk",
+          method: "DELETE"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#prototype$__updateById__accessTokens
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Update a related item by id for accessTokens.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `fk` – `{*}` - Foreign key for accessTokens
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Mobile_user` object.)
+         * </em>
+         */
+        "prototype$__updateById__accessTokens": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/MobileUsers/:id/accessTokens/:fk",
+          method: "PUT"
+        },
+
+        // INTERNAL. Use Mobile_user.WeatherReports.findById() instead.
+        "prototype$__findById__WeatherReports": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/MobileUsers/:id/WeatherReports/:fk",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Mobile_user.WeatherReports.destroyById() instead.
+        "prototype$__destroyById__WeatherReports": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/MobileUsers/:id/WeatherReports/:fk",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Mobile_user.WeatherReports.updateById() instead.
+        "prototype$__updateById__WeatherReports": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/MobileUsers/:id/WeatherReports/:fk",
+          method: "PUT"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions.findById() instead.
+        "prototype$__findById__Positions": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/MobileUsers/:id/Positions/:fk",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions.destroyById() instead.
+        "prototype$__destroyById__Positions": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/MobileUsers/:id/Positions/:fk",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions.updateById() instead.
+        "prototype$__updateById__Positions": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/MobileUsers/:id/Positions/:fk",
+          method: "PUT"
+        },
+
+        // INTERNAL. Use Mobile_user.Group() instead.
+        "prototype$__get__Group": {
+          url: urlBase + "/MobileUsers/:id/Group",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#prototype$__get__accessTokens
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Queries accessTokens of mobile_user.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `filter` – `{object=}` - 
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Mobile_user` object.)
+         * </em>
+         */
+        "prototype$__get__accessTokens": {
+          isArray: true,
+          url: urlBase + "/MobileUsers/:id/accessTokens",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#prototype$__create__accessTokens
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Creates a new instance in accessTokens of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Mobile_user` object.)
+         * </em>
+         */
+        "prototype$__create__accessTokens": {
+          url: urlBase + "/MobileUsers/:id/accessTokens",
+          method: "POST"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#prototype$__delete__accessTokens
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Deletes all accessTokens of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        "prototype$__delete__accessTokens": {
+          url: urlBase + "/MobileUsers/:id/accessTokens",
+          method: "DELETE"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#prototype$__count__accessTokens
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Counts accessTokens of mobile_user.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * Data properties:
+         *
+         *  - `count` – `{number=}` - 
+         */
+        "prototype$__count__accessTokens": {
+          url: urlBase + "/MobileUsers/:id/accessTokens/count",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Mobile_user.WeatherReports() instead.
+        "prototype$__get__WeatherReports": {
+          isArray: true,
+          url: urlBase + "/MobileUsers/:id/WeatherReports",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Mobile_user.WeatherReports.create() instead.
+        "prototype$__create__WeatherReports": {
+          url: urlBase + "/MobileUsers/:id/WeatherReports",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Mobile_user.WeatherReports.destroyAll() instead.
+        "prototype$__delete__WeatherReports": {
+          url: urlBase + "/MobileUsers/:id/WeatherReports",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Mobile_user.WeatherReports.count() instead.
+        "prototype$__count__WeatherReports": {
+          url: urlBase + "/MobileUsers/:id/WeatherReports/count",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions() instead.
+        "prototype$__get__Positions": {
+          isArray: true,
+          url: urlBase + "/MobileUsers/:id/Positions",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions.create() instead.
+        "prototype$__create__Positions": {
+          url: urlBase + "/MobileUsers/:id/Positions",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions.destroyAll() instead.
+        "prototype$__delete__Positions": {
+          url: urlBase + "/MobileUsers/:id/Positions",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Mobile_user.Positions.count() instead.
+        "prototype$__count__Positions": {
+          url: urlBase + "/MobileUsers/:id/Positions/count",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#create
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -1721,18 +1776,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Report` object.)
+         * This usually means the response is a `Mobile_user` object.)
          * </em>
          */
         "create": {
-          url: urlBase + "/reports",
+          url: urlBase + "/MobileUsers",
           method: "POST"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#createMany
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#createMany
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -1759,19 +1814,19 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Report` object.)
+         * This usually means the response is a `Mobile_user` object.)
          * </em>
          */
         "createMany": {
           isArray: true,
-          url: urlBase + "/reports",
+          url: urlBase + "/MobileUsers",
           method: "POST"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#upsert
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#upsert
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -1798,18 +1853,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Report` object.)
+         * This usually means the response is a `Mobile_user` object.)
          * </em>
          */
         "upsert": {
-          url: urlBase + "/reports",
+          url: urlBase + "/MobileUsers",
           method: "PUT"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#exists
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#exists
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -1834,14 +1889,14 @@ module.factory(
          *  - `exists` – `{boolean=}` - 
          */
         "exists": {
-          url: urlBase + "/reports/:id/exists",
+          url: urlBase + "/MobileUsers/:id/exists",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#findById
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#findById
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -1865,18 +1920,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Report` object.)
+         * This usually means the response is a `Mobile_user` object.)
          * </em>
          */
         "findById": {
-          url: urlBase + "/reports/:id",
+          url: urlBase + "/MobileUsers/:id",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#find
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#find
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -1898,19 +1953,19 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Report` object.)
+         * This usually means the response is a `Mobile_user` object.)
          * </em>
          */
         "find": {
           isArray: true,
-          url: urlBase + "/reports",
+          url: urlBase + "/MobileUsers",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#findOne
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#findOne
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -1932,18 +1987,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Report` object.)
+         * This usually means the response is a `Mobile_user` object.)
          * </em>
          */
         "findOne": {
-          url: urlBase + "/reports/findOne",
+          url: urlBase + "/MobileUsers/findOne",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#updateAll
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#updateAll
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -1970,14 +2025,14 @@ module.factory(
          * This method returns no data.
          */
         "updateAll": {
-          url: urlBase + "/reports/update",
+          url: urlBase + "/MobileUsers/update",
           method: "POST"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#deleteById
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#deleteById
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -2000,14 +2055,14 @@ module.factory(
          * This method returns no data.
          */
         "deleteById": {
-          url: urlBase + "/reports/:id",
+          url: urlBase + "/MobileUsers/:id",
           method: "DELETE"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#count
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#count
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -2032,18 +2087,187 @@ module.factory(
          *  - `count` – `{number=}` - 
          */
         "count": {
-          url: urlBase + "/reports/count",
+          url: urlBase + "/MobileUsers/count",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#prototype$updateAttributes
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#prototype$updateAttributes
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
          * Update attributes for a model instance and persist it into the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Mobile_user` object.)
+         * </em>
+         */
+        "prototype$updateAttributes": {
+          url: urlBase + "/MobileUsers/:id",
+          method: "PUT"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#login
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Login a user with username/email and password.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `include` – `{string=}` - Related objects to include in the response. See the description of return value for more details.
+         *   Default value: `user`.
+         *
+         *  - `rememberMe` - `boolean` - Whether the authentication credentials
+         *     should be remembered in localStorage across app/browser restarts.
+         *     Default: `true`.
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * The response body contains properties of the AccessToken created on login.
+         * Depending on the value of `include` parameter, the body may contain additional properties:
+         * 
+         *   - `user` - `{User}` - Data of the currently logged in user. (`include=user`)
+         * 
+         *
+         */
+        "login": {
+          params: {
+            include: "user"
+          },
+          interceptor: {
+            response: function(response) {
+              var accessToken = response.data;
+              LoopBackAuth.setUser(accessToken.id, accessToken.userId, accessToken.user);
+              LoopBackAuth.rememberMe = response.config.params.rememberMe !== false;
+              LoopBackAuth.save();
+              return response.resource;
+            }
+          },
+          url: urlBase + "/MobileUsers/login",
+          method: "POST"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#logout
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Logout a user with access token
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
+         *
+         * @param {Object} postData Request data.
+         *
+         *  - `access_token` – `{string}` - Do not supply this argument, it is automatically extracted from request headers.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        "logout": {
+          interceptor: {
+            response: function(response) {
+              LoopBackAuth.clearUser();
+              LoopBackAuth.clearStorage();
+              return response.resource;
+            }
+          },
+          url: urlBase + "/MobileUsers/logout",
+          method: "POST"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#confirm
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Confirm a user registration with email verification token
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `uid` – `{string}` - 
+         *
+         *  - `token` – `{string}` - 
+         *
+         *  - `redirect` – `{string=}` - 
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        "confirm": {
+          url: urlBase + "/MobileUsers/confirm",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#resetPassword
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Reset password for a user with email
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -2064,15 +2288,122 @@ module.factory(
          *   populated with the actual data once the response is returned
          *   from the server.
          *
-         * <em>
-         * (The remote method definition does not provide any description.
-         * This usually means the response is a `Report` object.)
-         * </em>
+         * This method returns no data.
          */
-        "prototype$updateAttributes": {
-          url: urlBase + "/reports/:id",
+        "resetPassword": {
+          url: urlBase + "/MobileUsers/reset",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Weather_report.MobileUser() instead.
+        "::get::weather_report::MobileUser": {
+          url: urlBase + "/WeatherReports/:id/MobileUser",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Position.MobileUser() instead.
+        "::get::position::MobileUser": {
+          url: urlBase + "/Positions/:id/MobileUser",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Group.MobileUsers.findById() instead.
+        "::findById::group::MobileUsers": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/Groups/:id/MobileUsers/:fk",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Group.MobileUsers.destroyById() instead.
+        "::destroyById::group::MobileUsers": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/Groups/:id/MobileUsers/:fk",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Group.MobileUsers.updateById() instead.
+        "::updateById::group::MobileUsers": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/Groups/:id/MobileUsers/:fk",
           method: "PUT"
         },
+
+        // INTERNAL. Use Group.MobileUsers() instead.
+        "::get::group::MobileUsers": {
+          isArray: true,
+          url: urlBase + "/Groups/:id/MobileUsers",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Group.MobileUsers.create() instead.
+        "::create::group::MobileUsers": {
+          url: urlBase + "/Groups/:id/MobileUsers",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Group.MobileUsers.createMany() instead.
+        "::createMany::group::MobileUsers": {
+          isArray: true,
+          url: urlBase + "/Groups/:id/MobileUsers",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Group.MobileUsers.destroyAll() instead.
+        "::delete::group::MobileUsers": {
+          url: urlBase + "/Groups/:id/MobileUsers",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Group.MobileUsers.count() instead.
+        "::count::group::MobileUsers": {
+          url: urlBase + "/Groups/:id/MobileUsers/count",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#getCurrent
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Get data of the currently logged user. Fail with HTTP result 401
+         * when there is no user logged in.
+         *
+         * @param {function(Object,Object)=} successCb
+         *    Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *    `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         */
+        "getCurrent": {
+           url: urlBase + "/MobileUsers" + "/:id",
+           method: "GET",
+           params: {
+             id: function() {
+              var id = LoopBackAuth.currentUserId;
+              if (id == null) id = '__anonymous__';
+              return id;
+            },
+          },
+          interceptor: {
+            response: function(response) {
+              LoopBackAuth.currentUserData = response.data;
+              return response.resource;
+            }
+          },
+          __isGetCurrentUser__ : true
+        }
       }
     );
 
@@ -2080,8 +2411,8 @@ module.factory(
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#updateOrCreate
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#updateOrCreate
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -2108,15 +2439,15 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Report` object.)
+         * This usually means the response is a `Mobile_user` object.)
          * </em>
          */
         R["updateOrCreate"] = R["upsert"];
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#update
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#update
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -2146,8 +2477,8 @@ module.factory(
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#destroyById
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#destroyById
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -2173,8 +2504,8 @@ module.factory(
 
         /**
          * @ngdoc method
-         * @name lbServices.Report#removeById
-         * @methodOf lbServices.Report
+         * @name lbServices.Mobile_user#removeById
+         * @methodOf lbServices.Mobile_user
          *
          * @description
          *
@@ -2198,17 +2529,696 @@ module.factory(
          */
         R["removeById"] = R["deleteById"];
 
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#getCachedCurrent
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Get data of the currently logged user that was returned by the last
+         * call to {@link lbServices.Mobile_user#login} or
+         * {@link lbServices.Mobile_user#getCurrent}. Return null when there
+         * is no user logged in or the data of the current user were not fetched
+         * yet.
+         *
+         * @returns {Object} A Mobile_user instance.
+         */
+        R.getCachedCurrent = function() {
+          var data = LoopBackAuth.currentUserData;
+          return data ? new R(data) : null;
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#isAuthenticated
+         * @methodOf lbServices.Mobile_user
+         *
+         * @returns {boolean} True if the current user is authenticated (logged in).
+         */
+        R.isAuthenticated = function() {
+          return this.getCurrentId() != null;
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#getCurrentId
+         * @methodOf lbServices.Mobile_user
+         *
+         * @returns {Object} Id of the currently logged-in user or null.
+         */
+        R.getCurrentId = function() {
+          return LoopBackAuth.currentUserId;
+        };
 
     /**
     * @ngdoc property
-    * @name lbServices.Report#modelName
-    * @propertyOf lbServices.Report
+    * @name lbServices.Mobile_user#modelName
+    * @propertyOf lbServices.Mobile_user
     * @description
     * The name of the model represented by this $resource,
-    * i.e. `Report`.
+    * i.e. `Mobile_user`.
     */
-    R.modelName = "Report";
+    R.modelName = "Mobile_user";
 
+    /**
+     * @ngdoc object
+     * @name lbServices.Mobile_user.WeatherReports
+     * @header lbServices.Mobile_user.WeatherReports
+     * @object
+     * @description
+     *
+     * The object `Mobile_user.WeatherReports` groups methods
+     * manipulating `Weather_report` instances related to `Mobile_user`.
+     *
+     * Call {@link lbServices.Mobile_user#WeatherReports Mobile_user.WeatherReports()}
+     * to query all related instances.
+     */
+
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#WeatherReports
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Queries WeatherReports of mobile_user.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `filter` – `{object=}` - 
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Weather_report` object.)
+         * </em>
+         */
+        R.WeatherReports = function() {
+          var TargetResource = $injector.get("Weather_report");
+          var action = TargetResource["::get::mobile_user::WeatherReports"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.WeatherReports#count
+         * @methodOf lbServices.Mobile_user.WeatherReports
+         *
+         * @description
+         *
+         * Counts WeatherReports of mobile_user.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * Data properties:
+         *
+         *  - `count` – `{number=}` - 
+         */
+        R.WeatherReports.count = function() {
+          var TargetResource = $injector.get("Weather_report");
+          var action = TargetResource["::count::mobile_user::WeatherReports"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.WeatherReports#create
+         * @methodOf lbServices.Mobile_user.WeatherReports
+         *
+         * @description
+         *
+         * Creates a new instance in WeatherReports of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Weather_report` object.)
+         * </em>
+         */
+        R.WeatherReports.create = function() {
+          var TargetResource = $injector.get("Weather_report");
+          var action = TargetResource["::create::mobile_user::WeatherReports"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.WeatherReports#createMany
+         * @methodOf lbServices.Mobile_user.WeatherReports
+         *
+         * @description
+         *
+         * Creates a new instance in WeatherReports of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Weather_report` object.)
+         * </em>
+         */
+        R.WeatherReports.createMany = function() {
+          var TargetResource = $injector.get("Weather_report");
+          var action = TargetResource["::createMany::mobile_user::WeatherReports"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.WeatherReports#destroyAll
+         * @methodOf lbServices.Mobile_user.WeatherReports
+         *
+         * @description
+         *
+         * Deletes all WeatherReports of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        R.WeatherReports.destroyAll = function() {
+          var TargetResource = $injector.get("Weather_report");
+          var action = TargetResource["::delete::mobile_user::WeatherReports"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.WeatherReports#destroyById
+         * @methodOf lbServices.Mobile_user.WeatherReports
+         *
+         * @description
+         *
+         * Delete a related item by id for WeatherReports.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `fk` – `{*}` - Foreign key for WeatherReports
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        R.WeatherReports.destroyById = function() {
+          var TargetResource = $injector.get("Weather_report");
+          var action = TargetResource["::destroyById::mobile_user::WeatherReports"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.WeatherReports#findById
+         * @methodOf lbServices.Mobile_user.WeatherReports
+         *
+         * @description
+         *
+         * Find a related item by id for WeatherReports.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `fk` – `{*}` - Foreign key for WeatherReports
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Weather_report` object.)
+         * </em>
+         */
+        R.WeatherReports.findById = function() {
+          var TargetResource = $injector.get("Weather_report");
+          var action = TargetResource["::findById::mobile_user::WeatherReports"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.WeatherReports#updateById
+         * @methodOf lbServices.Mobile_user.WeatherReports
+         *
+         * @description
+         *
+         * Update a related item by id for WeatherReports.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `fk` – `{*}` - Foreign key for WeatherReports
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Weather_report` object.)
+         * </em>
+         */
+        R.WeatherReports.updateById = function() {
+          var TargetResource = $injector.get("Weather_report");
+          var action = TargetResource["::updateById::mobile_user::WeatherReports"];
+          return action.apply(R, arguments);
+        };
+    /**
+     * @ngdoc object
+     * @name lbServices.Mobile_user.Positions
+     * @header lbServices.Mobile_user.Positions
+     * @object
+     * @description
+     *
+     * The object `Mobile_user.Positions` groups methods
+     * manipulating `Position` instances related to `Mobile_user`.
+     *
+     * Call {@link lbServices.Mobile_user#Positions Mobile_user.Positions()}
+     * to query all related instances.
+     */
+
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#Positions
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Queries Positions of mobile_user.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `filter` – `{object=}` - 
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Position` object.)
+         * </em>
+         */
+        R.Positions = function() {
+          var TargetResource = $injector.get("Position");
+          var action = TargetResource["::get::mobile_user::Positions"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.Positions#count
+         * @methodOf lbServices.Mobile_user.Positions
+         *
+         * @description
+         *
+         * Counts Positions of mobile_user.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * Data properties:
+         *
+         *  - `count` – `{number=}` - 
+         */
+        R.Positions.count = function() {
+          var TargetResource = $injector.get("Position");
+          var action = TargetResource["::count::mobile_user::Positions"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.Positions#create
+         * @methodOf lbServices.Mobile_user.Positions
+         *
+         * @description
+         *
+         * Creates a new instance in Positions of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Position` object.)
+         * </em>
+         */
+        R.Positions.create = function() {
+          var TargetResource = $injector.get("Position");
+          var action = TargetResource["::create::mobile_user::Positions"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.Positions#createMany
+         * @methodOf lbServices.Mobile_user.Positions
+         *
+         * @description
+         *
+         * Creates a new instance in Positions of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Position` object.)
+         * </em>
+         */
+        R.Positions.createMany = function() {
+          var TargetResource = $injector.get("Position");
+          var action = TargetResource["::createMany::mobile_user::Positions"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.Positions#destroyAll
+         * @methodOf lbServices.Mobile_user.Positions
+         *
+         * @description
+         *
+         * Deletes all Positions of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        R.Positions.destroyAll = function() {
+          var TargetResource = $injector.get("Position");
+          var action = TargetResource["::delete::mobile_user::Positions"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.Positions#destroyById
+         * @methodOf lbServices.Mobile_user.Positions
+         *
+         * @description
+         *
+         * Delete a related item by id for Positions.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `fk` – `{*}` - Foreign key for Positions
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        R.Positions.destroyById = function() {
+          var TargetResource = $injector.get("Position");
+          var action = TargetResource["::destroyById::mobile_user::Positions"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.Positions#findById
+         * @methodOf lbServices.Mobile_user.Positions
+         *
+         * @description
+         *
+         * Find a related item by id for Positions.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `fk` – `{*}` - Foreign key for Positions
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Position` object.)
+         * </em>
+         */
+        R.Positions.findById = function() {
+          var TargetResource = $injector.get("Position");
+          var action = TargetResource["::findById::mobile_user::Positions"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user.Positions#updateById
+         * @methodOf lbServices.Mobile_user.Positions
+         *
+         * @description
+         *
+         * Update a related item by id for Positions.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `fk` – `{*}` - Foreign key for Positions
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Position` object.)
+         * </em>
+         */
+        R.Positions.updateById = function() {
+          var TargetResource = $injector.get("Position");
+          var action = TargetResource["::updateById::mobile_user::Positions"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Mobile_user#Group
+         * @methodOf lbServices.Mobile_user
+         *
+         * @description
+         *
+         * Fetches belongsTo relation Group.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `refresh` – `{boolean=}` - 
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Group` object.)
+         * </em>
+         */
+        R.Group = function() {
+          var TargetResource = $injector.get("Group");
+          var action = TargetResource["::get::mobile_user::Group"];
+          return action.apply(R, arguments);
+        };
 
     return R;
   }]);
@@ -2234,59 +3244,59 @@ module.factory(
   "Group",
   ['LoopBackResource', 'LoopBackAuth', '$injector', function(Resource, LoopBackAuth, $injector) {
     var R = Resource(
-      urlBase + "/groups/:id",
+      urlBase + "/Groups/:id",
       { 'id': '@id' },
       {
 
-        // INTERNAL. Use Group.groupId.findById() instead.
-        "prototype$__findById__groupId": {
+        // INTERNAL. Use Group.MobileUsers.findById() instead.
+        "prototype$__findById__MobileUsers": {
           params: {
           'fk': '@fk'
           },
-          url: urlBase + "/groups/:id/groupId/:fk",
+          url: urlBase + "/Groups/:id/MobileUsers/:fk",
           method: "GET"
         },
 
-        // INTERNAL. Use Group.groupId.destroyById() instead.
-        "prototype$__destroyById__groupId": {
+        // INTERNAL. Use Group.MobileUsers.destroyById() instead.
+        "prototype$__destroyById__MobileUsers": {
           params: {
           'fk': '@fk'
           },
-          url: urlBase + "/groups/:id/groupId/:fk",
+          url: urlBase + "/Groups/:id/MobileUsers/:fk",
           method: "DELETE"
         },
 
-        // INTERNAL. Use Group.groupId.updateById() instead.
-        "prototype$__updateById__groupId": {
+        // INTERNAL. Use Group.MobileUsers.updateById() instead.
+        "prototype$__updateById__MobileUsers": {
           params: {
           'fk': '@fk'
           },
-          url: urlBase + "/groups/:id/groupId/:fk",
+          url: urlBase + "/Groups/:id/MobileUsers/:fk",
           method: "PUT"
         },
 
-        // INTERNAL. Use Group.groupId() instead.
-        "prototype$__get__groupId": {
+        // INTERNAL. Use Group.MobileUsers() instead.
+        "prototype$__get__MobileUsers": {
           isArray: true,
-          url: urlBase + "/groups/:id/groupId",
+          url: urlBase + "/Groups/:id/MobileUsers",
           method: "GET"
         },
 
-        // INTERNAL. Use Group.groupId.create() instead.
-        "prototype$__create__groupId": {
-          url: urlBase + "/groups/:id/groupId",
+        // INTERNAL. Use Group.MobileUsers.create() instead.
+        "prototype$__create__MobileUsers": {
+          url: urlBase + "/Groups/:id/MobileUsers",
           method: "POST"
         },
 
-        // INTERNAL. Use Group.groupId.destroyAll() instead.
-        "prototype$__delete__groupId": {
-          url: urlBase + "/groups/:id/groupId",
+        // INTERNAL. Use Group.MobileUsers.destroyAll() instead.
+        "prototype$__delete__MobileUsers": {
+          url: urlBase + "/Groups/:id/MobileUsers",
           method: "DELETE"
         },
 
-        // INTERNAL. Use Group.groupId.count() instead.
-        "prototype$__count__groupId": {
-          url: urlBase + "/groups/:id/groupId/count",
+        // INTERNAL. Use Group.MobileUsers.count() instead.
+        "prototype$__count__MobileUsers": {
+          url: urlBase + "/Groups/:id/MobileUsers/count",
           method: "GET"
         },
 
@@ -2324,7 +3334,7 @@ module.factory(
          * </em>
          */
         "create": {
-          url: urlBase + "/groups",
+          url: urlBase + "/Groups",
           method: "POST"
         },
 
@@ -2363,7 +3373,7 @@ module.factory(
          */
         "createMany": {
           isArray: true,
-          url: urlBase + "/groups",
+          url: urlBase + "/Groups",
           method: "POST"
         },
 
@@ -2401,7 +3411,7 @@ module.factory(
          * </em>
          */
         "upsert": {
-          url: urlBase + "/groups",
+          url: urlBase + "/Groups",
           method: "PUT"
         },
 
@@ -2433,7 +3443,7 @@ module.factory(
          *  - `exists` – `{boolean=}` - 
          */
         "exists": {
-          url: urlBase + "/groups/:id/exists",
+          url: urlBase + "/Groups/:id/exists",
           method: "GET"
         },
 
@@ -2468,7 +3478,7 @@ module.factory(
          * </em>
          */
         "findById": {
-          url: urlBase + "/groups/:id",
+          url: urlBase + "/Groups/:id",
           method: "GET"
         },
 
@@ -2502,7 +3512,7 @@ module.factory(
          */
         "find": {
           isArray: true,
-          url: urlBase + "/groups",
+          url: urlBase + "/Groups",
           method: "GET"
         },
 
@@ -2535,7 +3545,7 @@ module.factory(
          * </em>
          */
         "findOne": {
-          url: urlBase + "/groups/findOne",
+          url: urlBase + "/Groups/findOne",
           method: "GET"
         },
 
@@ -2569,7 +3579,7 @@ module.factory(
          * This method returns no data.
          */
         "updateAll": {
-          url: urlBase + "/groups/update",
+          url: urlBase + "/Groups/update",
           method: "POST"
         },
 
@@ -2599,7 +3609,7 @@ module.factory(
          * This method returns no data.
          */
         "deleteById": {
-          url: urlBase + "/groups/:id",
+          url: urlBase + "/Groups/:id",
           method: "DELETE"
         },
 
@@ -2631,7 +3641,7 @@ module.factory(
          *  - `count` – `{number=}` - 
          */
         "count": {
-          url: urlBase + "/groups/count",
+          url: urlBase + "/Groups/count",
           method: "GET"
         },
 
@@ -2669,8 +3679,14 @@ module.factory(
          * </em>
          */
         "prototype$updateAttributes": {
-          url: urlBase + "/groups/:id",
+          url: urlBase + "/Groups/:id",
           method: "PUT"
+        },
+
+        // INTERNAL. Use Mobile_user.Group() instead.
+        "::get::mobile_user::Group": {
+          url: urlBase + "/MobileUsers/:id/Group",
+          method: "GET"
         },
       }
     );
@@ -2810,27 +3826,27 @@ module.factory(
 
     /**
      * @ngdoc object
-     * @name lbServices.Group.groupId
-     * @header lbServices.Group.groupId
+     * @name lbServices.Group.MobileUsers
+     * @header lbServices.Group.MobileUsers
      * @object
      * @description
      *
-     * The object `Group.groupId` groups methods
-     * manipulating `User` instances related to `Group`.
+     * The object `Group.MobileUsers` groups methods
+     * manipulating `Mobile_user` instances related to `Group`.
      *
-     * Call {@link lbServices.Group#groupId Group.groupId()}
+     * Call {@link lbServices.Group#MobileUsers Group.MobileUsers()}
      * to query all related instances.
      */
 
 
         /**
          * @ngdoc method
-         * @name lbServices.Group#groupId
+         * @name lbServices.Group#MobileUsers
          * @methodOf lbServices.Group
          *
          * @description
          *
-         * Queries groupId of group.
+         * Queries MobileUsers of group.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -2850,23 +3866,23 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
+         * This usually means the response is a `Mobile_user` object.)
          * </em>
          */
-        R.groupId = function() {
-          var TargetResource = $injector.get("User");
-          var action = TargetResource["::get::group::groupId"];
+        R.MobileUsers = function() {
+          var TargetResource = $injector.get("Mobile_user");
+          var action = TargetResource["::get::group::MobileUsers"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name lbServices.Group.groupId#count
-         * @methodOf lbServices.Group.groupId
+         * @name lbServices.Group.MobileUsers#count
+         * @methodOf lbServices.Group.MobileUsers
          *
          * @description
          *
-         * Counts groupId of group.
+         * Counts MobileUsers of group.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -2888,20 +3904,20 @@ module.factory(
          *
          *  - `count` – `{number=}` - 
          */
-        R.groupId.count = function() {
-          var TargetResource = $injector.get("User");
-          var action = TargetResource["::count::group::groupId"];
+        R.MobileUsers.count = function() {
+          var TargetResource = $injector.get("Mobile_user");
+          var action = TargetResource["::count::group::MobileUsers"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name lbServices.Group.groupId#create
-         * @methodOf lbServices.Group.groupId
+         * @name lbServices.Group.MobileUsers#create
+         * @methodOf lbServices.Group.MobileUsers
          *
          * @description
          *
-         * Creates a new instance in groupId of this model.
+         * Creates a new instance in MobileUsers of this model.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -2923,23 +3939,23 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
+         * This usually means the response is a `Mobile_user` object.)
          * </em>
          */
-        R.groupId.create = function() {
-          var TargetResource = $injector.get("User");
-          var action = TargetResource["::create::group::groupId"];
+        R.MobileUsers.create = function() {
+          var TargetResource = $injector.get("Mobile_user");
+          var action = TargetResource["::create::group::MobileUsers"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name lbServices.Group.groupId#createMany
-         * @methodOf lbServices.Group.groupId
+         * @name lbServices.Group.MobileUsers#createMany
+         * @methodOf lbServices.Group.MobileUsers
          *
          * @description
          *
-         * Creates a new instance in groupId of this model.
+         * Creates a new instance in MobileUsers of this model.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -2961,23 +3977,23 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
+         * This usually means the response is a `Mobile_user` object.)
          * </em>
          */
-        R.groupId.createMany = function() {
-          var TargetResource = $injector.get("User");
-          var action = TargetResource["::createMany::group::groupId"];
+        R.MobileUsers.createMany = function() {
+          var TargetResource = $injector.get("Mobile_user");
+          var action = TargetResource["::createMany::group::MobileUsers"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name lbServices.Group.groupId#destroyAll
-         * @methodOf lbServices.Group.groupId
+         * @name lbServices.Group.MobileUsers#destroyAll
+         * @methodOf lbServices.Group.MobileUsers
          *
          * @description
          *
-         * Deletes all groupId of this model.
+         * Deletes all MobileUsers of this model.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -2995,26 +4011,26 @@ module.factory(
          *
          * This method returns no data.
          */
-        R.groupId.destroyAll = function() {
-          var TargetResource = $injector.get("User");
-          var action = TargetResource["::delete::group::groupId"];
+        R.MobileUsers.destroyAll = function() {
+          var TargetResource = $injector.get("Mobile_user");
+          var action = TargetResource["::delete::group::MobileUsers"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name lbServices.Group.groupId#destroyById
-         * @methodOf lbServices.Group.groupId
+         * @name lbServices.Group.MobileUsers#destroyById
+         * @methodOf lbServices.Group.MobileUsers
          *
          * @description
          *
-         * Delete a related item by id for groupId.
+         * Delete a related item by id for MobileUsers.
          *
          * @param {Object=} parameters Request parameters.
          *
          *  - `id` – `{*}` - PersistedModel id
          *
-         *  - `fk` – `{*}` - Foreign key for groupId
+         *  - `fk` – `{*}` - Foreign key for MobileUsers
          *
          * @param {function(Object,Object)=} successCb
          *   Success callback with two arguments: `value`, `responseHeaders`.
@@ -3028,26 +4044,26 @@ module.factory(
          *
          * This method returns no data.
          */
-        R.groupId.destroyById = function() {
-          var TargetResource = $injector.get("User");
-          var action = TargetResource["::destroyById::group::groupId"];
+        R.MobileUsers.destroyById = function() {
+          var TargetResource = $injector.get("Mobile_user");
+          var action = TargetResource["::destroyById::group::MobileUsers"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name lbServices.Group.groupId#findById
-         * @methodOf lbServices.Group.groupId
+         * @name lbServices.Group.MobileUsers#findById
+         * @methodOf lbServices.Group.MobileUsers
          *
          * @description
          *
-         * Find a related item by id for groupId.
+         * Find a related item by id for MobileUsers.
          *
          * @param {Object=} parameters Request parameters.
          *
          *  - `id` – `{*}` - PersistedModel id
          *
-         *  - `fk` – `{*}` - Foreign key for groupId
+         *  - `fk` – `{*}` - Foreign key for MobileUsers
          *
          * @param {function(Object,Object)=} successCb
          *   Success callback with two arguments: `value`, `responseHeaders`.
@@ -3061,29 +4077,29 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
+         * This usually means the response is a `Mobile_user` object.)
          * </em>
          */
-        R.groupId.findById = function() {
-          var TargetResource = $injector.get("User");
-          var action = TargetResource["::findById::group::groupId"];
+        R.MobileUsers.findById = function() {
+          var TargetResource = $injector.get("Mobile_user");
+          var action = TargetResource["::findById::group::MobileUsers"];
           return action.apply(R, arguments);
         };
 
         /**
          * @ngdoc method
-         * @name lbServices.Group.groupId#updateById
-         * @methodOf lbServices.Group.groupId
+         * @name lbServices.Group.MobileUsers#updateById
+         * @methodOf lbServices.Group.MobileUsers
          *
          * @description
          *
-         * Update a related item by id for groupId.
+         * Update a related item by id for MobileUsers.
          *
          * @param {Object=} parameters Request parameters.
          *
          *  - `id` – `{*}` - PersistedModel id
          *
-         *  - `fk` – `{*}` - Foreign key for groupId
+         *  - `fk` – `{*}` - Foreign key for MobileUsers
          *
          * @param {Object} postData Request data.
          *
@@ -3101,12 +4117,12 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `User` object.)
+         * This usually means the response is a `Mobile_user` object.)
          * </em>
          */
-        R.groupId.updateById = function() {
-          var TargetResource = $injector.get("User");
-          var action = TargetResource["::updateById::group::groupId"];
+        R.MobileUsers.updateById = function() {
+          var TargetResource = $injector.get("Mobile_user");
+          var action = TargetResource["::updateById::group::MobileUsers"];
           return action.apply(R, arguments);
         };
 
