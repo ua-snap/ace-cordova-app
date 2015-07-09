@@ -26,6 +26,13 @@ angular.module('starter.services')
 			mTimerId = null;
 		},
 		
+		/**
+		 * Function uploads all unuploaded positions and marks them as uploaded
+		 * 
+		 * @method uploadPositionsAndMark
+		 * @return void
+		 * @throws none
+		 */
 		uploadPositionsAndMark: function() {
 			var self = this;
 			DbService.getUnuploaded("positions", window, function(res) {
@@ -48,17 +55,15 @@ angular.module('starter.services')
 						speed: row.speed	
 					};
 					
-					(function(j) {
+					(function(posId) {
 						// Execute position create call (Loopback api)
-						Position.create(position, function(value, responseHeaders) {
-							var row2 = self.mPositionRows.item(j);
-							
+						Position.create(position, function(value, responseHeaders) {							
 							// Mark position as uploaded
-							DbService.markUploaded([row2.positionId], "positions", window);
+							DbService.markUploaded([posId], "positions", window);
 						}, function(httpResponse) {
 							alert(httpResponse.data.error.message);
 						});
-					})(i);
+					})(position.positionId);
 				}
 				
 			});
@@ -72,7 +77,11 @@ angular.module('starter.services')
 		 * @throws none
 		 */
 		uploadReportsAndMark: function() {		
-			var self = this;
+			
+			var worker = new Worker('js/workers/worker.js');
+			worker.postMessage("test");
+			
+			/*var self = this;
 			DbService.getUnuploadedReportsWithPositions(window, function(res) {		
 				self.mReportRows = res.rows;
 				for(var i = 0; i < res.rows.length; i++)
@@ -144,7 +153,7 @@ angular.module('starter.services')
 					})(i);		
 					
 				}
-			});						
+			});	*/					
 		},
 			
 		uploadAll: function() {

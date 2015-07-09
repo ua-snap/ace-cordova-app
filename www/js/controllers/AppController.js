@@ -153,6 +153,7 @@ angular.module('starter.controllers', [])
          i = null;
       });*/
       UploadService.uploadReportsAndMark();
+      //UploadService.uploadPositionsAndMark();
       
   };
   
