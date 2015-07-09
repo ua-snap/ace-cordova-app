@@ -12,6 +12,7 @@ angular.module('starter.services')
 	var mTimerId;
 	var mReportRows;
 	var mPositionRows;
+	var uploadWorker;
 	
 	return {
 		enableAutoUpload: function(interval) {
@@ -36,6 +37,24 @@ angular.module('starter.services')
 		uploadPositionsAndMark: function() {
 			var self = this;
 			DbService.getUnuploaded("positions", window, function(res) {
+				// Create data object to pass to upload worker thread
+				var data = {
+					request: "uploadPositions",
+					rows: []
+				};
+				for(var i = 0; i < res.rows.length; i++)
+				{
+					var row = res.rows.item(i);
+					data.rows.push(row);
+				}
+				if(!self.uploadWorker)
+				{
+					self.uploadWorker = new Worker('js/workers/UploadWorker.js');	
+				}
+				self.uploadWorker.postMessage(data);
+			});	
+			
+			/*DbService.getUnuploaded("positions", window, function(res) {
 				// Save the resulting rows to a variable in the service scope (to access later in callbacks)
 				self.mPositionRows = res.rows;
 				
@@ -66,7 +85,7 @@ angular.module('starter.services')
 					})(position.positionId);
 				}
 				
-			});
+			});*/
 		},
 		
 		/**
@@ -76,10 +95,28 @@ angular.module('starter.services')
 		 * @return void
 		 * @throws none
 		 */
-		uploadReportsAndMark: function() {		
+		uploadReportsAndMark: function() {	
+			var self = this;
+			DbService.getUnuploadedReportsWithPositions(window, function(res) {
+				// Create data object to pass to upload worker thread
+				var data = {
+					request: "uploadReports",
+					rows: []
+				};
+				for(var i = 0; i < res.rows.length; i++)
+				{
+					var row = res.rows.item(i);
+					data.rows.push(row);
+				}
+				if(!self.uploadWorker)
+				{
+					self.uploadWorker = new Worker('js/workers/UploadWorker.js');	
+				}
+				self.uploadWorker.postMessage(data);
+			});	
 			
-			var worker = new Worker('js/workers/worker.js');
-			worker.postMessage("test");
+			//var worker = new Worker('js/workers/UploadWorker.js');
+			//worker.postMessage("test");
 			
 			/*var self = this;
 			DbService.getUnuploadedReportsWithPositions(window, function(res) {		

@@ -152,8 +152,8 @@ angular.module('starter.controllers', [])
          i = res; 
          i = null;
       });*/
-      UploadService.uploadReportsAndMark();
-      //UploadService.uploadPositionsAndMark();
+      //UploadService.uploadReportsAndMark();
+      UploadService.uploadPositionsAndMark();
       
   };
   

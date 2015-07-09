@@ -18,7 +18,7 @@ angular.module('starter.controllers')
 
     // This function will be called every time that the login view
     // is displayed, so check for auser already logged in
-    var oldUsername = LocalStorageService.getItem("username", "", window);
+    var oldUsername = "";//LocalStorageService.getItem("currentUser", "", window).username;
     
     // If a user was logged in, skip the login screen and take them 
     // directly to the default view (report view)
