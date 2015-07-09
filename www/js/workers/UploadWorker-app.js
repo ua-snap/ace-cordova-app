@@ -34,15 +34,26 @@ workerApp.run(function(Weather_report, Position, $window) {
 				(function(j) {
 					// Execute position create call (Loopback api)
 					Position.create(position, function(value, responseHeaders) {
+						// Re-grab row object
 						var row2 = self.mReportRows[j];
 						
+						// Message main thread about success
+						var message = {
+							success: true,
+							content: {
+								typeName: "positions",
+								idArray: [row2.positionId]
+							}
+						};						
+						postMessage(message);						
+						
 						// Get returned positionId
-						var posId = value.id;
+						var posWebId = value.id;
 	
 						// get report object
 						var report = {
 							userId: row2.userId,
-							positionId: posId,
+							positionId: posWebId,
 							cloudCover: row2.cloudCover,
 							precipitation: row2.precipitation,
 							visibility: row2.visibility,
@@ -61,16 +72,34 @@ workerApp.run(function(Weather_report, Position, $window) {
 						(function(k) {
 							// execute weather report create call (Loopback api)
 							Weather_report.create(report, function(value, responseHeaders) {
-								var row3 = self.mReportRows[k];
+								var row5 = self.mReportRows[k];
+								
+								// Message main thread about success
+								var message = {
+									success: true,
+									content: {
+										typeName: "reports",
+										idArray: [row5.reportId]
+									}
+								};						
+								postMessage(message);	
 		
 							}, function(httpResponse) {
 								// error
-								alert(httpResponse.data.error.message);
+								var message = {
+									success: false,
+									content: httpResponse
+								};
+								postMessage(message);
 							});
 						})(j);						
 								
 					}, function(httpResponse) {
-						alert(httpResponse.data.error.message);
+						var message = {
+							success: false,
+							content: httpResponse
+						};
+						postMessage(message);
 					});	
 				})(i);
 			}
@@ -95,13 +124,34 @@ workerApp.run(function(Weather_report, Position, $window) {
 				(function(j) {
 					// Execute position create call (Loopback api)
 					Position.create(position2, function(value, responseHeaders) {
-						var a = 0;
-						a++;
+						var row4 = self.mPositionRows[j];
+						
+						// Message main thread about success
+						var message = {
+							success: true,
+							content: {
+								typeName: "positions",
+								idArray: [row4.id]
+							}
+						};						
+						postMessage(message);	
 					}, function(httpResponse) {
-						alert(httpResponse.data.error.message);
+						var message = {
+							success: false,
+							content: httpResponse
+						};
+						postMessage(message);
 					});
 				})(i);
 			}
+		}
+		else
+		{
+			var message = {
+				success: false,
+				content: "Unrecognized request id"
+			};
+			postMessage(message);
 		}
 	}
 });
