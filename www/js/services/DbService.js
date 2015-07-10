@@ -31,10 +31,10 @@ angular.module('starter.services')
 			var createString = "";
 			
 			// Create reports table
-			createString = createString + "CREATE TABLE IF NOT EXISTS reports (id integer primary key, positionId integer, userId integer, cloudCover text, precipitation text, visibility text, pressureTendency text, pressureValue text, temperatureValue text, temperatureUnits text, windValue text, windUnits text, windDirection text, notes text, camera text, other text, uploaded integer); ";
+			createString = createString + "CREATE TABLE IF NOT EXISTS reports (id integer primary key, positionId integer, userId integer, webId integer, cloudCover text, precipitation text, visibility text, pressureTendency text, pressureValue text, temperatureValue text, temperatureUnits text, windValue text, windUnits text, windDirection text, notes text, camera text, other text, uploading integer); ";
 			dbHandler.executeSql(createString);
 			
-			createString = "CREATE TABLE IF NOT EXISTS positions (id integer primary key, userId integer, timestamp integer, latitude real, longitude real, accuracy data_num, altitude real, altitudeAccuracy real, heading real, speed real, uploaded integer); ";
+			createString = "CREATE TABLE IF NOT EXISTS positions (id integer primary key, userId integer, webId integer, timestamp integer, latitude real, longitude real, accuracy data_num, altitude real, altitudeAccuracy real, heading real, speed real, uploading integer); ";
 			dbHandler.executeSql(createString);	
 			
 			createString = "CREATE TABLE IF NOT EXISTS users (id integer primary key, username text unique, email text, groupId integer)";
@@ -81,7 +81,7 @@ angular.module('starter.services')
 		insertPosition: function(pos, window, callback) {
 			var dbHandler = new DbHandler("ace.db", window);
 			
-			var keys = ["timestamp", "userId", "speed", "heading", "altitudeAccuracy", "altitude", "accuracy", "longitude", "latitude", "uploaded"];
+			var keys = ["timestamp", "userId", "speed", "heading", "altitudeAccuracy", "altitude", "accuracy", "longitude", "latitude", "uploading"];
 			
 			var userId = LocalStorageService.getItem("currentUser", null, window).id;
 			
@@ -119,22 +119,26 @@ angular.module('starter.services')
 		 * @param {Position} pos The position (either the standard object returned from the HTML navigator.geolocation functions
 		 * 		or a {{#crossLink "Position"}}{{/crossLink}} object)
 		 * @param {Window} window The window object from the current scope
+		 * @param {function} callback Function to be called after inserting the report
 		 * @return void
 		 * @throws none
 		 */
-		insertReportAndPosition: function(report, position, window) {
+		insertReportAndPosition: function(report, position, window, callback) {
 			var dbHandler = new DbHandler("ace.db", window);
 			var self = this;
 			self.insertPosition(position, window, function(res) {
 				var posId = res.insertId;
-				var keys = ["positionId", "userId", "cloudCover", "precipitation", "visibility", "pressureTendency", "pressureValue", "temperatureValue", "temperatureUnits", "windValue", "windDirection", "notes", "camera", "other", "uploaded"];
+				var keys = ["positionId", "userId", "cloudCover", "precipitation", "visibility", "pressureTendency", "pressureValue", "temperatureValue", "temperatureUnits", "windValue", "windDirection", "notes", "camera", "other", "uploading"];
 				
 				var userId = LocalStorageService.getItem("currentUser", null, window).id;
 				
 				var values = [posId, userId, report.cloudCover, report.precipitation, report.visibility, report.pressureTendency, report.pressureValue, report.temperatureValue, report.temperatureUnits, report.windValue, report.windDirection, report.notes, report.camera, report.other, 0];
 		
 				dbHandler.insertInto("reports", keys, values, function(res) {
-					$ionicLoading.show({template: 'Report Sent Successfully (saved to db)', noBackdrop: true, duration: 1500});
+					if(callback)
+					{
+						callback.call(this, res);
+					}
 				});
 			});	
 		},
@@ -261,7 +265,7 @@ angular.module('starter.services')
 		 * @throws none
 		 */
 		 getUnuploaded: function(tableName, window, callback) {
-			 var sqlString = "SELECT * FROM " + tableName + " WHERE uploaded=0;"
+			 var sqlString = "SELECT * FROM " + tableName + " WHERE uploading=0;"
 			 var dbHandler = new DbHandler("ace.db", window);
 			 dbHandler.executeSql(sqlString, callback);
 		 },
@@ -277,29 +281,60 @@ angular.module('starter.services')
 		  * @throws none
 		  */
 		 getUnuploadedReportsWithPositions: function(window, callback) {
-			var sqlString = "SELECT reports.id as reportId, positions.id as positionId, * FROM reports INNER JOIN positions ON reports.positionId=positions.id WHERE reports.uploaded=0;"
+			var sqlString = "SELECT reports.id as reportId, positions.id as positionId, * FROM reports INNER JOIN positions ON reports.positionId=positions.id WHERE reports.uploading=0;"
 			var dbHandler = new DbHandler("ace.db", window);
 			dbHandler.executeSql(sqlString, callback); 
 		 },
 		 
 		 /**
-		  * Function marks all the database rows with an id in the provided idArray in the provided table as uploaded.
+		  * Function marks all rows in the Db as uploading (or not uploading) according to their id
 		  * 
-		  * @method markUploaded
+		  * @method updateUploading
 		  * @param {Array} idArray The array of id's of the rows to mark as uploaded
 		  * @param {String} tableName The name of the table to mark
 		  * @param {Window} window The window object from the current scope
 		  * @return void
 		  * @throws none
 		  */
-		  markUploaded: function(idArray, tableName, window)
+		  updateUploading: function(idArray, tableName, uploading, window)
 		  {
 			  var dbHandler = new DbHandler("ace.db", window);
+			  var sqlString = "";
+			  var uploadingValue;
+			  if(uploading)
+			  {
+				  uploadingValue = 1;
+			  }
+			  else
+			  {
+				  uploadingValue = 0;				  	  
+			  }
 			  for(var i = 0; i < idArray.length; i++)
 			  {
-				  var sqlString = "UPDATE " + tableName + " SET uploaded=1 WHERE id=" + idArray[i];
+				  sqlString = "UPDATE " + tableName + " SET uploading=" + uploadingValue + " WHERE id=" + idArray[i] + "; ";
+				  dbHandler.executeSql(sqlString);
+			  }			  
+		  },
+		  
+		  /**
+		   * Function updates specified rows (idArray) the webId column of any table with the provided value
+		   * 
+		   * @method updateWebId
+		   * @param {Array} idArray The array of id's of the rows to update
+		   * @param {String} tableName The name of the tables to update
+		   * @param {Window} window The window object from the current scope
+		   */
+		  updateWebId: function(idArray, tableName, webIds, window)
+		  {
+			  var dbHandler = new DbHandler("ace.db", window);
+			  var sqlString = "";
+			  
+			  for(var i = 0; i < idArray.length; i++)
+			  {
+				  sqlString = "UPDATE " + tableName + " SET webId=" + webIds[i] + " WHERE id=" + idArray[i] + "; ";
 				  dbHandler.executeSql(sqlString);
 			  }
-		  }
+			  
+		  }		  
 	};
 });

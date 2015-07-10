@@ -117,7 +117,7 @@ angular.module('starter.services')
 		enableTracking: function(frequency, trackingCallback) {
 			if(trackingCallback)
 			{
-				mtrackingCallback = trackingCallback;	
+				mTrackingCallback = trackingCallback;	
 			}
 			
 			// If provided set the frequency to submit reports (in seconds)
@@ -128,27 +128,54 @@ angular.module('starter.services')
 			
 			var self = this;
 			
+			// Check for any previous timer
+			if(mTimerId)
+			{
+				clearInterval(mTimerId);
+			}
+			
 			// Set the interval function
 			mTimerId = setInterval(function() {
 				self.getCurrentPosition(navigator.geolocation, function(position) {			
+					var insert = false;
+					if(position !== null)
+					{
+						// Automatically insert if no other entries have been inserted
+						if(lastPos === null)
+						{
+							insert = true
+						}
+						else if((position.coords.latitude !== lastPos.coords.latitude) 
+							|| (position.coords.longitude !== lastPos.coords.longitude) 
+							|| (position.coords.altitude != lastPos.coords.altitude) 
+							|| (position.coords.accuracy != lastPos.coords.accuracy) 
+							|| (position.coords.altitudeAccuracy != lastPos.coords.altitudeAccuracy))
+						{
+							insert = true;
+						}				
+					}
 					
-					if((position !== null) && (position !== lastPos))
+					// Insert if necessary
+					if(insert)
 					{
 						DbService.insertPosition(position, window);	
-					
+			
 						if(mTrackingCallback)
 						{
 							mTrackingCallback.call(this, mPos);	
-						}
-					}					
+						}	
+					}						
 				});			     
 			}, mTrackingInterval * 1000);
 		},
 		
 		// Turns off reporting user's location
 		disableTracking: function() {
-			clearInterval(mTimerId);	
-			mTimerId = null;
+			if(mTimerId)
+			{
+				clearInterval(mTimerId);	
+				mTimerId = null;
+			}			
 		},
 		
 		isTrackingEnabled: function() {

@@ -1,7 +1,12 @@
+// This file contains all the initialization required to set up an Angular environment in the Web Worker thread.
+
 // Angular needs a global window object
 self.window = self;
+
+// Mock localStorage and sessionStorage objects to get Angular to load
 self.localStorage = {};
 self.sessionStorage = {};
+
 // Skeleton properties to get Angular to load and bootstrap.
 self.history = {};
 self.document = {
@@ -17,15 +22,16 @@ self.document = {
 };
 
 
-// Load Angular: must be on same domain as this script
+// Load angular.js and angular-resource.js (required by lb-services.js)
 self.importScripts('../../lib/angular/angular.js');
 self.importScripts('../../lib/angular-resource/angular-resource.js')
 
 // Put angular on global scope
 self.angular = window.angular;
 
-// Standard angular module definitions
+// Import necessary files
 self.importScripts('UploadWorker-app.js');
+self.importScripts('UploadWorkerService.js')
 self.importScripts('../../js/services/lb-services.js');
 
 // No root element seems to work fine

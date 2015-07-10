@@ -47,10 +47,12 @@
     <script src="js/services/lb-services.js"></script>
     <script src="js/services/WebApiService.js"></script>
     <script src="js/services/UploadService.js"></script>
+    <script src="js/services/DownloadService.js"></script>
     
     <!-- Worker js files -->
     <script src="js/workers/UploadWorker.js"></script>
     <script src="js/workers/UploadWorker-app.js"></script>
+    <script src="js/workers/UploadWorkerService.js"></script>
     <script src="lib/angular/angular.js"></script>
     
     <!-- Core ACE API js files -->
@@ -106,7 +108,10 @@
             Test Report &amp; Position Db
           </ion-item>
           <ion-item ng-click="test3()">
-            Test HTTP
+            Test Upload Positions
+          </ion-item>
+          <ion-item ng-click="test4()">
+            Test Tracking Callback
           </ion-item>
           <ion-item ng-click="openSettings()">
             Settings

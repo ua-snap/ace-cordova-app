@@ -15,7 +15,7 @@ angular.module('starter.controllers')
  * @description Controller for the Report view.  This controller contains all the
  * UI functionality for entering and saving reports.
  */
-.controller('ReportController', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
+.controller('ReportController', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, UploadService, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
   
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
@@ -44,6 +44,9 @@ angular.module('starter.controllers')
     {
         GeoService.disableTracking();
     }
+    
+    // Turn auto-upload back on (10 second interval)
+    UploadService.enableAutoUpload(10);
     
   });
   
@@ -116,10 +119,13 @@ angular.module('starter.controllers')
   $scope.submitReport = function() {
     //$ionicLoading.show({template: 'Report Sent Successfully (un-implemented)', noBackdrop: true, duration: 1500});
     
-    // Save report to database
+    // Save report to database and upload
     var tempReport = $scope.report;
     GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
-        DbService.insertReportAndPosition(tempReport, pos, window);
+        DbService.insertReportAndPosition(tempReport, pos, window, function(res) {
+            // Manually upload report (an anything else)
+            UploadService.uploadAll(true);
+        });
     });
     
     // Clear all entered data
@@ -203,16 +209,6 @@ angular.module('starter.controllers')
     {
       settings = new Settings();
       localHandler.set("settings", settings);
-    }
-    
-    // check settings and enable position tracking if necessary
-    if(settings.gps.positionTrackingEnabled)
-    {
-      GeoService.enableTracking(settings.gps.trackingInterval);
-    }
-    else
-    {
-      GeoService.disableTracking();
     }
   };
   

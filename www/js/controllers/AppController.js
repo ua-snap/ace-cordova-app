@@ -49,6 +49,12 @@ angular.module('starter.controllers', [])
         // Stop watching position
         GeoService.disableWatchPosition(navigator.geolocation);
         
+        // Stop auto-upload
+        UploadService.disableAutoUpload();
+        
+        // Kill the upload worker thread (if necessary)
+        UploadService.killUploadWorkerThread();
+        
         // Kick the user back out to the login screen
         $state.go('login');
       
@@ -115,7 +121,7 @@ angular.module('starter.controllers', [])
       });
     });*/
     
-    GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
+    /*GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
       DbService.insertPosition(pos, window);
       
       DbService.getAllPositionLogs(window, function(res) {
@@ -127,7 +133,11 @@ angular.module('starter.controllers', [])
         var i = 0;
         i++;
       });
-    });   
+    }); */
+    DbService.getAllPositionLogs(window, function(res) {
+        var num = res.rows.length;
+        alert(num);
+    }); 
   };
   
   $scope.testReportPosition = function() {
@@ -152,9 +162,40 @@ angular.module('starter.controllers', [])
          i = res; 
          i = null;
       });*/
-      UploadService.uploadReportsAndMark();
-      //UploadService.uploadPositionsAndMark();
+      UploadService.uploadAll();
       
+  };
+  
+  $scope.lastPos = null;
+  
+  $scope.test4 = function() {
+      GeoService.getCurrentPosition(navigator.geolocation, function(position) {			
+			var insert = false;
+			if(position !== null)
+			{
+				// Automatically insert if no other entries have been inserted
+				if($scope.lastPos === null)
+				{
+					insert = true
+				}
+				else if((position.coords.latitude !== $scope.lastPos.coords.latitude) 
+					|| (position.coords.longitude !== $scope.lastPos.coords.longitude) 
+					|| (position.coords.altitude != $scope.lastPos.coords.altitude) 
+					|| (position.coords.accuracy != $scope.lastPos.coords.accuracy) 
+					|| (position.coords.altitudeAccuracy != $scope.lastPos.coords.altitudeAccuracy))
+				{
+					insert = true;
+				}				
+			}
+			
+			// Insert if necessary
+			if(insert)
+			{
+				DbService.insertPosition(position, window);	
+			}	
+            
+            $scope.lastPos = position;					
+		});			     
   };
   
   // Go to the settings state
