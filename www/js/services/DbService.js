@@ -183,7 +183,7 @@ angular.module('starter.services')
 		 * @throws none
 		 */
 		getReportsAndPositions: function(window, callback) {
-			var sqlString = "SELECT * FROM reports INNER JOIN positions ON reports.positionId=positions.id;";
+			var sqlString = "SELECT reports.id as reportId, positions.id as positionId, reports.webId as reportWebId, positions.webId as positionWebId, * FROM reports INNER JOIN positions ON reports.positionId=positions.id;";
 			var dbHandler = new DbHandler("ace.db", window);
 			dbHandler.executeSql(sqlString, function(res) {
 				var reports = [];
@@ -281,7 +281,7 @@ angular.module('starter.services')
 		  * @throws none
 		  */
 		 getUnuploadedReportsWithPositions: function(window, callback) {
-			var sqlString = "SELECT reports.id as reportId, positions.id as positionId, * FROM reports INNER JOIN positions ON reports.positionId=positions.id WHERE reports.uploading=0;"
+			var sqlString = "SELECT reports.id as reportId, positions.id as positionId, reports.webId as reportWebId, positions.webId as positionWebId, * FROM reports INNER JOIN positions ON reports.positionId=positions.id WHERE reports.uploading=0;";
 			var dbHandler = new DbHandler("ace.db", window);
 			dbHandler.executeSql(sqlString, callback); 
 		 },

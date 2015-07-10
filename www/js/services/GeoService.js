@@ -145,14 +145,17 @@ angular.module('starter.services')
 						{
 							insert = true
 						}
-						else if((position.coords.latitude !== lastPos.coords.latitude) 
-							|| (position.coords.longitude !== lastPos.coords.longitude) 
-							|| (position.coords.altitude != lastPos.coords.altitude) 
-							|| (position.coords.accuracy != lastPos.coords.accuracy) 
-							|| (position.coords.altitudeAccuracy != lastPos.coords.altitudeAccuracy))
+						else if(position.coords.accuracy === lastPos.coords.accuracy)
+						{
+							if(self.getDistanceHaversine(position, lastPos) > position.coords.accuracy)
+							{
+								insert = true;
+							}
+						}
+						else
 						{
 							insert = true;
-						}				
+						}			
 					}
 					
 					// Insert if necessary

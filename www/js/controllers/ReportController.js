@@ -124,7 +124,7 @@ angular.module('starter.controllers')
     GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
         DbService.insertReportAndPosition(tempReport, pos, window, function(res) {
             // Manually upload report (an anything else)
-            UploadService.uploadAll(true);
+            UploadService.uploadAll();
         });
     });
     
