@@ -3,13 +3,42 @@ var workerApp = angular.module('upload-worker', ['lbServices']);
 
 workerApp.run(function(Weather_report, Position, $window) {
 	// Variables
-	var mReportRows;
-	var mPositionRows;
+	var mReportRows = [];
+	var mReportCounter = 0;
+	var mReportIdArray = [];
+	
+	var mPositionRows = [];
+	var mPositionCounter = 0;
 	
 	// Message handler
 	$window.onmessage = function(e)
 	{
 		var self = this;
+		
+		// Check for any uninitialized scope variables
+		if(!self.mReportRows)
+		{
+			self.mReportRows = [];
+		}
+		if(!self.mReportCounter)
+		{
+			self.mReportCounter = 0;
+		}
+		if(!self.mReportIdArray)
+		{
+			self.mReportIdArray = [];
+		}
+		
+		if(!self.mPositionRows)
+		{
+			self.mPositionRows = [];
+		}
+		
+		if(!self.mPositionCounter)
+		{
+			self.mPositionCounter = 0;
+		}
+		
 		var request = e.data.request;
 		if(request === "uploadReports") {
 			self.mReportRows = e.data.rows;
@@ -74,7 +103,27 @@ workerApp.run(function(Weather_report, Position, $window) {
 							Weather_report.create(report, function(value, responseHeaders) {
 								var row5 = self.mReportRows[k];
 								
-								// Message main thread about success
+								self.mReportIdArray.push(row5.reportId);
+								
+								self.mReportCounter++;
+								if(self.mReportCounter === self.mReportRows.length)
+								{
+									// All reports in this batch uploaded
+									var message = {
+										success: true,
+										content: {
+											typeName: "reports",
+											idArray: self.mReportIdArray
+										}
+									}
+									postMessage(message);
+									// Clear out scope variables
+									self.mReportIdArray = [];
+									self.mReportCounter = 0;
+									self.mReportRows = [];									
+								}
+								
+								/*// Message main thread about success
 								var message = {
 									success: true,
 									content: {
@@ -82,7 +131,7 @@ workerApp.run(function(Weather_report, Position, $window) {
 										idArray: [row5.reportId]
 									}
 								};						
-								postMessage(message);	
+								postMessage(message);*/
 		
 							}, function(httpResponse) {
 								// error
@@ -135,6 +184,15 @@ workerApp.run(function(Weather_report, Position, $window) {
 							}
 						};						
 						postMessage(message);	
+						
+						// Check for end of batch
+						self.mPositionCounter++;
+						if(self.mPositionCounter === self.mPositionRows.length)
+						{
+							self.mPositionCounter = 0;
+							self.mPositionRows = [];
+						}
+						
 					}, function(httpResponse) {
 						var message = {
 							success: false,

@@ -8,7 +8,7 @@ angular.module('starter.services')
  * @class UploadService
  * @constructor
  */
-.service('UploadService', function(DbService) {
+.service('UploadService', function(DbService, $ionicLoading) {
 	// Maintain reference to timer
 	var mTimerId;
 	
@@ -36,6 +36,14 @@ angular.module('starter.services')
 				self.uploadWorker.onmessage = function(e) {
 					if(e.data.success)
 					{
+						if(e.data.content.typeName === "reports")
+						{
+							$ionicLoading.show({
+								template: e.data.content.idArray.length + ' Reports Uploaded Successfully', 
+								noBackdrop: true, 
+								duration: 1500
+							});
+						}
 						DbService.markUploaded(e.data.content.idArray, e.data.content.typeName, window);
 					}
 					else
@@ -95,6 +103,14 @@ angular.module('starter.services')
 						rows.push(row);
 					}
 					self.backgroundRequest("uploadReports", rows, self);
+				}
+				else
+				{
+					$ionicLoading.show({
+						template: 'No Reports to Upload', 
+						noBackdrop: true, 
+						duration: 1500
+					});
 				}				
 			});	
 		},
