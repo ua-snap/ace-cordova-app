@@ -1,17 +1,17 @@
-<ion-view view-title="Settings">
+<ion-view view-title="{{'SETTINGS' | translate}}">
   <ion-nav-buttons side="left">
     <button class="button button-icon ion-android-arrow-back" ng-click="goBack()"></button>
   </ion-nav-buttons>
   <ion-content>
     <ion-list>
       <ion-item ng-click="dbSettingsClicked()">
-        Database Settings
+        {{'DATABASE_SETTINGS' | translate}}
       </ion-item>
       <ion-item ng-click="gpsSettingsClicked()">
-        GPS Settings
+        {{'GPS_SETTINGS' | translate}}
       </ion-item>
-      <ion-item>
-        Setting 3
+      <ion-item ng-click="languageSettingsClicked()">
+        {{'LANGUAGE_SETTINGS' | translate}}
       </ion-item>
     </ion-list>
   </ion-content>

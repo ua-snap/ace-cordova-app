@@ -1,21 +1,21 @@
-<ion-view view-title="GPS Settings">
+<ion-view view-title="{{'GPS_SETTINGS' | translate}}">
   <ion-nav-buttons side="left">
     <!--<button class="button button-icon ion-android-arrow-back" ng-click="goBack()"></button>-->
   </ion-nav-buttons>
   <ion-content>
     <ion-list>
       <label class="item item-input">
-				<span class="input-label">GPS Timeout (s)</span>
+				<span class="input-label">{{'GPS_TIMEOUT' | translate}} (s)</span>
 				<input type="tel" ng-model="gpsSettings.timeout" ng-change="timeoutChanged()">
 			</label>
-      <ion-toggle ng-model="gpsSettings.highAccuracy.checked" ng-change="enableHighAccuracy()">High Accuracy</ion-toggle>
-      <ion-toggle ng-model="gpsSettings.enablePositionTracking.checked" ng-change="enablePosTrackingChanged()">Enable Position Tracking</ion-toggle>
+      <ion-toggle ng-model="gpsSettings.highAccuracy.checked" ng-change="enableHighAccuracy()">{{'HIGH_ACCURACY' | translate}}</ion-toggle>
+      <ion-toggle ng-model="gpsSettings.enablePositionTracking.checked" ng-change="enablePosTrackingChanged()">{{'ENABLE_POSITION_TRACKING' | translate}}</ion-toggle>
 			<label class="item item-input">
-				<span class="input-label">Position Tracking Interval (s)</span>
+				<span class="input-label">{{'POSITION_TRACKING_INTERVAL' | translate}} (s)</span>
 				<input type="tel" ng-model="gpsSettings.trackingInterval" ng-change="trackingIntervalChanged()">
 			</label>  
       <label class="item item-input">
-				<span class="input-label">Displayed Position History Points</span>
+				<span class="input-label">{{'DISPLAYED_POSITION_HISTORY_POINTS' | translate}}</span>
 				<input type="tel" ng-model="gpsSettings.historyPointNum" ng-change="histPointNumChanged()">
 			</label>    
     </ion-list>

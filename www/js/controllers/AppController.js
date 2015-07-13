@@ -26,6 +26,14 @@ angular.module('starter.controllers', [])
     $ionicSideMenuDelegate.toggleLeft();
   };
   
+  $scope.$on('$ionicView.beforeEnter', function() {
+    	$ionicSideMenuDelegate.canDragContent(true);
+        
+        // Set user name in left side menu
+        document.getElementById("username_title").innerText = LocalStorageService.getItem("currentUser", null, window).username;
+    });
+  
+  
   // Function logs out the current user 
   /**
    * @method logout

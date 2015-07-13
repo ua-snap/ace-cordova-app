@@ -15,16 +15,21 @@ angular.module('starter.controllers')
  * @description Controller for the Report view.  This controller contains all the
  * UI functionality for entering and saving reports.
  */
-.controller('ReportController', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, UploadService, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
+.controller('ReportController', function($scope, $state, $translate, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicModal, UploadService, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
   
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
   
   // Adding enter event listener.  This function will be called just before every view load,
-	// regardless of controller and state caching.  Here, this is used to enable the side menu drag functionality.
-	$scope.$on('$ionicView.enter', function() {
-		$ionicSideMenuDelegate.canDragContent(true);
-	});
+    // regardless of controller and state caching.  Here, this is used to enable the side menu drag functionality.
+    $scope.$on('$ionicView.enter', function() {
+    	$ionicSideMenuDelegate.canDragContent(true);
+        
+        // Re-translate the title (to ensure that it is correctly translated)
+        $translate(['WEATHER']).then(function(translations) {
+           $ionicNavBarDelegate.title(translations.WEATHER); 
+        });
+    });
   
   // Check if sent here from template view
   $scope.$on('$ionicView.beforeEnter', function() {
@@ -74,38 +79,54 @@ angular.module('starter.controllers')
     // Show the popover
     $scope.submitPopover.show($event);
     
-    // Fill in each report element
-    var clouds = document.getElementById("sumcat1");
-    clouds.innerText = "Cloud Cover: " + $scope.report.cloudCover;
+    var translationsArray = [
+        'CLOUD_COVER',
+        'PRECIPITATION',
+        'VISIBILITY',
+        'PRESSURE_TENDENCY',
+        'SURFACE_PRESSURE',
+        'TEMPERATURE',
+        'WIND_SPEED',
+        'WIND_DIRECTION',
+        'OTHER',
+        'NOTES'
+    ];
     
-    var precip = document.getElementById("sumcat2");
-    precip.innerText = "Precipitation: " + $scope.report.precipitation;
+    $translate(translationsArray).then(function(translations) {
+        // Fill in each report element
+        var clouds = document.getElementById("sumcat1");
+        clouds.innerText = translations.CLOUD_COVER + ": " + $scope.report.cloudCover;
+        
+        var precip = document.getElementById("sumcat2");
+        precip.innerText = translations.PRECIPITATION + ": " + $scope.report.precipitation;
+        
+        var vis = document.getElementById("sumcat3");
+        vis.innerText = translations.VISIBILITY + ": " + $scope.report.visibility;
+        
+        var pressTrend = document.getElementById("sumcat4_1");
+        pressTrend.innerText = translations.PRESSURE_TENDENCY + ": " + $scope.report.pressureTendency;
+        
+        var pressVal = document.getElementById("sumcat4_2");
+        pressVal.innerText = translations.SURFACE_PRESSURE + ": " + $scope.report.pressureValue + " hPa";
+        
+        var temp = document.getElementById("sumcat5");
+        temp.innerText = translations.TEMPERATURE + ": " + $scope.report.temperatureValue + " " + $scope.report.temperatureUnits;
+        
+        var wind = document.getElementById("sumcat6");
+        wind.innerText = translations.WIND_SPEED + ": " + $scope.report.windValue + " " + $scope.report.windUnits;
+        
+        var windDir = document.getElementById("sumcat6_3");
+        windDir.innerText = translations.WIND_DIRECTION + ": " + $scope.report.windDirection;
+        
+        var other = document.getElementById("sumcat9");
+        other.innerText = translations.OTHER + ": " + $scope.report.other;
+        
+        var notes = document.getElementById("sumcat7");
+        notes.innerText = translations.NOTES + ":\n" + $scope.report.notes;
+        
+        var pic = document.getElementById("sumcat8");
+    });
     
-    var vis = document.getElementById("sumcat3");
-    vis.innerText = "Visibility: " + $scope.report.visibility;
-    
-    var pressTrend = document.getElementById("sumcat4_1");
-    pressTrend.innerText = "Pressure Trend: " + $scope.report.pressureTendency;
-    
-    var pressVal = document.getElementById("sumcat4_2");
-    pressVal.innerText = "Surface Pressure: " + $scope.report.pressureValue + " hPa";
-    
-    var temp = document.getElementById("sumcat5");
-    temp.innerText = "Surface Temperature: " + $scope.report.temperatureValue + " " + $scope.report.temperatureUnits;
-    
-    var wind = document.getElementById("sumcat6");
-    wind.innerText = "Wind Speed: " + $scope.report.windValue + " " + $scope.report.windUnits;
-    
-    var windDir = document.getElementById("sumcat6_3");
-    windDir.innerText = "Wind Direction: " + $scope.report.windDirection;
-    
-    var other = document.getElementById("sumcat9");
-    other.innerText = "Other: " + $scope.report.other;
-    
-    var notes = document.getElementById("sumcat7");
-    notes.innerText = "Notes:\n" + $scope.report.notes;
-    
-    var pic = document.getElementById("sumcat8");
     
   };
   

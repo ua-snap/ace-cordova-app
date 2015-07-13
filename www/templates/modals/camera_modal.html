@@ -1,26 +1,26 @@
 <ion-modal-view>
 	<ion-header-bar>
-		<h1 class="title">Camera</h1>
+		<h1 class="title">{{'CAMERA' | translate}}</h1>
 	</ion-header-bar>
 	
 	<ion-content>
 		<div style="text-align: center">
 			<ul style="list-style: none">
 				<li>
-					<button class="button icon-left ion-android-camera" style="display: inline; margin: 5%" ng-click="takePic()">Take picture</button>	
+					<button class="button icon-left ion-android-camera" style="display: inline; margin: 5%" ng-click="takePic()">{{'TAKE_PICTURE' | translate}}</button>	
 				</li>
 				<li>
-					<button class="button icon-left ion-android-film" style="display: inline; margin: 5%" ng-click="takeVid()">Take video</button>
+					<button class="button icon-left ion-android-film" style="display: inline; margin: 5%" ng-click="takeVid()">{{'TAKE_VIDEO' | translate}}</button>
 				</li>
 				<li>
-					<button class="button icon-left ion-android-image" style="display: inline; margin: 5%" ng-click="selectPic()">Attach photo</button>
+					<button class="button icon-left ion-android-image" style="display: inline; margin: 5%" ng-click="selectPic()">{{'ATTACH_PHOTO' | translate}}</button>
 				</li>
 			</ul>			
 		</div>
 			
 	</ion-content>
 	<ion-footer-bar>
-		<button class="button button-assertive" style="float: left" ng-click="cancelModal8()">Cancel</button>
-		<button class="button button-balanced" style="float: right" ng-click="saveModal8()">Save</button>
+		<button class="button button-assertive" style="float: left" ng-click="cancelModal8()">{{'CANCEL' | translate}}</button>
+		<button class="button button-balanced" style="float: right" ng-click="saveModal8()">{{'SAVE' | translate}}</button>
 	</ion-footer-bar> 
 </ion-modal-view>

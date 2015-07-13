@@ -1,14 +1,14 @@
 <ion-modal-view>
 	<ion-header-bar>
-		<h1 class="title">Surface Temperature</h1>
+		<h1 class="title">{{'TEMPERATURE' | translate}}</h1>
 	</ion-header-bar>
 	
 	<ion-content>
 		<div class="list">
 			<div class="item item-input-inset item-select">
 				<label class="item-input">
-					<span class="input-label ">Temperature:</span>
-					<input type="number" placeholder="Enter here" ng-model="surfaceTempModal.inputTemp">
+					<span class="input-label ">{{'TEMPERATURE' | translate}}:</span>
+					<input type="number" placeholder="{{'ENTER_HERE' | translate}}" ng-model="surfaceTempModal.inputTemp">
 				</label>
 				<select ng-model="surfaceTempModal.selectTemp" id="tempsel" style="font-size:1.5rem;">
 					<option selected> &degC </option>
@@ -33,7 +33,7 @@
 		</list> -->
 	</ion-content>
 	<ion-footer-bar>
-		<button class="button button-assertive" style="float: left" ng-click="cancelModal5()">Cancel</button>
-		<button class="button button-balanced" style="float: right" ng-click="saveModal5()">Save</button>
+		<button class="button button-assertive" style="float: left" ng-click="cancelModal5()">{{'CANCEL' | translate}}</button>
+		<button class="button button-balanced" style="float: right" ng-click="saveModal5()">{{'SAVE' | translate}}</button>
 	</ion-footer-bar> 
 </ion-modal-view>

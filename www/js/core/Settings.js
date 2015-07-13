@@ -8,4 +8,5 @@ var Settings = function() {
 		trackingInterval: 1,
 		displayedHistoryPoints: 100
 	};
+	this.language = "en";
 };

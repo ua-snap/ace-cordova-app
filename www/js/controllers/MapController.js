@@ -13,7 +13,7 @@ angular.module('starter.controllers')
 /**
  * @class MapController
  */
-.controller('MapController', function($scope, $ionicSideMenuDelegate, $ionicPopover, GeoService, DbService, SettingsService) {
+.controller('MapController', function($scope, $ionicSideMenuDelegate, $translate, $ionicNavBarDelegate, $ionicPopover, GeoService, DbService, SettingsService) {
     // Set up menu options popover
     // Create popover from template and save to $scope variable
       $ionicPopover.fromTemplateUrl('templates/popovers/map-options.html', {
@@ -77,6 +77,11 @@ angular.module('starter.controllers')
         
         // Disable left swipe menu
 		$ionicSideMenuDelegate.canDragContent(false);
+        
+        // Re-translate the title (to ensure that it is correctly translated)
+        $translate(['MAP']).then(function(translations) {
+           $ionicNavBarDelegate.title(translations.WEATHER); 
+        });
         
         // Initialize the map
         initialize();

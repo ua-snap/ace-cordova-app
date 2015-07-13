@@ -1,31 +1,31 @@
 <div class="modal">
 	<ion-header-bar>
-		<h1 class="title">Pressure</h1>
+		<h1 class="title">{{'PRESSURE' | translate}}</h1>
 	</ion-header-bar>
 	<ion-content>
 		<div class="list">
 			<label class="item item-stacked-label"></label>
-				<span class="input-label" style="width: 100%;">Pressure Tendency:</span>
+				<span class="input-label" style="width: 100%;">{{'PRESSURE_TENDENCY' | translate}}:</span>
 				<div class="row">
 					<div class="col report-block modal-block-three-wide" ng-click="selectItemCat4('4opt1')" id="4opt1">
 						<img src="img/arrow_up.png" class="report-image"></img>
-		        		<div class="report-title">Upward</div>
+		        		<div class="report-title">{{'UPWARD' | translate}}</div>
 					</div>
 					<div class="col report-block modal-block-four-wide" ng-click="selectItemCat4('4opt2')" id="4opt2">
 						<img src="img/no_change.png" class="report-image"></img>
-		        		<div class="report-title">No Change</div>
+		        		<div class="report-title">{{'NO_CHANGE' | translate}}</div>
 					</div>
 					<div class="col report-block modal-block-four-wide" ng-click="selectItemCat4('4opt3')" id="4opt3">
 						<img src="img/arrow_down.png" class="report-image"></img>
-		        		<div class="report-title">Downward</div>
+		        		<div class="report-title">{{'DOWNWARD' | translate}}</div>
 					</div>
 				</div>
 
 			
 			<label class="item item-input item-select item-stacked-label">
-				<span class="input-label">Surface Pressure:</span>
+				<span class="input-label">{{'SURFACE_PRESSURE' | translate}}:</span>
 					<div class="row">
-						<div class="col"><input type="number" placeholder="Enter here..." ng-model="pressureModal.inputTemp"></div>
+						<div class="col"><input type="number" placeholder="{{'ENTER_HERE' | translate}}" ng-model="pressureModal.inputTemp"></div>
 						<div class="col">
 							<select style="font-size:1.5rem;">
 								<option selected> hPa </option>
@@ -36,7 +36,7 @@
 		</div>
 	</ion-content>
 	<ion-footer-bar>
-		<button class="button button-assertive" style="float: left" ng-click="cancelModal4()">Cancel</button>
-		<button class="button button-balanced" style="float: right" ng-click="saveModal4()">Save</button>
+		<button class="button button-assertive" style="float: left" ng-click="cancelModal4()">{{'CANCEL' | translate}}</button>
+		<button class="button button-balanced" style="float: right" ng-click="saveModal4()">{{'SAVE' | translate}}</button>
 	</ion-footer-bar>
 </div>

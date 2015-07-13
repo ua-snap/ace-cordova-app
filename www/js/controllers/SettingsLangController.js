@@ -1,31 +1,60 @@
-// SettingsController.js
+// SettingsLangController.js
 
 /**
  * @module starter.controllers
  */
  
- // SettingsController.js
+ // SettingsLangController.js
  //-----------------------------------------------------------------------------------------------
  
  // Controller for the settings view
  /**
-  * @class SettingsController
+  * @class SettingsLangController
   */
+  
 angular.module('starter.controllers')
 
-.controller('SettingsController', function($scope, $translate, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicHistory, $state) {
-	
+.controller('SettingsLangController', function($scope, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicHistory, $state, SettingsService, $translate) {
+  	
 	// Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
 	$scope.$on('$ionicView.enter', function() {
 		// Enable dragging of the side menu
 		$ionicSideMenuDelegate.canDragContent(false);
-		
-		// Re-translate the title (to ensure that it is correctly translated)
-        $translate(['SETTINGS']).then(function(translations) {
-           $ionicNavBarDelegate.title(translations.SETTINGS); 
-        });
 	});
+	  
+	$scope.languages = [
+		{name: "English", value: "en"},
+		{name: "Français", value: "fr"}	
+	];
+	
+	$scope.languageSettings = {
+		language: ""
+	};
+	
+	$scope.$on('$ionicView.beforeEnter', function() {
+		var settings = SettingsService.getSettings(window);
+		$scope.languageSettings.language = settings.language;
+	});
+	
+	$scope.languageChanged = function() {
+		//alert($scope.languageSettings.language);
+		// Update settings
+		
+		// Actually change language
+		$translate.use($scope.languageSettings.language);
+		
+		// Change title name
+		// Re-translate the title (to ensure that it is correctly translated)
+        $translate(['SELECT_LANGUAGE']).then(function(translations) {
+           $ionicNavBarDelegate.title(translations.SELECT_LANGUAGE); 
+        });
+		
+		// Update settings
+		var settings = SettingsService.getSettings(window);
+		settings.language = $scope.languageSettings.language;
+		SettingsService.updateSettings(window, settings);
+	};
 	
 	// Function toggles sliding the left side-menu out and back in
 	/**
@@ -57,16 +86,4 @@ angular.module('starter.controllers')
 			$state.go('tab.report');
 		}
 	};
-	
-	$scope.dbSettingsClicked = function() {
-		$state.go('settings-db');	
-	};
-	
-	$scope.gpsSettingsClicked = function() {
-		$state.go('settings-gps');
-	};
-	
-	$scope.languageSettingsClicked = function() {
-		$state.go('settings-language');
-	}
 });

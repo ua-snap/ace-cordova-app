@@ -18,13 +18,13 @@ angular.module('starter.services', [])
             };
             
             // Hardcoded login
-            if(creds.username === "user" && creds.password === "secret")
+            /*if(creds.username === "user" && creds.password === "secret")
             {
                 if(successCallback)
                 {
                     successCallback.call(this);
                 }
-            }
+            }*/
             
             $http.post("http://192.168.1.2:3000/api/Users/login", creds).success(function(data, status, headers, config) {
                 // Set user access token
