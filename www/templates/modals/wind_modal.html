@@ -11,8 +11,8 @@
 					<input type="number" placeholder="Enter here" ng-model="windModal.inputTemp">
 				</label>				
 					<select ng-model="windModal.select1Temp" id="wind_sel_units" style="font-size:1.5rem;">
-						<option selected> Knots </option>
-						<option> mph </option>
+						<option value="k" label=" Knots "> Knots </option>
+						<option value="m" label=" mph "> mph </option>
 					</select>				
 			</div>
 		</div>
@@ -20,14 +20,15 @@
 		<label class="item item-input item-select">	
 			<span class="input-label">{{'WIND_DIRECTION' | translate}}:</span>
 			<select ng-model="windModal.select2Temp">
-				<option selected> {{'NORTH' | translate} </option>
-				<option> {{'NORTHEAST' | translate}} </option>
-				<option> {{'EAST' | translate}} </option>
-				<option> {{'SOUTHEAST' | translate}} </option>
-				<option> {{'SOUTH' | translate}} </option>
-				<option> {{'SOUTHWEST' | translate}} </option>
-				<option> {{'WEST' | translate}} </option>
-				<option> {{'NORTHWEST' | translate}} </option>
+				<option value="blank" label=" "> </option>
+				<option value="north" label=" {{'NORTH' | translate}} "> {{'NORTH' | translate}} </option>
+				<option value="northeast" label=" {{'NORTHEAST' | translate}} "> {{'NORTHEAST' | translate}} </option>
+				<option value="east" label=" {{'EAST' | translate}} "> {{'EAST' | translate}} </option>
+				<option value="southeast" label=" {{'SOUTHEAST' | translate}} "> {{'SOUTHEAST' | translate}} </option>
+				<option value="south" label=" {{'SOUTH' | translate}} "> {{'SOUTH' | translate}} </option>
+				<option value="southwest" label=" {{'SOUTHWEST' | translate}} "> {{'SOUTHWEST' | translate}} </option>
+				<option value="west" label=" {{'WEST' | translate}} "> {{'WEST' | translate}} </option>
+				<option value="northwest" label=" {{'NORTHWEST' | translate}} "> {{'NORTHWEST' | translate}} </option>
 			</select>
 		</label>
 	</ion-content>

@@ -31,6 +31,20 @@ angular.module('starter.controllers')
     }
 
     $scope.data = {};
+    
+    $scope.formSubmitted = function() {
+        var focusedElement = document.activeElement;
+        if(focusedElement.id === "passwordInput")
+        {
+            $scope.login();
+            return true;
+        }
+        else if(focusedElement.id === "usernameInput")
+        {
+            document.getElementById("passwordInput").focus();
+            return false;
+        }
+    };
 
     // Checks the provided username and password and logs the user in
     // if the credentials are valid.  If invalid, notifies the user

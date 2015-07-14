@@ -528,7 +528,7 @@ angular.module('starter.controllers')
       case "3opt1":
         returnValue = "Mist";
         break;
-      case "3opt3":
+      case "3opt2":
         returnValue = "Patchy Fog";
         break;
       case "3opt3":
@@ -614,9 +614,18 @@ angular.module('starter.controllers')
       $scope.pressureModal.input = $scope.pressureModal.inputTemp;
       
       $scope.report.pressureTendency = $scope.convertCategory4($scope.pressureModal.selection);
-      $scope.report.pressureValue = $scope.pressureModal.input;
       
-      document.getElementById("pressure_sum").innerText = $scope.pressureModal.input + " hPa";
+      if($scope.pressureModal.input !== null)
+      {
+            $scope.report.pressureValue = $scope.pressureModal.input;      
+            document.getElementById("pressure_sum").innerText = $scope.pressureModal.input + " hPa";
+      }
+      else
+      {
+          $scope.report.pressureValue = "";
+          document.getElementById("pressure_sum").innerText = "______";
+      }
+      
   };
   
   // Conversion function for pressure modal.  Takes in the id of the user selection on the UI and returns the actual
@@ -675,6 +684,10 @@ angular.module('starter.controllers')
   
   // Open temperature modal
   $scope.openModal5 = function() {
+      
+      // Select degrees C
+      $scope.surfaceTempModal.selectTemp = "C";
+      
     $scope.modalHandler.openModal(document, $scope.surfaceTempModal);
     
     // Handle any previous temperature value
@@ -703,13 +716,21 @@ angular.module('starter.controllers')
   
   // Save temperature modal selections
   $scope.saveModal5 = function() {
+      
       // Save value
       $scope.surfaceTempModal.input = $scope.surfaceTempModal.inputTemp;
       $scope.surfaceTempModal.select = $scope.surfaceTempModal.selectTemp;
       
       // Save units
       $scope.report.temperatureValue = $scope.surfaceTempModal.input;
-      $scope.report.temperatureUnits = $scope.surfaceTempModal.select;
+      if($scope.surfaceTempModal.select === "C")
+      {
+          $scope.report.temperatureUnits = " ºC ";
+      }
+      else if($scope.surfaceTempModal.select === "F")
+      {
+          $scope.report.temperatureUnits = " ºF ";
+      }
       
       // Update the summary on the tab-report.html page
       document.getElementById('temp_sum').innerText = $scope.report.temperatureValue + " " + $scope.report.temperatureUnits;
@@ -759,6 +780,10 @@ angular.module('starter.controllers')
   
   // Open wind modal
   $scope.openModal6 = function() {
+      // Preselect knots and blank direction
+      $scope.windModal.select1Temp = "k";
+      $scope.windModal.select2Temp = "blank";
+      
     // Open the modal
     $scope.modalHandler.openModal(document, $scope.windModal);
     
@@ -806,12 +831,70 @@ angular.module('starter.controllers')
       $scope.windModal.select2 = $scope.windModal.select2Temp;
       
       // Load values into report
-      $scope.report.windValue = $scope.windModal.input;
-      $scope.report.windUnits = $scope.windModal.select1;
-      $scope.report.windDirection = $scope.windModal.select2;
+      if($scope.windModal.input === null)
+      {
+          $scope.report.windValue = "";
+          $scope.report.windUnits = "";
+      }
+      else
+      {
+          $scope.report.windValue = $scope.windModal.input;
+          if($scope.windModal.select1 === "k")
+          {
+              $scope.report.windUnits = " Knots ";
+          }
+          else if($scope.windModal.select1 = "m")
+          {
+              $scope.report.windUnits = " mph ";
+          }
+      }
+      
+      
+      switch($scope.windModal.select2)
+      {
+            case "blank":
+                $scope.report.windDirection = "";
+                break;
+            case "north": 
+                $scope.report.windDirection = "North";
+                break;
+            case "northeast":
+                $scope.report.windDirection = "Northeast";
+                break;
+            case "east":
+                $scope.report.windDirection = "East";
+                break;
+            case "southeast":
+                $scope.report.windDirection = "Southeast";
+                break;
+            case "south":
+                $scope.report.windDirection = "South";
+                break;
+            case "southwest":
+                $scope.report.windDirection = "Southwest";
+                break;
+            case "west":
+                $scope.report.windDirection = "West";
+                break;
+            case "northwest":
+                $scope.report.windDirection = "Northwest";
+                break;
+            default:
+                $scope.report.windDirection = "";
+                break;
+            
+      }
       
       // Update the summary element on the tab-report.html view
-      document.getElementById('wind_sum').innerText = $scope.report.windValue + " " + $scope.report.windUnits + " " + $scope.report.windDirection;
+      if($scope.report.windValue !== "")
+      {
+          document.getElementById('wind_sum').innerText = $scope.report.windValue + " " + $scope.report.windUnits;
+      }
+      else
+      {
+          document.getElementById("wind_sum").innerText = "______";
+      }
+      
       
       // close the modal
       $scope.windModal.hide();
