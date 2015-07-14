@@ -4,10 +4,25 @@ angular.module('starter.services')
 	return {
 		loginUser: function(name, pw, successCallback, errorCallback) {
             
-            var credentials = {
-                username: name,
+            // Check if what was passed as username looks like an email address...
+            var credentials = {};
+            var emailValidator = new EmailValidator();
+            if(emailValidator.validate(name))
+            {
+                credentials = {
+                    email: name,
+                    password: pw
+                };
+            }
+            else
+            {
+                credentials = {
+                    username: name,
                 password: pw
-            };
+                }
+            }
+            
+            
             
             WebApiService.authorizeUser(credentials, function(value, responseHeaders) {
                 // success 

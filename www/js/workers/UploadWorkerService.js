@@ -54,6 +54,13 @@ angular.module('worker-services', [])
 				message.content.done = true;
 				message.content.count = count;
 			}
+			
+			// Remove $promise object if there is one
+			if(message.content.extra.$promise !== undefined)
+			{
+				message.content.extra.$promise = null;
+			}
+			
 			postMessage(message);
 		},
 		

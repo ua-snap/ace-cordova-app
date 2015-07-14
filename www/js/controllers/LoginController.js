@@ -34,12 +34,12 @@ angular.module('starter.controllers')
     
     $scope.formSubmitted = function() {
         var focusedElement = document.activeElement;
-        if(focusedElement.id === "passwordInput")
+        if(focusedElement.id !== "usernameInput")
         {
             $scope.login();
             return true;
         }
-        else if(focusedElement.id === "usernameInput")
+        else
         {
             document.getElementById("passwordInput").focus();
             return false;

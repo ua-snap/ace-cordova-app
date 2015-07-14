@@ -18,7 +18,8 @@ self.document = {
 			setAttribute: function() {}
 		}
 	},
-	cookie: ""
+	cookie: "",
+	getElementById: function() {}
 };
 
 
