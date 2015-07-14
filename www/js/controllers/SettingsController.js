@@ -58,14 +58,35 @@ angular.module('starter.controllers')
 		}
 	};
 	
+	/**
+	 * Function called when the Database Settings item is clicked.  Opens the database settings interface
+	 * 
+	 * @method dbSettingsClicked
+	 * @return void
+	 * @throws none
+	 */
 	$scope.dbSettingsClicked = function() {
 		$state.go('settings-db');	
 	};
 	
+	/**
+	 * Function called when the GPS Settings item is clicked.  Opens the GPS settings interface
+	 * 
+	 * @method gpsSettingsClicked
+	 * @return void
+	 * @throws none
+	 */
 	$scope.gpsSettingsClicked = function() {
 		$state.go('settings-gps');
 	};
 	
+	/**
+	 * Function called when the Language Settings item is clicked.  Opens the Language settings interface
+	 * 
+	 * @method languageSettingsClicked
+	 * @return void
+	 * @throws none
+	 */
 	$scope.languageSettingsClicked = function() {
 		$state.go('settings-language');
 	}

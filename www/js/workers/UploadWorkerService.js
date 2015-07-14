@@ -29,6 +29,16 @@ angular.module('worker-services', [])
 		
 		/**
 		 * Sends a success or error message back to the main thread
+		 * 
+		 * @method sendMessage
+		 * @param {Boolean} success True if this is a success message, false otherwise
+		 * @param {Integer} localId The local SQL id of the item being reported about
+		 * @param {String} typeName Either "reports" or "positions"
+		 * @param {Object} data Additional data to send
+		 * @param {Boolean} final True if this is the last in a series of reports
+		 * @param {Integer} count If final==true, this should be the number of reports uploaded
+		 * @return void
+		 * @throws none
 		 */
 		sendMessage: function(success, localId, typeName, data, final, count) {
 			var message = {

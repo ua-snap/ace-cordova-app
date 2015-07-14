@@ -63,7 +63,7 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
-	this.tempuratureValue = "";
+	this.temperatureValue = "";
 	
 	/**
 	 * Temperature units (deg C or deg F)
@@ -71,7 +71,7 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
-	this.tempuratureUnits = "";
+	this.temperatureUnits = "";
 	
 	/**
 	 * Wind value

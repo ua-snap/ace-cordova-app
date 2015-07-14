@@ -107,7 +107,15 @@ angular.module('starter.controllers')
         pressTrend.innerText = translations.PRESSURE_TENDENCY + ": " + $scope.report.pressureTendency;
         
         var pressVal = document.getElementById("sumcat4_2");
-        pressVal.innerText = translations.SURFACE_PRESSURE + ": " + $scope.report.pressureValue + " hPa";
+        if($scope.report.pressureValue !== "")
+        {
+            pressVal.innerText = translations.SURFACE_PRESSURE + ": " + $scope.report.pressureValue + " hPa";
+        }
+        else
+        {
+            pressVal.innerText = translations.SURFACE_PRESSURE + ": ";   
+        }
+        
         
         var temp = document.getElementById("sumcat5");
         temp.innerText = translations.TEMPERATURE + ": " + $scope.report.temperatureValue + " " + $scope.report.temperatureUnits;
