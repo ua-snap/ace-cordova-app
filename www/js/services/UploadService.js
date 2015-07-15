@@ -1,4 +1,4 @@
-angular.module('starter.services')
+angular.module('ace.services')
 
 /**
  * Service that manages uploading positions and reports to the ACE web server.  Service primarily checks for

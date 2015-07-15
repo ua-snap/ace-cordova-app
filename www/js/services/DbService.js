@@ -1,4 +1,4 @@
-angular.module('starter.services')
+angular.module('ace.services')
  
 /**
  * @class DbService
@@ -55,16 +55,19 @@ angular.module('starter.services')
 		
 		/**
 		 * @method clearDatabase
-		 * @description Drops all tables from the ACE database, and then re-creates them by calling #createTables()
+		 * @description Deletes all rows from all tables from the ACE database, and then re-creates them by calling #createTables()
 		 * @param {Window} window The window object from the current scope
 		 * @return void
 		 * @throws none
 		 */
 		clearDatabase: function(window) {
 			var dbHandler = new DbHandler("ace.db", window);
-			var clearString = "DROP TABLE IF EXISTS reports; DROP TABLE IF EXISTS positions; DROP TABLE IF EXISTS users";
+			var clearString = "DELETE FROM users";
 			dbHandler.executeSql(clearString);
-			this.createTables();
+			clearString = "DELETE FROM reports";
+			dbHandler.executeSql(clearString);
+			clearString = "DELETE FROM positions";
+			dbHandler.executeSql(clearString);
 		},
 		
 		/**

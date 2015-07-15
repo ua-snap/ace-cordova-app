@@ -38,6 +38,7 @@
     <script src="js/controllers/SettingsLangController.js"></script>
     
     <!-- Service js files (LoginService.js first - init function) -->
+    <script src="js/services/WebApiService.js"></script>
     <script src="js/services/GeoService.js"></script>
     <script src="js/services/DbService.js"></script>
     <script src="js/services/SettingsService.js"></script>
@@ -45,7 +46,6 @@
     <script src="js/services/AuthService.js"></script>
     <script src="js/services/LocalStorageService.js"></script>
     <script src="js/services/lb-services.js"></script>
-    <script src="js/services/WebApiService.js"></script>
     <script src="js/services/UploadService.js"></script>
     <script src="js/services/DownloadService.js"></script>
     
@@ -75,7 +75,7 @@
     
 
   </head>
-  <body ng-app="starter">
+  <body ng-app="ace">
     <ion-side-menus>
     <ion-pane ion-side-menu-content="" drag-content="false">
     <!--
@@ -102,7 +102,7 @@
           <ion-item ng-click="logout()">
             {{'LOGOUT' | translate}}
           </ion-item>
-          <ion-item ng-click="test()">
+          <!--<ion-item ng-click="test()">
             Test Geolocation
           </ion-item>
           <ion-item ng-click="test2()">
@@ -119,7 +119,7 @@
           </ion-item>
           <ion-item ng-click="test4()">
             Test Tracking Callback
-          </ion-item>
+          </ion-item>-->
           <ion-item ng-click="openSettings()">
             {{'SETTINGS' | translate}}
           </ion-item>

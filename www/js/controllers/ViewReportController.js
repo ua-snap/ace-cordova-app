@@ -1,4 +1,4 @@
-angular.module('starter.controllers')
+angular.module('ace.controllers')
 
 .controller('ViewReportController', function($ionicSideMenuDelegate, $scope, $state, $translate, DataShareService) {
 	$scope.report = null;
@@ -18,9 +18,9 @@ angular.module('starter.controllers')
 		$scope.fillFromReport($scope.report);
 	});
 	
-	// Fill in template
+	// Fill in template (Disabled currently)
 	$scope.useTemplateClicked = function() {
-		DataShareService.setItem("template", $scope.report);
+		//DataShareService.setItem("template", $scope.report);
 		$state.go("tab.report");
 	};
 	

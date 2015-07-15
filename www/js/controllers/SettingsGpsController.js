@@ -1,7 +1,7 @@
 // SettingsGpsController.js
 
 /**
- * @module starter.controllers
+ * @module ace.controllers
  */
  
  // SettingsGpsController.js
@@ -11,7 +11,7 @@
  /**
   * @class SettingsGpsController
   */
-angular.module('starter.controllers')
+angular.module('ace.controllers')
 
 .controller('SettingsGpsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, GeoService, DbService, SettingsService) {
   	

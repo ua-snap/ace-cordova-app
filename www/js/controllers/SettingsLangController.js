@@ -1,7 +1,7 @@
 // SettingsLangController.js
 
 /**
- * @module starter.controllers
+ * @module ace.controllers
  */
  
  // SettingsLangController.js
@@ -12,7 +12,7 @@
   * @class SettingsLangController
   */
   
-angular.module('starter.controllers')
+angular.module('ace.controllers')
 
 .controller('SettingsLangController', function($scope, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicHistory, $state, SettingsService, $translate) {
   	

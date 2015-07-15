@@ -1,4 +1,4 @@
-angular.module('starter.services')
+angular.module('ace.services', [])
 
 /**
  * This service serves as an interface to the ACE web api.

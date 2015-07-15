@@ -1,7 +1,7 @@
 // SettingsDbController.js
 
 /**
- * @module starter.controllers
+ * @module ace.controllers
  */
  
  // SettingsDbController.js
@@ -11,7 +11,7 @@
  /**
   * @class SettingsDbController
   */
-angular.module('starter.controllers')
+angular.module('ace.controllers')
 
 .controller('BrowseReportsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, LocalStorageService, DbService, DataShareService) {
   

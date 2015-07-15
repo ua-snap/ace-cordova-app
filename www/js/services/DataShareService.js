@@ -1,4 +1,4 @@
-angular.module('starter.services')
+angular.module('ace.services')
 
 /**
  * Service class that is used primarily to share data between controllers.  One controller can call setItem on the 

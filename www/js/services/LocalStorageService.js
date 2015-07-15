@@ -1,4 +1,4 @@
-angular.module('starter.services')
+angular.module('ace.services')
 
 /**
  * Service class that provides an interface to local storage (SharedPreferences in native Android).  Anything stored

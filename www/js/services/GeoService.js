@@ -1,4 +1,4 @@
-angular.module('starter.services')
+angular.module('ace.services')
 
 /**
  * Service class that handles all Geolocation for the app.

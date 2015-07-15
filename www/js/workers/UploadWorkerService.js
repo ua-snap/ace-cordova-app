@@ -1,4 +1,4 @@
-angular.module('worker-services', [])
+angular.module('worker-services', ['ace.services', 'lbServices'])
 
 .service('UploadWorkerService', function(WebApiService) {
 	// Variables

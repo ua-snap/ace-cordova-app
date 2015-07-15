@@ -4,10 +4,10 @@
 //--------------------------------------------------------------
 
 /**
- * @module starter.controllers
+ * @module ace.controllers
  */
-// Create the starter.controllers angularjs module
-angular.module('starter.controllers', [])
+// Create the ace.controllers angularjs module
+angular.module('ace.controllers', [])
 
 // Create the AppController controller
 /**
@@ -34,8 +34,9 @@ angular.module('starter.controllers', [])
     });
   
   
-  // Function logs out the current user 
   /**
+   * Function logs out the current user 
+   * 
    * @method logout
    * @description Function logs out the current user by removing them from local storage
    * @return void
@@ -206,7 +207,13 @@ angular.module('starter.controllers', [])
 		});			     
   };
   
-  // Go to the settings state
+  /**
+   * Function opens the settings view
+   * 
+   * @method openSettings
+   * @return void
+   * @throws none
+   */
   $scope.openSettings = function() {    
     // This function was accessed by sliding out the left menu, so close it back up.
     $ionicSideMenuDelegate.toggleLeft();

@@ -1,9 +1,9 @@
 // ReportController.js
 
 /**
- * @module starter.controllers
+ * @module ace.controllers
  */
-angular.module('starter.controllers')
+angular.module('ace.controllers')
 
 // ReportController
 //--------------------------------------------------------------
@@ -184,21 +184,32 @@ angular.module('starter.controllers')
     if(report.cloudCover && report.cloudCover !== "")
     {
       document.getElementById("cloud_sum").innerText = report.cloudCover;
+      $scope.cloudCoverModal.selection = $scope.cloudCoverValueToId(report.cloudCover);
+      $scope.cloudCoverModal.temp = $scope.cloudCoverValueToId(report.cloudCover);
     }
     
     if(report.precipitation && report.precipitation !== "")
     {
       document.getElementById("precip_sum").innerText = report.precipitation;
+      $scope.precipModal.selection = $scope.precipitationValueToId(report.precipitation);
+      $scope.precipModal.temp = $scope.precipitationValueToId(report.precipitation);
     }
     
     if(report.visibility && report.visibility !== "")
     {
       document.getElementById("vis_sum").innerText = report.visibility;
+      $scope.visibilityModal.selection = $scope.visibilityValueToId(report.visibility);
+      $scope.visibilityModal.temp = $scope.visibilityValueToId(report.visibility);
     }
     
     if(report.pressureValue && report.pressureValue != "")
     {
       document.getElementById("pressure_sum").innerText = report.pressureValue + " hPa";
+      $scope.pressureModal.input = report.pressureValue;
+      $scope.pressureModal.inputTemp = report.pressureValue;
+      
+      $scope.pressureModal.selection = $scope.pressureValueToId(report.pressureTendency);
+      $scope.pressureModal.temp = $scope.pressureValueToId(report.pressureTendency);
     }
     
     if(report.temperatureValue && report.temperatureValue !== "")
@@ -309,6 +320,49 @@ angular.module('starter.controllers')
   $scope.openModal1 = function() {
       $scope.modalHandler.openModal(document, $scope.cloudCoverModal);
   };  
+
+  $scope.cloudCoverValueToId = function(value) {
+    var returnValue = "";
+
+    // Convert report value it item Id
+    switch(value)
+    {
+      case "No Clouds":
+        returnValue = "1opt1";
+        break;
+      case "1/8th":
+        returnValue = "1opt2";
+        break;
+      case "2/8ths":
+        returnValue = "1opt3";
+        break;
+      case "3/8ths":
+        returnValue = "1opt4";
+        break;
+      case "4/8ths":
+        returnValue = "1opt5";
+        break;
+      case "5/8ths":
+        returnValue = "1opt6";
+        break;
+      case "6/8ths":
+        returnValue = "1opt7";
+        break;
+      case "7/8ths":
+        returnValue = "1opt8";
+        break;
+      case "8/8ths":
+        returnValue = "1opt9";
+        break; 
+      case "Sky Obscured":
+        returnValue = "1opt10";
+        break;
+      default:
+        break;
+    }
+    
+    return returnValue;
+  };
   
   // Takes the id of the selected item on the cloud cover modal and returns the actual report value
   $scope.convertCategory1 = function(id) {
@@ -408,6 +462,65 @@ angular.module('starter.controllers')
   $scope.openModal2 = function() {
       $scope.modalHandler.openModal(document, $scope.precipModal);
   };  
+  
+  $scope.precipitationValueToId = function(value) {
+        var returnValue = "";
+        switch(value)
+        {
+          case "Light Rain":
+            returnValue = "2opt1";
+            break;
+          case "Moderate Rain":
+            returnValue = "2opt2";
+            break;
+          case "Heavy Rain":
+            returnValue = "2opt3";
+            break;
+          case "Light Snow":
+            returnValue = "2opt4";
+            break;
+          case "Moderate Snow":
+            returnValue = "2opt5";
+            break;
+          case "Heavy Snow":
+            returnValue = "2opt6";
+            break;
+          case "Freezing Rain":
+            returnValue = "2opt7";
+            break;
+          case "Heavy Freezing Rain":
+            returnValue = "2opt8";
+            break;
+          case "Raing & Snow":
+            returnValue = "2opt9";
+            break; 
+          case "Heavy Rain & Snow":
+            returnValue = "2opt10";
+            break;
+          case "Sleet":
+            returnValue = "2opt11";
+            break;
+          case "Ice Needles":
+            returnValue = "2opt12";
+            break;
+          case "Freezing Drizzle":
+            returnValue = "2opt13";
+            break;
+          case "Thunderstorm":
+            returnValue = "2opt14";
+            break;  
+          case "Thundersnow":
+            returnValue = "2opt15";
+            break;
+          case "Virga":
+            returnValue = "2opt16";
+            break;
+          default:
+            break;
+    }
+    
+    return returnValue;
+  };
   
   // Converts id for the precip modal to the actual report value
   $scope.convertCategory2 = function(opt) {
@@ -520,6 +633,38 @@ angular.module('starter.controllers')
       $scope.modalHandler.openModal(document, $scope.visibilityModal);
   };  
   
+  $scope.visibilityValueToId = function(value) {
+    var returnValue = "";
+    switch(value)
+    {
+      case "Mist":
+        returnValue = "3opt1";
+        break;
+      case "Patchy Fog":
+        returnValue = "3opt2";
+        break;
+      case "Fog":
+        returnValue = "3opt3";
+        break;
+      case "Ice Fog":
+        returnValue = "3opt4";
+        break;
+      case "Haze":
+        returnValue = "3opt5";
+        break;
+      case "Blowing Snow":
+        returnValue = "3opt6";
+        break;
+      case "Smoke":
+        returnValue = "3opt7";
+        break;
+      default:
+        break;
+    }
+    
+    return returnValue;  
+  };
+  
   // Conversion function for visibility.  Takes in the id of the user selection from the modal and returns the actual report value.
   $scope.convertCategory3 = function(opt) {
     var returnValue = "";
@@ -628,6 +773,26 @@ angular.module('starter.controllers')
       
   };
   
+  $scope.pressureValueToId = function(value) {
+    var returnValue = "";
+    switch(value)
+    {
+      case "Upward":
+        returnValue = "4opt1";
+        break;
+      case "No Change":
+        returnValue = "4opt2";
+        break;
+      case "Downward":
+        returnValue = "4opt3";
+        break;
+      default:
+        break;
+    }
+    
+    return returnValue;
+  };
+  
   // Conversion function for pressure modal.  Takes in the id of the user selection on the UI and returns the actual
   // report value
   $scope.convertCategory4 = function(opt) {
@@ -725,11 +890,11 @@ angular.module('starter.controllers')
       $scope.report.temperatureValue = $scope.surfaceTempModal.input;
       if($scope.surfaceTempModal.select === "C")
       {
-          $scope.report.temperatureUnits = " ºC ";
+          $scope.report.temperatureUnits = " ÂºC ";
       }
       else if($scope.surfaceTempModal.select === "F")
       {
-          $scope.report.temperatureUnits = " ºF ";
+          $scope.report.temperatureUnits = " ÂºF ";
       }
       
       // Update the summary on the tab-report.html page

@@ -3,11 +3,11 @@
 // LoginController
 //--------------------------------------------------------------
 
-// Grab the starter.controllers angular module (so we can add to it)
+// Grab the ace.controllers angular module (so we can add to it)
 /**
- * @module starter.controllers
+ * @module ace.controllers
  */
-angular.module('starter.controllers')
+angular.module('ace.controllers')
 
 // Create the LoginController controller
 /**

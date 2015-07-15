@@ -1,7 +1,7 @@
 // WorkspaceController.js
 
 /**
- * @module starter.controllers
+ * @module ace.controllers
  */
  
  // WorkspaceController.js
@@ -11,7 +11,7 @@
  /**
   * @class WorkspaceController
   */
-angular.module('starter.controllers')
+angular.module('ace.controllers')
 
 .controller('WorkspaceController', function($scope, $translate, $ionicNavBarDelegate, $ionicSideMenuDelegate) {
 	

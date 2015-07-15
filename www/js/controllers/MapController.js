@@ -1,9 +1,9 @@
 // MapController.js
  
 /**
- * @module starter.controllers
+ * @module ace.controllers
  */
-angular.module('starter.controllers')
+angular.module('ace.controllers')
  
 // MapController
 //--------------------------------------------------------------
@@ -93,7 +93,7 @@ angular.module('starter.controllers')
         
         // Disable watching position
         //GeoService.disableWatchPosition(navigator.geolocation);
-        GeoService.setWatchCallback(null);
+        //GeoService.setWatchCallback(null);
     });
     
     $scope.saveMapState = function() {
@@ -245,7 +245,9 @@ angular.module('starter.controllers')
               GeoService.setTrackingCallback(null);
                 
               // remove the history line
-              historyLine.setMap(null);    
+              historyLine.setMap(null);  
+              
+              historyLine = null;  
           }          
       }
     };

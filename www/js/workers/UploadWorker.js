@@ -34,6 +34,7 @@ self.angular = window.angular;
 self.importScripts('UploadWorker-app.js');
 self.importScripts('UploadWorkerService.js')
 self.importScripts('../../js/services/WebApiService.js');
+self.importScripts('../../js/services/lb-services.js')
 
 // No root element seems to work fine
 self.angular.bootstrap(null, ['upload-worker']);

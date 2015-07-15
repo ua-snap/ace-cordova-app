@@ -1,4 +1,4 @@
-angular.module('starter.services')
+angular.module('ace.services')
 
 /**
  * Service class provides access to the settings object model for the application, which is saved in LocalStorage.

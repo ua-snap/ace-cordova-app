@@ -1,7 +1,7 @@
 // SettingsController.js
 
 /**
- * @module starter.controllers
+ * @module ace.controllers
  */
  
  // SettingsController.js
@@ -11,7 +11,7 @@
  /**
   * @class SettingsController
   */
-angular.module('starter.controllers')
+angular.module('ace.controllers')
 
 .controller('SettingsController', function($scope, $translate, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicHistory, $state) {
 	

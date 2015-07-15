@@ -1,4 +1,4 @@
-angular.module('starter.services')
+angular.module('ace.services')
 
 /**
  * Service class handles authorization for the mobile app.  Performs login/logout functionality.  Also handles 
