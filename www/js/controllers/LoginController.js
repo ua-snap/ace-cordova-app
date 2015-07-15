@@ -29,9 +29,18 @@ angular.module('starter.controllers')
         $ionicSideMenuDelegate.canDragContent(true);
         $state.go('tab.report');
     }
-
+    
+    // Data variable to hold username and password
     $scope.data = {};
     
+    /**
+     * Function controls the app's behavior when the form is submitted.  Added to allow for keyboard navigation
+     * from the username field to the password field when pressing the keyboard go button.
+     * 
+     * @method formSubmitted
+     * @return void
+     * @throws none
+     */
     $scope.formSubmitted = function() {
         var focusedElement = document.activeElement;
         if(focusedElement.id !== "usernameInput")
@@ -48,7 +57,7 @@ angular.module('starter.controllers')
 
     // Checks the provided username and password and logs the user in
     // if the credentials are valid.  If invalid, notifies the user
-    // and rejects the login attempt.  Utilizes LoginService to check 
+    // and rejects the login attempt.  Utilizes AuthService to check 
     // credentials
     /**
      * @method login

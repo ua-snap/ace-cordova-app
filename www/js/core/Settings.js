@@ -1,4 +1,10 @@
-// Class contains application-level settings.  Intended to be stored in LocalStorage and accessed from there.
+/**
+ * Class contains application-level settings.  Intended to be stored in LocalStorage and accessed from there via the
+ * SettingsService.
+ * 
+ * @class Settings
+ * @constructor
+ */
 var Settings = function() {
 	// GPS settings
 	this.gps = {

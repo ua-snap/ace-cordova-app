@@ -1,7 +1,14 @@
 angular.module('starter.services')
 
+/**
+ * Service class that handles all Geolocation for the app.
+ * 
+ * @class GeoService
+ * @constructor
+ */
 .service('GeoService', function(DbService, SettingsService) {
 	
+	// Member variables for the service
 	var mTrackingInterval = 1;
 	var mPos = null;
 	var mWatchId;
@@ -11,8 +18,18 @@ angular.module('starter.services')
 	var mTrackingCallback;
 	var lastPos = null;
 	
-	return {		
-		// Track the position of the device and update mPos with each available update
+	return {	
+		/**
+		 * Function turns on tracking of device position. Updates member variable mPos with each update from the 
+		 * navigator.geolocation object.  Can also be used to execute some callback on every position update through
+		 * the optional watchSuccessCallback parameter.
+		 * 
+		 * @method enableWatchPosition
+		 * @param {Object} geolocationObj The object to use for geolocation information (usually navigator.geolocation)
+		 * @param {function} watchSuccessCallback Function to be executed on each available position update.  Optional.
+		 * @return void
+		 * @throws none
+		 */	
 		enableWatchPosition: function(geolocationObj, watchSuccessCallback) {
 			var self = this;
 			mWatchCallback = watchSuccessCallback;
@@ -29,7 +46,14 @@ angular.module('starter.services')
 			}, {timeout: settings.gps.timeout * 1000, enableHighAccuracy: settings.gps.highAccuracy});
 		},
 		
-		// Turn off position tracking
+		/**
+		 * Function disables tracking of the device position
+		 * 
+		 * @method disableWatchPosition
+		 * @param {Object} geolocationObj The object to disable the watch on. (usually navigator.geolocation)
+		 * @return void
+		 * @throws none
+		 */
 		disableWatchPosition: function(geolocationObj) {
 			if(mWatchId)
 			{
@@ -38,16 +62,39 @@ angular.module('starter.services')
 			mWatchId = null;		
 		},
 		
-		// Sets the interval to submit a location report (and to save a history point on the map)
+		/**
+		 * Function sets the interval at which to record a location to the web server.
+		 * 
+		 * @method setTrackingInterval
+		 * @param {Number} trackingInterval The interval at which to record a location to the web server.
+		 * @return void
+		 * @throws none
+		 */
 		setTrackingInterval: function(trackingInterval) {
 			mTrackingInterval = trackingInterval;
 		},
 		
-		// Sets the callback function for watchPosition success
+		/**
+		 * Sets the callback function for a watchPosition update.
+		 * 
+		 * @method setWatchCallback
+		 * @param {function} watchCallback The function to be executed on every position update
+		 * @return void
+		 * @throws none
+		 */
 		setWatchCallback: function(watchCallback) {
 			mWatchCallback = watchCallback;
 		},
 		
+		/**
+		 * Function uses the Haversine method to return the distance between to GPS positions.
+		 * 
+		 * @method getDistanceHaversine
+		 * @param {Object} The Position object representing the first location.
+		 * @param {Object} The Position object representing the second location.
+		 * @return {Number} The distance between the two positions in meters.
+		 * @throws none
+		 */
 		getDistanceHaversine: function(position1, position2) {
 			if(position1 && position2)
 			{
@@ -73,11 +120,30 @@ angular.module('starter.services')
 			}			
 		},
 		
+		/**
+		 * Function converts the provided degrees argument to radians.
+		 * 
+		 * @method degreesToRadians
+		 * @param {Number} deg The degrees to be converted to radians.
+		 * @return {Number} The value of the provided "deg" argument in radians
+		 * @throws none
+		 */
 		degreesToRadians: function(deg) {
 			return deg * (Math.PI/180);	
 		},
 		
-		// Returns the latest position value
+		/**
+		 * Function gets the most current position value and passes it to the successCallback parameter.  If the
+		 * position is currently being watched, simply passes the current value of mPos.  If not, function enables 
+		 * position watching and executes the successCallback only once.
+		 * 
+		 * @method getCurrentPosition
+		 * @param {Object} geolocationObj The object to use for geolocation services (usually navigator.geolocation)
+		 * @param {function} successCallback The function to pass the retrieved position to
+		 * @param {function} errorCallback Function called if there is an error retrieving the latest position value.
+		 * @return void
+		 * @throws none
+		 */
 		getCurrentPosition: function(geolocationObj, successCallback, errorCallback) {
 			var self = this;
 			// If currently watching position, simply return most recent position value
@@ -102,18 +168,43 @@ angular.module('starter.services')
 			}			
 		},
 		
-		// Common GPS error handler
+		/**
+		 * Function serves as the common error handler for the Geolocation service and is called wherever errorCallbacks are
+		 * not used.  Currently does nothing.
+		 * 
+		 * @method gpsErrorHandler
+		 * @param {Object} error The error to handle
+		 * @return void
+		 * @throws none
+		 */
 		gpsErrorHandler: function(error) {
 			// Do nothing right now
 		},
 		
+		/**
+		 * Function sets an indicator telling the service to follow the user's position (only used when on the Map view)
+		 * 
+		 * @method setFollowPosition
+		 * @param {Boolean} follow True if the user position should be followed. False if not.
+		 * @return void
+		 * @throws none
+		 */
 		// Sets private variable indicating whether or not to follow the user's position on the map (continually 
 		// recenter on user position)
 		setFollowPosition: function(follow) {
 			mFollowPosition = follow;
 		},
 		
-		// Turns on reporting the user's location
+		/**
+		 * Function turns on tracking of the device position at the frequency specified by the parameter.  Additionally, 
+		 * an optional trackingCallback is provided to execute a function on every tracking interval.
+		 * 
+		 * @method enableTracking
+		 * @param {Number} frequency The frequency at which to track the device position, in seconds.
+		 * @param {function} trackingCallback Function that will be executed at each tracking interval (optional).
+		 * @return void
+		 * @throws none
+		 */
 		enableTracking: function(frequency, trackingCallback) {
 			if(trackingCallback)
 			{
@@ -172,7 +263,13 @@ angular.module('starter.services')
 			}, mTrackingInterval * 1000);
 		},
 		
-		// Turns off reporting user's location
+		/**
+		 * Function disables tracking a user's location
+		 * 
+		 * @method disableTracking
+		 * @return void
+		 * @throws none
+		 */
 		disableTracking: function() {
 			if(mTimerId)
 			{
@@ -181,6 +278,13 @@ angular.module('starter.services')
 			}			
 		},
 		
+		/**
+		 * Function checks whether tracking is currently enabled.  Returns true if it is, false otherwise.
+		 * 
+		 * @method isTrackingEnabled
+		 * @return {Boolean} True if tracking is enabled, false otherwise
+		 * @throws none
+		 */
 		isTrackingEnabled: function() {
 			if(mTimerId && mWatchId)
 			{
@@ -192,7 +296,14 @@ angular.module('starter.services')
 			}
 		},
 		
-		// Set the report callback
+		/**
+		 * Function sets the tracking callback
+		 * 
+		 * @method setTrackingCallback
+		 * @param {function} trackingCallback The function to be executed on the tracking interval
+		 * @return void
+		 * @throws none
+		 */
 		setTrackingCallback: function(trackingCallback) {
 			mTrackingCallback = trackingCallback;
 		}

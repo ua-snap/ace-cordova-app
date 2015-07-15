@@ -1,6 +1,6 @@
 angular.module('worker-services', [])
 
-.service('UploadWorkerService', function(Weather_report, Position) {
+.service('UploadWorkerService', function(WebApiService) {
 	// Variables
 	var mReportRows = [];
 	var mReportCounter = 0;
@@ -95,7 +95,7 @@ angular.module('worker-services', [])
 				// Closure to persist "i"
 				(function(j) {
 					// Execute position create call (Loopback api)
-					Position.create(position2, function(value, responseHeaders) {
+					WebApiService.createPosition(position2, function(value, responseHeaders) {
 						// Re-grab the correct position value
 						var row4 = self.mPositionRows[j];
 						
@@ -154,7 +154,7 @@ angular.module('worker-services', [])
 				// Closure to persist "i"
 				(function(j) {
 					// Execute position create call (Loopback api)
-					Position.create(position, function(value, responseHeaders) {
+					WebApiService.createPosition(position, function(value, responseHeaders) {
 						// Re-grab row object
 						var row2 = self.mReportRows[j];
 						
@@ -186,7 +186,7 @@ angular.module('worker-services', [])
 						// Closure to persist original "i" value
 						(function(k) {
 							// execute weather report create call (Loopback api)
-							Weather_report.create(report, function(value, responseHeaders) {
+							WebApiService.createWeatherReport(report, function(value, responseHeaders) {
 								// Re-grab row
 								var row5 = self.mReportRows[k];
 								self.mReportCounter++;

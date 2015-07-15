@@ -2,7 +2,8 @@ angular.module('starter.services')
 
 /**
  * Service that manages uploading positions and reports to the ACE web server.  Service primarily checks for
- * any db items with a "0" uploading flag and uploads them.
+ * any db items with a "0" uploading flag and uploads them.  Utilizes a Web Worker thread to do all actual
+ * uploading off the main thread
  * 
  * @class UploadService
  * @constructor
