@@ -15,6 +15,9 @@
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     
+    <!-- Translation module -->
+    <script src="lib/angular-translate/angular-translate.js"></script>
+    
     <!-- angular-resource -->
     <script src="lib/angular-resource/angular-resource.js"></script>
 
@@ -66,8 +69,7 @@
     <script src="js/WeatherReport.js"></script>
     <script src="js/ModalHandler.js"></script>
     
-    <!-- Translation module -->
-    <script src="lib/angular-translate/angular-translate.js"></script>
+    
     
     <!-- File Upload module -->
     <script src="lib/angular-file-upload/angular-file-upload.js"></script>
@@ -100,7 +102,7 @@
       <ion-content scroll="false" ng-controller="AppController">
         <ion-list>
           <ion-item ng-click="logout()">
-            {{'LOGOUT' | translate}}
+            {{&apos;LOGOUT&apos; | translate}}
           </ion-item>
           <!--<ion-item ng-click="test()">
             Test Geolocation
@@ -121,7 +123,7 @@
             Test Tracking Callback
           </ion-item>-->
           <ion-item ng-click="openSettings()">
-            {{'SETTINGS' | translate}}
+            {{&apos;SETTINGS&apos; | translate}}
           </ion-item>
       </ion-list></ion-content>
     </ion-side-menu>

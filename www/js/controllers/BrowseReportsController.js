@@ -71,12 +71,4 @@ angular.module('ace.controllers')
 		DataShareService.setItem("selectedReport", report);
 		$state.go("browse-reports-view");
  	};
-	
-	$scope.deleteClicked = function() {
-		// Delete the database
-		DbService.deleteDatabase(window);
-		
-		// Recreate the database
-		DbService.createTables(window);
-	};
 });
