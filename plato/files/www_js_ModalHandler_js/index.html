@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - www/js/ModalHandler.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>www/js/ModalHandler.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">70.84</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">179</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">30.00</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">0.57</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">// ModalHandler.js
+
+// ModalHandler
+//-----------------------------------------------------------------------------------
+
+// Class handles functionality related to modals in the reporting section
+
+// Empty constructor
+/**
+ * @class ModalHandler
+ * @constructor
+ */
+var ModalHandler = function() {};
+
+/**
+ * Static unselected color value
+ * 
+ * @property unselectedColor
+ * @type string
+ * @default &quot;transparent&quot;
+ */
+ModalHandler.prototype.unselectedColor = &quot;transparent&quot;;
+
+/**
+ * Static selected color value
+ * 
+ * @property selectedColor
+ * @type string
+ * @default &quot;rgb(149, 206, 226)&quot;
+ */
+ModalHandler.prototype.selectedColor = &quot;rgb(149, 206, 226)&quot;;
+
+
+// Returns all &quot;selectable&quot; items in the current modal
+/**
+ * @method getSelectable
+ * @description Returns all &quot;selectable&quot; items in the current modal
+ * @param {HTML Document} htmlDoc The &quot;document&quot; variable from the current scope
+ * @return {array} An array of all the elements in the current ui that are members
+ *          of the &quot;selectable&quot; class.  This should be used for situations when the
+ *          user selects from multiple pre-defined options listed as a grid of icons.
+ * @throws none
+ */
+ModalHandler.prototype.getSelectable = function(htmlDoc) {
+	return htmlDoc.getElementsByClassName(&quot;selectable&quot;);
+};
+
+// Resets (changes to the unselected color) all the backgrounds of elements that are members of the
+// &quot;selectable class&quot;
+/**
+ * @method resetSelectableBackgrounds
+ * @description
+ * @param {HTML Document} htmlDoc The &quot;document&quot; variable from the current scope
+ * @return void
+ * @throws none
+ */
+ModalHandler.prototype.resetSelectableBackgrounds = function(htmlDoc) {
+	var divArray = this.getSelectable(htmlDoc);
+	for(var i = 0; i &lt; divArray.length; i++)
+	{
+		divArray[i].style.backgroundColor = this.unselectedColor;
+	}
+};
+
+// Sets a new temporary (unsaved) selection on a modal.  Handles background recoloring.
+/**
+ * @method setNewTempSelection
+ * @description
+ * @param {HTML Document} htmlDoc The &quot;document&quot; variable from the current scope
+ * @param {ionicModal} modal The app modal that the selection was performed on
+ * @param {string} id The id of the element that was selected.
+ */
+ModalHandler.prototype.setNewTempSelection = function(htmlDoc, modal, id) {
+    // Grab the selected element
+	var selectedElement = htmlDoc.getElementById(id);
+    
+    // Check previous selections (temporary or saved)
+	if((modal.temp &amp;&amp; modal.temp === id) || (modal.selection &amp;&amp; modal.selection === id))
+	{
+        // If selectedElement is the same as the previously selected element, deselect it
+		modal.temp = &quot;&quot;;
+		selectedElement.style.backgroundColor = this.unselectedColor;
+	}
+	else
+	{
+        // If any other element was previously (temporarily) selected, reset its background color
+        if(modal.temp &amp;&amp; modal.temp !== &quot;&quot;)
+        {
+            htmlDoc.getElementById(modal.temp).style.backgroundColor = this.unselectedColor;
+        }        
+        
+        // Save new temp selection
+        modal.temp = id;
+        
+        // Update ui to new selected item
+		selectedElement.style.backgroundColor = this.selectedColor;
+	}
+};
+
+// Sets up any previsouly selected items from a modal (sets the background of the element indicated by &quot;id&quot; to
+// the selected color).
+/**
+ * @method setPreviousSelection
+ * @description
+ * @param {HTML Document} htmlDoc The &quot;document&quot; variable from the current scope
+ * @param {string} id The id of any previously selected element
+ * @return void
+ * @throws none
+ */
+ModalHandler.prototype.setPreviousSelection = function(htmlDoc, id) {
+    // If the id is valid...
+    if(id !== &quot;&quot;)
+    {
+        // Set background color to &quot;selected&quot;
+        htmlDoc.getElementById(id).style.backgroundColor = this.selectedColor;
+    }
+};
+
+// Opens a modal and handles setting up any selectable items
+/**
+ * @method openModal
+ * @description
+ * @param {HTML Document} htmlDoc the &quot;document&quot; variable from the current scope
+ * @param {ionicModal} The app modal to be opened.
+ * @return void
+ * @throws none
+ */
+ModalHandler.prototype.openModal = function(htmlDoc, modal)
+{
+    // If anything was previously selected...
+    if(modal.selection)
+    {
+        // Set it as selected currently
+        this.setPreviousSelection(htmlDoc, modal.selection);
+    }
+    else
+    {
+        // Otherwise, clear all backgrounds to the unselected color (takes care of any un-recycled view elements)
+        this.resetSelectableBackgrounds(htmlDoc);
+    }
+    
+    // Actually display the modal
+    modal.show();
+};
+
+// Performs &quot;Save&quot; functionality for the specified modal.  
+/**
+ * @method saveModal
+ * @param {HTML Document} htmlDoc The &quot;document&quot; variable from the current scope.
+ * @param {ionicModal} modal The modal to save.
+ * @param {string} summaryElementId The id of the element to display the summary information in
+ * @param {function} convertFunction The function that specifies how to convert the selected element id (in modal.temp)
+ *          to the actual report value.
+ * @param {function} formatSummaryText The function that handles formatting the summary field
+ * @param {boolean} summaryDifferent OPTIONAL parameter that indicates whether the summary field should be different from
+ *          what was saved into the report.
+ */
+ModalHandler.prototype.saveModal = function(htmlDoc, modal, summaryElementId, convertFunction, formatSummaryText, summaryDifferent) {
+    // Save the selection to the modal permanent variable
+    modal.selection = modal.temp;
+    
+    // Update the reportField with the passed formatting funcion
+    var reportField = convertFunction(modal.selection);
+    
+    // Grab a reference to the summary element
+    var summary = htmlDoc.getElementById(summaryElementId);
+    
+    // If the summary is flagged as different than the reportField value...
+    if(summaryDifferent)
+    {
+        // Set it with its own provided formatting function
+        summary.innerText = formatSummaryText(reportField);
+    }
+    else
+    {
+        // Otherwise, set the summary text to the same as the report field
+        if(reportField &amp;&amp; reportField !== &quot;&quot;)
+        {
+            summary.innerText = reportField;
+        }
+        else
+        {
+            // If no value was selected, re-display the blank &quot;_____&quot; that indicates no value selected
+            summary.innerText = &quot;______&quot;;
+        }
+    }
+    
+    // Hide the modal
+    modal.hide();
+    
+};</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

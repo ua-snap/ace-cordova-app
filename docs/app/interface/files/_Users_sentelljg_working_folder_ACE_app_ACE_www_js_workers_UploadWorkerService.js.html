@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>/Users/sentelljg/working_folder/ACE/app/ACE/www/js/workers/UploadWorkerService.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title=""></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/AppController.html">AppController</a></li>
+            
+                <li><a href="../classes/AuthService.html">AuthService</a></li>
+            
+                <li><a href="../classes/DataShareService.html">DataShareService</a></li>
+            
+                <li><a href="../classes/DbService.html">DbService</a></li>
+            
+                <li><a href="../classes/GeoService.html">GeoService</a></li>
+            
+                <li><a href="../classes/LocalStorageService.html">LocalStorageService</a></li>
+            
+                <li><a href="../classes/LoginController.html">LoginController</a></li>
+            
+                <li><a href="../classes/MapController.html">MapController</a></li>
+            
+                <li><a href="../classes/ModalHandler.html">ModalHandler</a></li>
+            
+                <li><a href="../classes/ReportController.html">ReportController</a></li>
+            
+                <li><a href="../classes/SettingsController.html">SettingsController</a></li>
+            
+                <li><a href="../classes/SettingsDbController.html">SettingsDbController</a></li>
+            
+                <li><a href="../classes/SettingsGpsController.html">SettingsGpsController</a></li>
+            
+                <li><a href="../classes/SettingsLangController.html">SettingsLangController</a></li>
+            
+                <li><a href="../classes/SettingsService.html">SettingsService</a></li>
+            
+                <li><a href="../classes/UploadService.html">UploadService</a></li>
+            
+                <li><a href="../classes/UploadWorker.html">UploadWorker</a></li>
+            
+                <li><a href="../classes/WeatherReport.html">WeatherReport</a></li>
+            
+                <li><a href="../classes/WebApiService.html">WebApiService</a></li>
+            
+                <li><a href="../classes/WorkspaceController.html">WorkspaceController</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="../modules/ace.controllers.html">ace.controllers</a></li>
+            
+                <li><a href="../modules/ace.services.html">ace.services</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: /Users/sentelljg/working_folder/ACE/app/ACE/www/js/workers/UploadWorkerService.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+angular.module(&#x27;worker-services&#x27;, [&#x27;ace.services&#x27;, &#x27;lbServices&#x27;])
+
+.service(&#x27;UploadWorkerService&#x27;, function(WebApiService) {
+	// Variables
+	var mReportRows = [];
+	var mReportCounter = 0;
+
+	var mPositionRows = [];
+	var mPositionCounter = 0;
+	
+	return {
+		/**
+		 * Function initializes all service variables (if they are not initialized already)
+		 * 
+		 * @method initialize
+		 * @return void
+		 * @throws none
+		 */
+		initialize: function() {
+			if(this.mReportRows === undefined)
+			{
+				this.mReportRows = [];
+				this.mReportCounter = 0;
+				
+				this.mPositionRows = [];
+				this.mPositionCounter = 0;
+			}
+		},
+		
+		/**
+		 * Sends a success or error message back to the main thread
+		 * 
+		 * @method sendMessage
+		 * @param {Boolean} success True if this is a success message, false otherwise
+		 * @param {Integer} localId The local SQL id of the item being reported about
+		 * @param {String} typeName Either &quot;reports&quot; or &quot;positions&quot;
+		 * @param {Object} data Additional data to send
+		 * @param {Boolean} final True if this is the last in a series of reports
+		 * @param {Integer} count If final==true, this should be the number of reports uploaded
+		 * @return void
+		 * @throws none
+		 */
+		sendMessage: function(success, localId, typeName, data, final, count) {
+			var message = {
+				success: success,
+				content: {
+					localIds: localId,
+					typeName: typeName,
+					extra: data
+				}
+			}
+			if(final)
+			{
+				message.content.done = true;
+				message.content.count = count;
+			}
+			
+			// Remove $promise object if there is one
+			if(message.content.extra.$promise !== undefined)
+			{
+				message.content.extra.$promise = null;
+			}
+			
+			postMessage(message);
+		},
+		
+		/**
+		 * Function uploads all unuploaded positions currently in the database
+		 * 
+		 * @method uploadPositions
+		 * @param {Array} positionRows The SQL rows representing the position values to be uploaded
+		 * @return void
+		 * @throws none
+		 */
+		uploadPositions: function(positionRows) {
+			this.initialize();
+			// Save positionRows to be used later in callback functions
+			var self = this;
+			self.mPositionRows = positionRows;
+			for(var i = 0; i &lt; self.mPositionRows.length; i++)
+			{
+				// Create position object to upload
+				var row3 = self.mPositionRows[i];
+				var position2 = {
+					userId: row3.userId,
+					latlng: {lat: row3.latitude, lng: row3.longitude},
+					timestamp: new Date(row3.timestamp),
+					accuracy: row3.accuracy,
+					altitude: row3.altitude,
+					altitudeAccuracy: row3.altitudeAccuracy,
+					heading: row3.heading,
+					speed: row3.speed	
+				};
+				
+				// Closure to persist &quot;i&quot;
+				(function(j) {
+					// Execute position create call (Loopback api)
+					WebApiService.createPosition(position2, function(value, responseHeaders) {
+						// Re-grab the correct position value
+						var row4 = self.mPositionRows[j];
+						
+						// Message main thread about success
+						self.sendMessage(true, row4.id, &quot;positions&quot;, value);	
+						
+						// Check for end of batch and clear if necessary
+						self.mPositionCounter++;
+						if(self.mPositionCounter === self.mPositionRows.length)
+						{							
+							self.mPositionCounter = 0;
+							self.mPositionRows = [];
+						}
+						
+					}, function(httpResponse) {
+						var row6 = self.mPositionRows[j];
+						
+						// Upload failed, notify main thread
+						self.sendMessage(false, row6.id, &quot;positions&quot;, httpResponse);
+					});
+				})(i);
+			}
+		},
+		
+		/**
+		 * Function uploads all reports (and their associated positions) that were passed in reportRows
+		 * 
+		 * @method uploadReports
+		 * @param {Array} reportRows the array of SQL rows (report joined with position) that will be uploaded
+		 * @return void
+		 * @throws none
+		 */
+		uploadReports: function(reportRows) {
+			this.initialize();
+			var self = this;
+			// Save report rows for use later in callback functions
+			self.mReportRows = reportRows;
+			for(var i = 0; i &lt; self.mReportRows.length; i++)
+			{
+				// Grab a reference to the current item
+				// Each row will contain the joined results of a query on the reports and positions table, with
+				// some aliases to separate out the id&#x27;s
+				var row = self.mReportRows[i];
+				
+				var position = {
+					userId: row.userId,
+					latlng: {lat: row.latitude, lng: row.longitude},
+					timestamp: new Date(row.timestamp),
+					accuracy: row.accuracy,
+					altitude: row.altitude,
+					altitudeAccuracy: row.altitudeAccuracy,
+					heading: row.heading,
+					speed: row.speed	
+				};
+				
+				// Closure to persist &quot;i&quot;
+				(function(j) {
+					// Execute position create call (Loopback api)
+					WebApiService.createPosition(position, function(value, responseHeaders) {
+						// Re-grab row object
+						var row2 = self.mReportRows[j];
+						
+						// Message main thread about success
+						self.sendMessage(true, row2.positionId, &quot;positions&quot;, value);					
+						
+						// Get returned positionId
+						var posWebId = value.id;
+	
+						// get report object
+						var report = {
+							userId: row2.userId,
+							positionId: posWebId,
+							cloudCover: row2.cloudCover,
+							precipitation: row2.precipitation,
+							visibility: row2.visibility,
+							pressureTendency: row2.pressureTendency,
+							pressureValue: row2.pressureValue,
+							temperatureValue: row2.temperatureValue,
+							temperatureUnits: row2.temperatureUnits,
+							windValue: row2.windValue,
+							windUnits: row2.windUnits,
+							windDirection: row2.windDirection,
+							notes: row2.notes,
+							other: row2.other,
+							attachment: null
+						};
+						
+						// Closure to persist original &quot;i&quot; value
+						(function(k) {
+							// execute weather report create call (Loopback api)
+							WebApiService.createWeatherReport(report, function(value, responseHeaders) {
+								// Re-grab row
+								var row5 = self.mReportRows[k];
+								self.mReportCounter++;
+								
+								if(self.mReportCounter &lt; self.mReportRows.length)
+								{
+									// Send success message
+									self.sendMessage(true, row5.reportId, &quot;reports&quot;, value);
+								}
+								else
+								{
+									self.sendMessage(true, row5.reportId, &quot;reports&quot;, value, true, self.mReportRows.length);
+									
+									// Clear out scope variables
+									self.mReportCounter = 0;
+									self.mReportRows = [];	
+								}					
+		
+							}, function(httpResponse) {
+								var row8 = self.mReportRows[k];
+								self.mReportCounter++;
+								
+								if(self.mReportCounter &lt; self.mReportRows.length)
+								{
+									// Send success message
+									self.sendMessage(false, row8.reportId, &quot;reports&quot;, value);
+								}
+								else
+								{
+									self.sendMessage(false, row8.reportId, &quot;reports&quot;, value, true);
+									
+									// Clear out scope variables
+									self.mReportIdArray = [];
+									self.mReportCounter = 0;
+									self.mReportRows = [];	
+								}	
+							});
+						})(j);						
+								
+					}, function(httpResponse) {
+						var row7 = self.mReportRows[j];
+						// error
+						self.sendMessage(false, row7.positionId, &quot;positions&quot;, httpResponse);
+					});	
+				})(i);
+			}
+		}
+	}
+});
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

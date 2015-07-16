@@ -45,10 +45,6 @@ angular.module('ace.controllers')
     {
         GeoService.enableTracking(settings.gps.trackingInterval);
     }
-    else
-    {
-        GeoService.disableTracking();
-    }
     
     // Turn auto-upload back on (10 second interval)
     UploadService.enableAutoUpload(10);

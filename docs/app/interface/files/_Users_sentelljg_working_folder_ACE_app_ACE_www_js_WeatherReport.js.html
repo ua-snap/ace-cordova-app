@@ -43,6 +43,16 @@
             
                 <li><a href="../classes/AppController.html">AppController</a></li>
             
+                <li><a href="../classes/AuthService.html">AuthService</a></li>
+            
+                <li><a href="../classes/DataShareService.html">DataShareService</a></li>
+            
+                <li><a href="../classes/DbService.html">DbService</a></li>
+            
+                <li><a href="../classes/GeoService.html">GeoService</a></li>
+            
+                <li><a href="../classes/LocalStorageService.html">LocalStorageService</a></li>
+            
                 <li><a href="../classes/LoginController.html">LoginController</a></li>
             
                 <li><a href="../classes/MapController.html">MapController</a></li>
@@ -51,7 +61,23 @@
             
                 <li><a href="../classes/ReportController.html">ReportController</a></li>
             
+                <li><a href="../classes/SettingsController.html">SettingsController</a></li>
+            
+                <li><a href="../classes/SettingsDbController.html">SettingsDbController</a></li>
+            
+                <li><a href="../classes/SettingsGpsController.html">SettingsGpsController</a></li>
+            
+                <li><a href="../classes/SettingsLangController.html">SettingsLangController</a></li>
+            
+                <li><a href="../classes/SettingsService.html">SettingsService</a></li>
+            
+                <li><a href="../classes/UploadService.html">UploadService</a></li>
+            
+                <li><a href="../classes/UploadWorker.html">UploadWorker</a></li>
+            
                 <li><a href="../classes/WeatherReport.html">WeatherReport</a></li>
+            
+                <li><a href="../classes/WebApiService.html">WebApiService</a></li>
             
                 <li><a href="../classes/WorkspaceController.html">WorkspaceController</a></li>
             
@@ -59,7 +85,9 @@
 
             <ul id="api-modules" class="apis modules">
             
-                <li><a href="../modules/starter.controllers.html">starter.controllers</a></li>
+                <li><a href="../modules/ace.controllers.html">ace.controllers</a></li>
+            
+                <li><a href="../modules/ace.services.html">ace.services</a></li>
             
             </ul>
         </div>
@@ -165,7 +193,7 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default &quot;&quot;
 	 */
-	this.tempuratureValue = &quot;&quot;;
+	this.temperatureValue = &quot;&quot;;
 	
 	/**
 	 * Temperature units (deg C or deg F)
@@ -173,7 +201,7 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default &quot;&quot;
 	 */
-	this.tempuratureUnits = &quot;&quot;;
+	this.temperatureUnits = &quot;&quot;;
 	
 	/**
 	 * Wind value
@@ -226,6 +254,22 @@ var WeatherReport = function() {
 	 * @default &quot;&quot;
 	 */
 	this.other = &quot;&quot;;
+};
+
+WeatherReport.prototype.importSqlRow = function(sqlRow) {
+	this.cloudCover = sqlRow.cloudCover;
+	this.precipitation = sqlRow.precipitation;
+	this.visibility = sqlRow.visibility;
+	this.pressureTendency = sqlRow.pressureTendency;
+	this.pressureValue = sqlRow.pressureValue;
+	this.temperatureValue = sqlRow.temperatureValue;
+	this.temperatureUnits = sqlRow.temperatureUnits;
+	this.windValue = sqlRow.windValue;
+	this.windUnits = sqlRow.windUnits;
+	this.windDirection = sqlRow.windDirection;
+	this.notes = sqlRow.notes;
+	this.camera = sqlRow.camera;
+	this.other = sqlRow.other;	
 };
     </pre>
 </div>

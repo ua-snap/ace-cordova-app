@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - www/js/core/DbHandler.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>www/js/core/DbHandler.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">78.91</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">185</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">36.49</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">0.93</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">/**
+ * Class handles all database operations at the lowest level.
+ * 
+ * @class DbHandler
+ * @constructor
+ */
+var DbHandler = function(name, window) {
+	this.mWindow = window;
+	this.mDb = window.sqlitePlugin.openDatabase({name: &quot;ace.db&quot;, createFromLocation: 1});
+	this.mDbName = name;
+};
+
+/**
+ * Function deletes the current database for the app.
+ * 
+ * @method deleteDb
+ * @return void
+ * @throws none
+ */
+DbHandler.prototype.deleteDb = function() {
+	//window.sqlitePlugin.close();
+	window.sqlitePlugin.deleteDatabase({name: this.mDbName, location: 1});
+};
+
+/**
+ * Function inserts a row into the specified table.  Column names are provided as an array of strings in the &quot;keys&quot;
+ * parameter.  Values to insert are provided as an array in the values parameter.  If provided, the callback parameter
+ * (function) will be executed on a successful insert.
+ * 
+ * @method insertInto
+ * @param {String} tableName The name of the table to insert into
+ * @param {String[]} keys The array of column names to insert into
+ * @param {Array} values The array of values to insert
+ * @param {function} callback The callback function to be executed on a successful insert.  Will be passed a &quot;res&quot; 
+ * 		variable containing the result of the insert (including affected row numbers and id&#039;s)
+ * @return void
+ * @throws none
+ */
+DbHandler.prototype.insertInto = function(tableName, keys, values, callback) {
+	var self = this;
+	this.mDb.transaction(function(tx) {
+		var sqlString = &quot;INSERT OR IGNORE INTO &quot; + tableName + &quot; (&quot;;
+		
+		for(var i = 0; i &lt; keys.length; i++)
+		{
+			if(i !== (keys.length - 1))
+			{
+				sqlString = sqlString +	keys[i] + &quot;,&quot;
+			}
+			else
+			{
+				sqlString = sqlString + keys[i] + &quot;) VALUES (&quot;;	
+			}			 
+		}
+		
+		for(var i = 0; i &lt; values.length; i++)
+		{
+			if(i !== (values.length - 1))
+			{
+				sqlString = sqlString +	&quot;?,&quot;;
+			}
+			else
+			{
+				sqlString = sqlString + &quot;?)&quot;;	
+			}	
+		}
+		
+		tx.executeSql(sqlString, values, function(tx, res) {
+			if(callback)
+			{
+				callback.call(this, res);
+			}
+		});
+	}, function(error) {
+		self.errorHandler(error);
+	});
+};
+
+/**
+ * Function executes a &quot;SELECT *&quot; SQL statement on the specified table and passes the results to the provided callback
+ * function.
+ * 
+ * @method selectAllFrom
+ * @param {String} tableName The table to select all rows from
+ * @param {function} callback The function to call on a successful select statement
+ * @return void
+ * @throws none
+ */
+DbHandler.prototype.selectAllFrom = function(tableName, callback) {
+	var self = this;
+	this.mDb.transaction(function(tx) {
+		var sqlString = &quot;SELECT * FROM &quot; + tableName + &quot;;&quot;;
+		tx.executeSql(sqlString, [], function(tx, res) {
+			callback.call(this, res);
+		});
+	}, function(error) {
+		self.errorHandler(error);
+	});	
+};
+
+/**
+ * Function executes the provides SQL statement (sqlString) and passes the result to the provided callback function
+ * 
+ * @method executeSql
+ * @param {String} sqlString The SQL statement to execute
+ * @param {function} callback The function to exeucte after a successful statement execution
+ * @return void
+ * @throws none
+ */
+DbHandler.prototype.executeSql = function(sqlString, callback) {
+	var self = this;
+	this.mDb.transaction(function(tx) {
+		tx.executeSql(sqlString, [], function(tx, res) {
+			if(callback)
+			{
+				callback.call(this, res);
+			}
+			
+		}, function(error) {
+			self.errorHandler(error);
+		});
+	});	
+};
+
+/**
+ * Function selects the top number of results from the specified table.  Can be configured to determine ordering by
+ * any column in either ascending or descending order.
+ * 
+ * @method selectNum
+ * @param {String} tableName The name of the table to select from
+ * @param {Integer} numResults The number of rows to return
+ * @param {String} orderByCol The name of the column to order the results by
+ * @param {Boolean} ascending True if the rows should be returned in ascending order, false otherwise
+ * @return void
+ * @throws none
+ */
+DbHandler.prototype.selectNum = function(tableName, numResults, orderByCol, ascending, callback) {
+	var self = this;
+	var sqlString = &quot;SELECT * FROM &quot; + tableName + &quot; ORDER BY &quot; + orderByCol;
+	if(ascending)
+	{
+		sqlString = sqlString + &quot; ASC &quot;;
+	} 	
+	else 
+	{
+		sqlString = sqlString + &quot; DESC &quot;;
+	}
+	
+	sqlString = sqlString + &quot;LIMIT &quot; + numResults;
+	
+	this.mDb.transaction(function(tx) {
+		tx.executeSql(sqlString, [], function(tx, res) {
+			callback.call(this, res);
+		});
+	}, function(error) {
+		self.errorHandler(error);
+	});
+};
+
+/**
+ * Function returns the row from the specified table with a primary key id matching the provided id parameter.
+ * 
+ * @method getId
+ * @param {String} tableName The name of the table to execute the select statement on
+ * @param {Integer} id The id of the row to return
+ * @param {function} callback The function to pass the results to.  Accepts one parameter (res) that contains the 
+ * 		results of the transaction.  The row (if it exists) should be in res.rows.item(0)
+ * @return void
+ * @throws none
+ */
+DbHandler.prototype.getId = function(tableName, id, callback) {
+	var self = this;
+	var sqlString = &quot;SELECT * FROM &quot; + tableName + &quot; WHERE id=&#039;&quot; + id + &quot;&#039;&quot;;
+	this.mDb.transaction(function(tx) {
+		tx.executeSql(sqlString, [], function(tx, res) {
+			callback.call(this, res);
+		});
+	}, function(error) {
+		self.errorHandler(error);
+	});	
+};
+
+/**
+ * Common error handler for the DbHandler class.  Currently creates an &quot;alert&quot; with the error message (error.message)
+ * 
+ * @method errorHandler
+ * @param {Object} error The error object to be handled
+ */
+DbHandler.prototype.errorHandler = function(error) {
+	alert(error.message);
+};</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

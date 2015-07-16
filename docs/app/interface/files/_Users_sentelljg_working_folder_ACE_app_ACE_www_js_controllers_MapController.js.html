@@ -43,6 +43,16 @@
             
                 <li><a href="../classes/AppController.html">AppController</a></li>
             
+                <li><a href="../classes/AuthService.html">AuthService</a></li>
+            
+                <li><a href="../classes/DataShareService.html">DataShareService</a></li>
+            
+                <li><a href="../classes/DbService.html">DbService</a></li>
+            
+                <li><a href="../classes/GeoService.html">GeoService</a></li>
+            
+                <li><a href="../classes/LocalStorageService.html">LocalStorageService</a></li>
+            
                 <li><a href="../classes/LoginController.html">LoginController</a></li>
             
                 <li><a href="../classes/MapController.html">MapController</a></li>
@@ -51,7 +61,23 @@
             
                 <li><a href="../classes/ReportController.html">ReportController</a></li>
             
+                <li><a href="../classes/SettingsController.html">SettingsController</a></li>
+            
+                <li><a href="../classes/SettingsDbController.html">SettingsDbController</a></li>
+            
+                <li><a href="../classes/SettingsGpsController.html">SettingsGpsController</a></li>
+            
+                <li><a href="../classes/SettingsLangController.html">SettingsLangController</a></li>
+            
+                <li><a href="../classes/SettingsService.html">SettingsService</a></li>
+            
+                <li><a href="../classes/UploadService.html">UploadService</a></li>
+            
+                <li><a href="../classes/UploadWorker.html">UploadWorker</a></li>
+            
                 <li><a href="../classes/WeatherReport.html">WeatherReport</a></li>
+            
+                <li><a href="../classes/WebApiService.html">WebApiService</a></li>
             
                 <li><a href="../classes/WorkspaceController.html">WorkspaceController</a></li>
             
@@ -59,7 +85,9 @@
 
             <ul id="api-modules" class="apis modules">
             
-                <li><a href="../modules/starter.controllers.html">starter.controllers</a></li>
+                <li><a href="../modules/ace.controllers.html">ace.controllers</a></li>
+            
+                <li><a href="../modules/ace.services.html">ace.services</a></li>
             
             </ul>
         </div>
@@ -101,55 +129,372 @@
 <div class="file">
     <pre class="code prettyprint linenums">
 // MapController.js
-
+ 
 /**
- * @module starter.controllers
+ * @module ace.controllers
  */
-angular.module(&#x27;starter.controllers&#x27;)
-
+angular.module(&#x27;ace.controllers&#x27;)
+ 
 // MapController
 //--------------------------------------------------------------
-
-
+ 
+ 
 // MapController (controller for the Map tab)
 /**
  * @class MapController
  */
-.controller(&#x27;MapController&#x27;, function($scope, $ionicSideMenuDelegate) {
+.controller(&#x27;MapController&#x27;, function($scope, $ionicSideMenuDelegate, $translate, $ionicNavBarDelegate, $ionicPopover, GeoService, DbService, SettingsService) {
+    // Set up menu options popover
+    // Create popover from template and save to $scope variable
+      $ionicPopover.fromTemplateUrl(&#x27;templates/popovers/map-options.html&#x27;, {
+        scope: $scope
+      }).then(function(popover) {
+        $scope.optionsPopover = popover;
+      });
+      
+      $scope.openOptionsMenu = function($event) {
+          $scope.optionsPopover.show($event);
+      };
     
-    // Adding beforeEnter event listener.  This function will be called just before every view load,
-	// regardless of controller and state caching.
-	$scope.$on(&#x27;$ionicView.enter&#x27;, function() {
-		$ionicSideMenuDelegate.canDragContent(false);
-	});
+    // Controller-wide variables
+    $scope.map = null;
     
-    // default latitude and longitude
-    var myLatlng = new google.maps.LatLng(37.3000, -120.4833);
-
-    // Set up map options
-    var mapOptions = {
-        center: myLatlng,
-        zoom: 16,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+    // Stores the last 100 location pings
+    $scope.locationHistory = [];
+    
+    // Last known position will be persisted in LocalStorage
+    var localHandler = new LocalStorageUtil(window);
+    
+    // If set to true, next watchPosition execution will center the map on the current location.
+    // If false, watchPosition will not modify the map center
+    $scope.centerMap = true;
+    
+    $scope.reportMarkers = [];
+    
+    var timer = null;
+    
+    var currentLocationMarker = null;
+    var historyLine = null;
+    var settings = null;
+    
+    $scope.curPos = null;
+    
+    $scope.settings = {
+      displayPos: {
+          checked: true
+      },  
+      followPos: false,
+      displayHistory: {
+          checked: false
+      },
+      displayReports: {
+          checked: false
+      }
     };
-
-    // Create map
-    var map = new google.maps.Map(document.getElementById(&quot;map_canvas&quot;), mapOptions);
     
-    // Get current position and update map once position is recieved
-    navigator.geolocation.getCurrentPosition(function(pos) {
-        map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-        var myLocation = new google.maps.Marker({
-            position: new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude),
-            map: map,
-            title: &quot;My Location&quot;
+    $scope.mapState = {
+        center: null,
+        zoom: null,
+        typeStr: &quot;&quot;,
+        displayHistory: false,
+        displayReports: false,
+        displayMarker: true
+    };
+    
+    // Adding enter event listener.  This function will be called just before every view load,
+	// regardless of controller and state caching.
+	$scope.$on(&#x27;$ionicView.enter&#x27;, function() { 
+        
+        // Disable left swipe menu
+		$ionicSideMenuDelegate.canDragContent(false);
+        
+        // Re-translate the title (to ensure that it is correctly translated)
+        $translate([&#x27;MAP&#x27;]).then(function(translations) {
+           $ionicNavBarDelegate.title(translations.WEATHER); 
         });
+        
+        // Initialize the map
+        initialize();
+	});    
+    
+    $scope.$on(&#x27;$ionicView.leave&#x27;, function() {
+        // Save the state of the map
+        $scope.saveMapState();
+        
+        // Disable watching position
+        //GeoService.disableWatchPosition(navigator.geolocation);
+        //GeoService.setWatchCallback(null);
     });
-
-    // Save the map for later access
-    $scope.map = map;
+    
+    $scope.saveMapState = function() {
+        // Save map options
+        $scope.mapState.center = $scope.map.getCenter();
+        $scope.mapState.zoom = $scope.map.getZoom();
+        $scope.mapState.typeStr = $scope.map.getMapTypeId();
+        $scope.mapState.displayHistory = $scope.settings.displayHistory.checked;
+        $scope.mapState.displayReports = $scope.settings.displayReports.checked;
+        
+        // Save center to local storage
+        var position = new Position();
+        
+        GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
+            position.importGoogleGeoLoc(pos);
+            localHandler.set(&quot;lastPosition&quot;, position);
+        });
+    };
+    
+    var initialize = function()
+    {
+        currentLocationMarker = null;
+        
+        // Check for last saved map settings
+        var mapOptions;
+        if($scope.mapState.center)
+        {
+            mapOptions = {
+                center: $scope.mapState.center,
+                zoom: $scope.mapState.zoom,
+                mapTypeId: $scope.mapState.typeStr,
+                scaleControl: true,
+                panControl: false
+            };
+        }
+        else
+        {
+            // Check for saved position
+            var localHandler = new LocalStorageUtil(window);
+            var lastPos = localHandler.get(&quot;lastPosition&quot;, null);
+            
+            var latLng;
+            if(lastPos)
+            {
+                latLng = new google.maps.LatLng(lastPos.coords.latitude, lastPos.coords.longitude);
+            }
+            else
+            {
+                // Default starting position
+                latLng = new google.maps.LatLng(37.3000, -120.4833);
+            }
+            
+            // Set up map options
+            var mapOptions = {
+                center: latLng,
+                zoom: 16,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                scaleControl: true,
+                panControl: false
+            };
+        }      
+    
+        // Create and save map
+        var map = new google.maps.Map(document.getElementById(&quot;map_canvas&quot;), mapOptions);
+        $scope.map = map;
+        
+        // Start watching position
+        //GeoService.enableWatchPosition(navigator.geolocation, updateMarker);
+        GeoService.setWatchCallback(updateMarker);
+        
+        // Check if history was displayed
+        if($scope.mapState.displayHistory !== null)
+        {
+            $scope.settings.displayHistory.checked = $scope.mapState.displayHistory;
+            $scope.displayHistoryChanged();
+        }        
+        
+        // Check for reports
+        if($scope.mapState.displayReports !== null)
+        {
+            $scope.settings.displayReports.checked = $scope.mapState.displayReports;
+            $scope.displayReportsChanged();
+        } 
+        
+        // Always display marker
+        $scope.settings.displayPos.checked = true;
+    };
+    
+    var updateMarker = function(pos, follow) {        
+        if(currentLocationMarker)
+        {
+            currentLocationMarker.setPosition(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+            if(follow)
+            {
+                var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                $scope.map.setCenter(latlng);
+            }
+        }
+        else 
+        {
+            var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            
+            currentLocationMarker = new google.maps.Marker({
+                    position: latlng,
+                    map: $scope.map,
+                    title: &quot;current_pos&quot;,
+            });
+            $scope.map.setCenter(latlng);
+        }
+    };
+    
+    $scope.displayPosChanged = function() {
+      //alert($scope.settings.displayPos.checked); 
+      if($scope.settings.displayPos.checked)
+      {
+          GeoService.setWatchCallback(updateMarker);
+      } 
+      else 
+      {
+          // Remove the current location marker and clear the reference
+          currentLocationMarker.setMap(null);
+          currentLocationMarker = null;
+          
+          // Clear the callback function (that updates the marker)
+          GeoService.setWatchCallback(null);
+          
+          // Make sure follow position setting is false
+          if($scope.settings.followPos)
+          {
+              $scope.toggleFollowPosition();
+          }          
+      }
+    };
+    
+    $scope.displayHistoryChanged = function() {
+      if($scope.settings.displayHistory.checked)
+      {
+          // Draw the history line
+          $scope.drawHistoryLine();
+          
+          // Set up the report callback to include drawing the polyline
+          GeoService.setTrackingCallback($scope.historyLineAddPoint);
+      }  
+      else
+      {
+          if(historyLine)
+          {
+              // Remove tracking callback (positions will still be recorded)
+              GeoService.setTrackingCallback(null);
+                
+              // remove the history line
+              historyLine.setMap(null);  
+              
+              historyLine = null;  
+          }          
+      }
+    };
+    
+    $scope.makeInfoWindowString = function(report) {        
+        // Grab the date
+        var date = new Date(report.position.timestamp);
+        
+        var htmlString = &#x27;&lt;div id=&quot;content&quot;&gt;&lt;div id=&quot;siteNotice&quot;&gt;&lt;/div&gt;&#x27; + 
+            &#x27;&lt;h5 id=&quot;firstHeading&quot; class=&quot;firstHeading&quot;&gt;&#x27; + date + &#x27;&lt;/h5&gt;&#x27; + &#x27;&lt;div id=&quot;bodyContent&quot;&gt;&#x27; + 
+            &#x27;&lt;p&gt;Cloud Cover: &#x27; + report.cloudCover + &#x27;&lt;br&gt;&#x27; +
+            &#x27;Precipitation: &#x27; + report.precipitation + &#x27;&lt;br&gt;&#x27; +
+            &#x27;Visibility: &#x27; + report.visibility + &#x27;&lt;br&gt;&#x27; +
+            &#x27;Pressure Trend: &#x27; + report.pressureTrend + &#x27;&lt;br&gt;&#x27; +
+            &#x27;Surface Pressure: &#x27; + report.surfacePressure + &#x27;&lt;br&gt;&#x27; +
+            &#x27;Surface Temperature: &#x27; + report.surfaceTemperature + &#x27;&lt;br&gt;&#x27; + 
+            &#x27;Wind Speed: &#x27; + report.windSpeed + &#x27;&lt;br&gt;&#x27; +
+            &#x27;Wind Direction: &#x27; + report.windDirection + &#x27;&lt;br&gt;&#x27; +
+            &#x27;Other: &#x27; + report.other + &#x27;&lt;br&gt;&#x27; + 
+            &#x27;Notes: &#x27; + report.notes + &#x27;&lt;br&gt;&#x27; + &#x27;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&#x27;;
+            
+            return htmlString
+    };
+    
+    // Called when the display reports option is changed
+    $scope.displayReportsChanged = function() {
+       var self = this;
+	   if($scope.settings.displayReports.checked)
+       {
+           // Show reports on the map
+           // Get all reports
+           DbService.getReportsAndPositions(window, function(reports) {
+              if(reports)
+              {
+                 var image = &#x27;img/document-text_small_grn.png&#x27;;
+                  for(var i = 0; i &lt; reports.length; i++)
+                  {
+                      var pos = new google.maps.LatLng(reports[i].position.coords.latitude, reports[i].position.coords.longitude);
+                      var htmlString = self.makeInfoWindowString(reports[i]);
+                      var infowindow = new google.maps.InfoWindow({
+                        content: htmlString
+                      });
+                      var marker = new google.maps.Marker({
+                         position: pos,
+                         map: self.map,
+                         icon: image,
+                         title: &#x27;report_marker&#x27;,
+                         infoWindow: infowindow
+                      });
+                      self.reportMarkers.push(marker);
+                                         
+                      google.maps.event.addListener(marker, &#x27;click&#x27;, function() {
+                        this.infoWindow.open(this.getMap(), this);                         
+                      });
+                  } 
+              }              
+           });
+       }
+       else
+       {
+           // remove all reports from the map
+           for(var i = 0; i &lt; $scope.reportMarkers.length; i++)
+           {
+               $scope.reportMarkers[i].setMap(null);
+           }
+       }
+    };
+    
+    // Add one point to the history line
+    $scope.historyLineAddPoint = function(pos) {
+        var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+        if(historyLine)
+        {
+            var path = historyLine.getPath();
+            path.push(latlng);    
+        }        
+    };
+    
+    // Draws a line on the map where the user has traveled
+    $scope.drawHistoryLine = function() {
+        // Grab last position entries
+        var settings = SettingsService.getSettings(window);
+        var posArr = DbService.getRecentPositionLogs(window, settings.gps.displayedHistoryPoints, function(res) {
+            var latLngArr = DbService.convertPositionArrayToLatLng(res.rows);
+            historyLine = new google.maps.Polyline({
+                path: latLngArr.reverse(),
+                strokeColor: &#x27;#FF0000&#x27;,
+                strokeOpacity: 1.0,
+                strokeWeight: 2                
+            });
+            historyLine.setMap($scope.map);
+        });
+    };
+    
+    $scope.centerOnPosition = function() {
+        GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
+            var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            $scope.map.setCenter(latlng);
+        });        
+    };
+    
+    $scope.toggleFollowPosition = function() {
+        // toggle setting
+        if($scope.settings.followPos)
+        {
+            $scope.settings.followPos = false;
+            document.getElementById(&quot;followBtn&quot;).style.color = &quot;&quot;;
+        }
+        else 
+        {
+            $scope.settings.followPos = true;
+            document.getElementById(&quot;followBtn&quot;).style.color = &quot;#66cc33&quot;;
+        }
+        // set in service
+        GeoService.setFollowPosition($scope.settings.followPos);
+    };
 });
-
     </pre>
 </div>
 

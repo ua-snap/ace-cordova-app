@@ -43,6 +43,16 @@
             
                 <li><a href="../classes/AppController.html">AppController</a></li>
             
+                <li><a href="../classes/AuthService.html">AuthService</a></li>
+            
+                <li><a href="../classes/DataShareService.html">DataShareService</a></li>
+            
+                <li><a href="../classes/DbService.html">DbService</a></li>
+            
+                <li><a href="../classes/GeoService.html">GeoService</a></li>
+            
+                <li><a href="../classes/LocalStorageService.html">LocalStorageService</a></li>
+            
                 <li><a href="../classes/LoginController.html">LoginController</a></li>
             
                 <li><a href="../classes/MapController.html">MapController</a></li>
@@ -51,7 +61,23 @@
             
                 <li><a href="../classes/ReportController.html">ReportController</a></li>
             
+                <li><a href="../classes/SettingsController.html">SettingsController</a></li>
+            
+                <li><a href="../classes/SettingsDbController.html">SettingsDbController</a></li>
+            
+                <li><a href="../classes/SettingsGpsController.html">SettingsGpsController</a></li>
+            
+                <li><a href="../classes/SettingsLangController.html">SettingsLangController</a></li>
+            
+                <li><a href="../classes/SettingsService.html">SettingsService</a></li>
+            
+                <li><a href="../classes/UploadService.html">UploadService</a></li>
+            
+                <li><a href="../classes/UploadWorker.html">UploadWorker</a></li>
+            
                 <li><a href="../classes/WeatherReport.html">WeatherReport</a></li>
+            
+                <li><a href="../classes/WebApiService.html">WebApiService</a></li>
             
                 <li><a href="../classes/WorkspaceController.html">WorkspaceController</a></li>
             
@@ -59,7 +85,9 @@
 
             <ul id="api-modules" class="apis modules">
             
-                <li><a href="../modules/starter.controllers.html">starter.controllers</a></li>
+                <li><a href="../modules/ace.controllers.html">ace.controllers</a></li>
+            
+                <li><a href="../modules/ace.services.html">ace.services</a></li>
             
             </ul>
         </div>
@@ -105,23 +133,22 @@
 // LoginController
 //--------------------------------------------------------------
 
-// Grab the starter.controllers angular module (so we can add to it)
+// Grab the ace.controllers angular module (so we can add to it)
 /**
- * @module starter.controllers
+ * @module ace.controllers
  */
-angular.module(&#x27;starter.controllers&#x27;)
+angular.module(&#x27;ace.controllers&#x27;)
 
 // Create the LoginController controller
 /**
  * @class LoginController
  * @constructor
  */
-.controller(&#x27;LoginController&#x27;, function($scope, LoginService, $ionicPopup, $state, $ionicSideMenuDelegate) {
+.controller(&#x27;LoginController&#x27;, function($scope, LocalStorageService, AuthService, $ionicPopup, $state, $ionicSideMenuDelegate) {
 
     // This function will be called every time that the login view
     // is displayed, so check for auser already logged in
-    var localStorageHandler = new LocalStorageUtil(window);
-    var oldUsername = localStorageHandler.get(&quot;username&quot;, &quot;&quot;);
+    var oldUsername = &quot;&quot;;//LocalStorageService.getItem(&quot;currentUser&quot;, &quot;&quot;, window).username;
     
     // If a user was logged in, skip the login screen and take them 
     // directly to the default view (report view)
@@ -132,12 +159,35 @@ angular.module(&#x27;starter.controllers&#x27;)
         $ionicSideMenuDelegate.canDragContent(true);
         $state.go(&#x27;tab.report&#x27;);
     }
-
+    
+    // Data variable to hold username and password
     $scope.data = {};
+    
+    /**
+     * Function controls the app&#x27;s behavior when the form is submitted.  Added to allow for keyboard navigation
+     * from the username field to the password field when pressing the keyboard go button.
+     * 
+     * @method formSubmitted
+     * @return void
+     * @throws none
+     */
+    $scope.formSubmitted = function() {
+        var focusedElement = document.activeElement;
+        if(focusedElement.id !== &quot;usernameInput&quot;)
+        {
+            $scope.login();
+            return true;
+        }
+        else
+        {
+            document.getElementById(&quot;passwordInput&quot;).focus();
+            return false;
+        }
+    };
 
     // Checks the provided username and password and logs the user in
     // if the credentials are valid.  If invalid, notifies the user
-    // and rejects the login attempt.  Utilizes LoginService to check 
+    // and rejects the login attempt.  Utilizes AuthService to check 
     // credentials
     /**
      * @method login
@@ -148,10 +198,10 @@ angular.module(&#x27;starter.controllers&#x27;)
      * @throws none
      */
     $scope.login = function() {
-        LoginService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
-            // Save the username locally
-            var storageHandler = new LocalStorageUtil(window);
-            storageHandler.set(&quot;username&quot;, $scope.data.username);
+        AuthService.loginUser($scope.data.username, $scope.data.password, function(user) {
+            // Clear out username and password
+            $scope.data.username = &quot;&quot;;
+            $scope.data.password = &quot;&quot;;
             
             // Move the user to the default view (tab.report)
             $state.go(&#x27;tab.report&#x27;);
@@ -159,11 +209,15 @@ angular.module(&#x27;starter.controllers&#x27;)
             // Re-enable the ability to drag the side menu out (disabled on 
             // previous logouts)
             $ionicSideMenuDelegate.canDragContent(true);
-        }).error(function(data) {
+        }, function(data, status, headers, config) {
+            
+            // Clear out password (but leave username)
+            $scope.data.password = &quot;&quot;;
+            
             // Notify the user of the failed login and do not login
             $ionicPopup.alert({
                 title: &#x27;Login failed!&#x27;,
-                template: &#x27;Please check your credentials!&#x27;
+                template: &#x27;Please check your credentials.&#x27;
             });
         });
     };

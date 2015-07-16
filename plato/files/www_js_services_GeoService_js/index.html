@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - www/js/services/GeoService.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>www/js/services/GeoService.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">70.74</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">311</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">28.00</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">1.14</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">angular.module(&#039;ace.services&#039;)
+
+/**
+ * Service class that handles all Geolocation for the app.
+ * 
+ * @class GeoService
+ * @constructor
+ */
+.service(&#039;GeoService&#039;, function(DbService, SettingsService) {
+	
+	// Member variables for the service
+	var mTrackingInterval = 1;
+	var mPos = null;
+	var mWatchId;
+	var mWatchCallback;
+	var mFollowPosition = false;
+	var mTimerId;
+	var mTrackingCallback;
+	var lastPos = null;
+	
+	return {	
+		/**
+		 * Function turns on tracking of device position. Updates member variable mPos with each update from the 
+		 * navigator.geolocation object.  Can also be used to execute some callback on every position update through
+		 * the optional watchSuccessCallback parameter.
+		 * 
+		 * @method enableWatchPosition
+		 * @param {Object} geolocationObj The object to use for geolocation information (usually navigator.geolocation)
+		 * @param {function} watchSuccessCallback Function to be executed on each available position update.  Optional.
+		 * @return void
+		 * @throws none
+		 */	
+		enableWatchPosition: function(geolocationObj, watchSuccessCallback) {
+			var self = this;
+			mWatchCallback = watchSuccessCallback;
+			var settings = SettingsService.getSettings(window);
+			mWatchId = geolocationObj.watchPosition(function(pos) {
+					lastPos = mPos;
+					mPos = pos;
+					if(mWatchCallback)
+					{
+						mWatchCallback.call(this, pos, mFollowPosition);
+					}
+			}, function(error) {
+				self.gpsErrorHandler(error);
+			}, {timeout: settings.gps.timeout * 1000, enableHighAccuracy: settings.gps.highAccuracy});
+		},
+		
+		/**
+		 * Function disables tracking of the device position
+		 * 
+		 * @method disableWatchPosition
+		 * @param {Object} geolocationObj The object to disable the watch on. (usually navigator.geolocation)
+		 * @return void
+		 * @throws none
+		 */
+		disableWatchPosition: function(geolocationObj) {
+			if(mWatchId)
+			{
+				geolocationObj.clearWatch(mWatchId);	
+			}	
+			mWatchId = null;		
+		},
+		
+		/**
+		 * Function sets the interval at which to record a location to the web server.
+		 * 
+		 * @method setTrackingInterval
+		 * @param {Number} trackingInterval The interval at which to record a location to the web server.
+		 * @return void
+		 * @throws none
+		 */
+		setTrackingInterval: function(trackingInterval) {
+			mTrackingInterval = trackingInterval;
+		},
+		
+		/**
+		 * Sets the callback function for a watchPosition update.
+		 * 
+		 * @method setWatchCallback
+		 * @param {function} watchCallback The function to be executed on every position update
+		 * @return void
+		 * @throws none
+		 */
+		setWatchCallback: function(watchCallback) {
+			mWatchCallback = watchCallback;
+		},
+		
+		/**
+		 * Function uses the Haversine method to return the distance between to GPS positions.
+		 * 
+		 * @method getDistanceHaversine
+		 * @param {Object} The Position object representing the first location.
+		 * @param {Object} The Position object representing the second location.
+		 * @return {Number} The distance between the two positions in meters.
+		 * @throws none
+		 */
+		getDistanceHaversine: function(position1, position2) {
+			if(position1 &amp;&amp; position2)
+			{
+				var lat1 = position1.coords.latitude;
+				var lon1 = position1.coords.longitude;
+				var lat2 = position2.coords.latitude;
+				var lon2 = position2.coords.longitude;	
+				
+				var R = 6371;
+				var dLat = this.degreesToRadians(lat2 - lat1);
+				var dLon = this.degreesToRadians(lon2 - lon1);
+				var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(this.degreesToRadians(lat1)) * 
+				Math.cos(this.degreesToRadians(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2); 
+				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  				var d = R * c;
+				  
+				// Return difference in meters 
+			  	return d * 1000; 
+			}
+			else
+			{
+				return null;
+			}			
+		},
+		
+		/**
+		 * Function converts the provided degrees argument to radians.
+		 * 
+		 * @method degreesToRadians
+		 * @param {Number} deg The degrees to be converted to radians.
+		 * @return {Number} The value of the provided &quot;deg&quot; argument in radians
+		 * @throws none
+		 */
+		degreesToRadians: function(deg) {
+			return deg * (Math.PI/180);	
+		},
+		
+		/**
+		 * Function gets the most current position value and passes it to the successCallback parameter.  If the
+		 * position is currently being watched, simply passes the current value of mPos.  If not, function enables 
+		 * position watching and executes the successCallback only once.
+		 * 
+		 * @method getCurrentPosition
+		 * @param {Object} geolocationObj The object to use for geolocation services (usually navigator.geolocation)
+		 * @param {function} successCallback The function to pass the retrieved position to
+		 * @param {function} errorCallback Function called if there is an error retrieving the latest position value.
+		 * @return void
+		 * @throws none
+		 */
+		getCurrentPosition: function(geolocationObj, successCallback, errorCallback) {
+			var self = this;
+			// If currently watching position, simply return most recent position value
+			if(mWatchId)
+			{
+				if(successCallback)
+				{
+					successCallback.call(this, mPos);	
+				}					
+			}
+			else
+			{
+				// If not currently watching position, start a watch
+				self.enableWatchPosition(geolocationObj, function(position) {
+					// Make the callback only run once
+					self.setWatchCallback(null);
+					if(successCallback)
+					{
+						successCallback.call(this, position);
+					}
+				});
+			}			
+		},
+		
+		/**
+		 * Function serves as the common error handler for the Geolocation service and is called wherever errorCallbacks are
+		 * not used.  Currently does nothing.
+		 * 
+		 * @method gpsErrorHandler
+		 * @param {Object} error The error to handle
+		 * @return void
+		 * @throws none
+		 */
+		gpsErrorHandler: function(error) {
+			// Do nothing right now
+		},
+		
+		/**
+		 * Function sets an indicator telling the service to follow the user&#039;s position (only used when on the Map view)
+		 * 
+		 * @method setFollowPosition
+		 * @param {Boolean} follow True if the user position should be followed. False if not.
+		 * @return void
+		 * @throws none
+		 */
+		// Sets private variable indicating whether or not to follow the user&#039;s position on the map (continually 
+		// recenter on user position)
+		setFollowPosition: function(follow) {
+			mFollowPosition = follow;
+		},
+		
+		/**
+		 * Function turns on tracking of the device position at the frequency specified by the parameter.  Additionally, 
+		 * an optional trackingCallback is provided to execute a function on every tracking interval.
+		 * 
+		 * @method enableTracking
+		 * @param {Number} frequency The frequency at which to track the device position, in seconds.
+		 * @param {function} trackingCallback Function that will be executed at each tracking interval (optional).
+		 * @return void
+		 * @throws none
+		 */
+		enableTracking: function(frequency, trackingCallback) {
+			if(trackingCallback)
+			{
+				mTrackingCallback = trackingCallback;	
+			}
+			
+			// If provided set the frequency to submit reports (in seconds)
+			if(frequency)
+			{
+				mTrackingInterval = frequency;
+			}
+			
+			var self = this;
+			
+			// Check for any previous timer
+			if(mTimerId)
+			{
+				clearInterval(mTimerId);
+			}
+			
+			// Set the interval function
+			mTimerId = setInterval(function() {
+				self.getCurrentPosition(navigator.geolocation, function(position) {			
+					var insert = false;
+					if(position !== null)
+					{
+						// Automatically insert if no other entries have been inserted
+						if(lastPos === null)
+						{
+							insert = true
+						}
+						else if(position.coords.accuracy === lastPos.coords.accuracy)
+						{
+							if(self.getDistanceHaversine(position, lastPos) &gt; position.coords.accuracy)
+							{
+								insert = true;
+							}
+						}
+						else
+						{
+							insert = true;
+						}			
+					}
+					
+					// Insert if necessary
+					if(insert)
+					{
+						DbService.insertPosition(position, window);	
+			
+						if(mTrackingCallback)
+						{
+							mTrackingCallback.call(this, mPos);	
+						}	
+					}						
+				});			     
+			}, mTrackingInterval * 1000);
+		},
+		
+		/**
+		 * Function disables tracking a user&#039;s location
+		 * 
+		 * @method disableTracking
+		 * @return void
+		 * @throws none
+		 */
+		disableTracking: function() {
+			if(mTimerId)
+			{
+				clearInterval(mTimerId);	
+				mTimerId = null;
+			}			
+		},
+		
+		/**
+		 * Function checks whether tracking is currently enabled.  Returns true if it is, false otherwise.
+		 * 
+		 * @method isTrackingEnabled
+		 * @return {Boolean} True if tracking is enabled, false otherwise
+		 * @throws none
+		 */
+		isTrackingEnabled: function() {
+			if(mTimerId &amp;&amp; mWatchId)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		},
+		
+		/**
+		 * Function sets the tracking callback
+		 * 
+		 * @method setTrackingCallback
+		 * @param {function} trackingCallback The function to be executed on the tracking interval
+		 * @return void
+		 * @throws none
+		 */
+		setTrackingCallback: function(trackingCallback) {
+			mTrackingCallback = trackingCallback;
+		}
+	};
+});</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

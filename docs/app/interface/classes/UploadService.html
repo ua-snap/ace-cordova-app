@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>UploadService</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title=""></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/AppController.html">AppController</a></li>
+            
+                <li><a href="../classes/AuthService.html">AuthService</a></li>
+            
+                <li><a href="../classes/DataShareService.html">DataShareService</a></li>
+            
+                <li><a href="../classes/DbService.html">DbService</a></li>
+            
+                <li><a href="../classes/GeoService.html">GeoService</a></li>
+            
+                <li><a href="../classes/LocalStorageService.html">LocalStorageService</a></li>
+            
+                <li><a href="../classes/LoginController.html">LoginController</a></li>
+            
+                <li><a href="../classes/MapController.html">MapController</a></li>
+            
+                <li><a href="../classes/ModalHandler.html">ModalHandler</a></li>
+            
+                <li><a href="../classes/ReportController.html">ReportController</a></li>
+            
+                <li><a href="../classes/SettingsController.html">SettingsController</a></li>
+            
+                <li><a href="../classes/SettingsDbController.html">SettingsDbController</a></li>
+            
+                <li><a href="../classes/SettingsGpsController.html">SettingsGpsController</a></li>
+            
+                <li><a href="../classes/SettingsLangController.html">SettingsLangController</a></li>
+            
+                <li><a href="../classes/SettingsService.html">SettingsService</a></li>
+            
+                <li><a href="../classes/UploadService.html">UploadService</a></li>
+            
+                <li><a href="../classes/UploadWorker.html">UploadWorker</a></li>
+            
+                <li><a href="../classes/WeatherReport.html">WeatherReport</a></li>
+            
+                <li><a href="../classes/WebApiService.html">WebApiService</a></li>
+            
+                <li><a href="../classes/WorkspaceController.html">WorkspaceController</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="../modules/ace.controllers.html">ace.controllers</a></li>
+            
+                <li><a href="../modules/ace.services.html">ace.services</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1>UploadService Class</h1>
+<div class="box meta">
+    
+
+    
+
+    
+        <div class="foundat">
+            Defined in: <a href="../files/_Users_sentelljg_working_folder_ACE_app_ACE_www_js_services_UploadService.js.html#l3"><code>&#x2F;Users&#x2F;sentelljg&#x2F;working_folder&#x2F;ACE&#x2F;app&#x2F;ACE&#x2F;www&#x2F;js&#x2F;services&#x2F;UploadService.js:3</code></a>
+        </div>
+    
+
+    
+        
+            Module: <a href="../modules/ace.services.html">ace.services</a>
+        
+    
+
+    
+</div>
+
+
+
+<div class="box intro">
+    <p>Service that manages uploading positions and reports to the ACE web server.  Service primarily checks for
+any db items with a &quot;0&quot; uploading flag and uploads them.  Utilizes a Web Worker thread to do all actual
+uploading off the main thread</p>
+
+</div>
+
+
+    <div class="constructor">
+        <h2>Constructor</h2>
+        <div id="method_UploadService" class="method item">
+    <h3 class="name"><code>UploadService</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/_Users_sentelljg_working_folder_ACE_app_ACE_www_js_services_UploadService.js.html#l3"><code>&#x2F;Users&#x2F;sentelljg&#x2F;working_folder&#x2F;ACE&#x2F;app&#x2F;ACE&#x2F;www&#x2F;js&#x2F;services&#x2F;UploadService.js:3</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+    </div>
+
+
+<div id="classdocs" class="tabview">
+    <ul class="api-class-tabs">
+        <li class="api-class-tab index"><a href="#index">Index</a></li>
+
+        
+            <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
+        
+        
+        
+        
+    </ul>
+
+    <div>
+        <div id="index" class="api-class-tabpanel index">
+            <h2 class="off-left">Item Index</h2>
+
+            
+                <div class="index-section methods">
+                    <h3>Methods</h3>
+
+                    <ul class="index-list methods">
+                        
+                            <li class="index-item method">
+                                <a href="#method_backgroundRequest">backgroundRequest</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_disableAutoUpload">disableAutoUpload</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_enableAutoUpload">enableAutoUpload</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_killUploadWorkerThread">killUploadWorkerThread</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_uploadAll">uploadAll</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_uploadPositionsAndMark">uploadPositionsAndMark</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_uploadReportsAndMark">uploadReportsAndMark</a>
+
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
+            
+
+            
+
+            
+
+            
+        </div>
+
+        
+            <div id="methods" class="api-class-tabpanel">
+                <h2 class="off-left">Methods</h2>
+
+                
+                    <div id="method_backgroundRequest" class="method item">
+    <h3 class="name"><code>backgroundRequest</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>requestId</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>data</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>self</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/_Users_sentelljg_working_folder_ACE_app_ACE_www_js_services_UploadService.js.html#l73"><code>&#x2F;Users&#x2F;sentelljg&#x2F;working_folder&#x2F;ACE&#x2F;app&#x2F;ACE&#x2F;www&#x2F;js&#x2F;services&#x2F;UploadService.js:73</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Function makes a background request with the specified requestId to the web worker thread (and starts it)
+if necessary.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">requestId</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The unique identifier of the service to request (&quot;uploadReports&quot; or &quot;uploadPositions&quot; currently)</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">data</code>
+                        <span class="type">Array</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The SQL rows to be uploaded</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">self</code>
+                        <span class="type">Scope</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The &quot;this&quot; variable to use in this function</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                    <p>void</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_disableAutoUpload" class="method item">
+    <h3 class="name"><code>disableAutoUpload</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/_Users_sentelljg_working_folder_ACE_app_ACE_www_js_services_UploadService.js.html#l58"><code>&#x2F;Users&#x2F;sentelljg&#x2F;working_folder&#x2F;ACE&#x2F;app&#x2F;ACE&#x2F;www&#x2F;js&#x2F;services&#x2F;UploadService.js:58</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Function turns off the auto-upload feature</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                    <p>void</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_enableAutoUpload" class="method item">
+    <h3 class="name"><code>enableAutoUpload</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>interval</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/_Users_sentelljg_working_folder_ACE_app_ACE_www_js_services_UploadService.js.html#l38"><code>&#x2F;Users&#x2F;sentelljg&#x2F;working_folder&#x2F;ACE&#x2F;app&#x2F;ACE&#x2F;www&#x2F;js&#x2F;services&#x2F;UploadService.js:38</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Function turns on the auto-upload feature</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">interval</code>
+                        <span class="type">Number</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The interval (in seconds) at which to try to upload</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                    <p>void</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_killUploadWorkerThread" class="method item">
+    <h3 class="name"><code>killUploadWorkerThread</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/_Users_sentelljg_working_folder_ACE_app_ACE_www_js_services_UploadService.js.html#l23"><code>&#x2F;Users&#x2F;sentelljg&#x2F;working_folder&#x2F;ACE&#x2F;app&#x2F;ACE&#x2F;www&#x2F;js&#x2F;services&#x2F;UploadService.js:23</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Stops the Web Worker upload thread</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                    <p>void</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_uploadAll" class="method item">
+    <h3 class="name"><code>uploadAll</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>userRequested</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/_Users_sentelljg_working_folder_ACE_app_ACE_www_js_services_UploadService.js.html#l198"><code>&#x2F;Users&#x2F;sentelljg&#x2F;working_folder&#x2F;ACE&#x2F;app&#x2F;ACE&#x2F;www&#x2F;js&#x2F;services&#x2F;UploadService.js:198</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Function uploads all un-uploaded reports and positions</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">userRequested</code>
+                        <span class="type">Boolean</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Variable used to indicate whether a user requested this upload
+                    (or the auto-upload timer).  Will be used in the worker return onmessage handler
+                    to determine whether or not to display a notification to the user of successful
+                    report upload.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                    <p>void</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_uploadPositionsAndMark" class="method item">
+    <h3 class="name"><code>uploadPositionsAndMark</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/_Users_sentelljg_working_folder_ACE_app_ACE_www_js_services_UploadService.js.html#l139"><code>&#x2F;Users&#x2F;sentelljg&#x2F;working_folder&#x2F;ACE&#x2F;app&#x2F;ACE&#x2F;www&#x2F;js&#x2F;services&#x2F;UploadService.js:139</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Function uploads all unuploaded positions and marks them as uploaded</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                    <p>void</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_uploadReportsAndMark" class="method item">
+    <h3 class="name"><code>uploadReportsAndMark</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/_Users_sentelljg_working_folder_ACE_app_ACE_www_js_services_UploadService.js.html#l168"><code>&#x2F;Users&#x2F;sentelljg&#x2F;working_folder&#x2F;ACE&#x2F;app&#x2F;ACE&#x2F;www&#x2F;js&#x2F;services&#x2F;UploadService.js:168</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Function uploads all unuploaded reports and their associated positions.</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                    <p>void</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+            </div>
+        
+
+        
+
+        
+
+        
+    </div>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

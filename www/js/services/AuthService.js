@@ -1,7 +1,13 @@
+// AuthService.js
+
+/**
+ * @module ace.services
+ */
+
 angular.module('ace.services')
 
 /**
- * Service class handles authorization for the mobile app.  Performs login/logout functionality.  Also handles 
+ * @description Service class handles authorization for the mobile app.  Performs login/logout functionality.  Also handles 
  * retrieving all users in the current user's Group after login.
  * 
  * @class AuthService

@@ -22,6 +22,7 @@ angular.module('ace.controllers')
 	$scope.useTemplateClicked = function() {
 		//DataShareService.setItem("template", $scope.report);
 		$state.go("tab.report");
+		alert("Not yet implemented.");
 	};
 	
 	$scope.fillFromReport = function(report) {

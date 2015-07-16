@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - www/js/workers/UploadWorkerService.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>www/js/workers/UploadWorkerService.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">64.75</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">238</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">36.13</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">1.54</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">angular.module(&#039;worker-services&#039;, [&#039;ace.services&#039;, &#039;lbServices&#039;])
+
+.service(&#039;UploadWorkerService&#039;, function(WebApiService) {
+	// Variables
+	var mReportRows = [];
+	var mReportCounter = 0;
+
+	var mPositionRows = [];
+	var mPositionCounter = 0;
+	
+	return {
+		/**
+		 * Function initializes all service variables (if they are not initialized already)
+		 * 
+		 * @method initialize
+		 * @return void
+		 * @throws none
+		 */
+		initialize: function() {
+			if(this.mReportRows === undefined)
+			{
+				this.mReportRows = [];
+				this.mReportCounter = 0;
+				
+				this.mPositionRows = [];
+				this.mPositionCounter = 0;
+			}
+		},
+		
+		/**
+		 * Sends a success or error message back to the main thread
+		 * 
+		 * @method sendMessage
+		 * @param {Boolean} success True if this is a success message, false otherwise
+		 * @param {Integer} localId The local SQL id of the item being reported about
+		 * @param {String} typeName Either &quot;reports&quot; or &quot;positions&quot;
+		 * @param {Object} data Additional data to send
+		 * @param {Boolean} final True if this is the last in a series of reports
+		 * @param {Integer} count If final==true, this should be the number of reports uploaded
+		 * @return void
+		 * @throws none
+		 */
+		sendMessage: function(success, localId, typeName, data, final, count) {
+			var message = {
+				success: success,
+				content: {
+					localIds: localId,
+					typeName: typeName,
+					extra: data
+				}
+			}
+			if(final)
+			{
+				message.content.done = true;
+				message.content.count = count;
+			}
+			
+			// Remove $promise object if there is one
+			if(message.content.extra.$promise !== undefined)
+			{
+				message.content.extra.$promise = null;
+			}
+			
+			postMessage(message);
+		},
+		
+		/**
+		 * Function uploads all unuploaded positions currently in the database
+		 * 
+		 * @method uploadPositions
+		 * @param {Array} positionRows The SQL rows representing the position values to be uploaded
+		 * @return void
+		 * @throws none
+		 */
+		uploadPositions: function(positionRows) {
+			this.initialize();
+			// Save positionRows to be used later in callback functions
+			var self = this;
+			self.mPositionRows = positionRows;
+			for(var i = 0; i &lt; self.mPositionRows.length; i++)
+			{
+				// Create position object to upload
+				var row3 = self.mPositionRows[i];
+				var position2 = {
+					userId: row3.userId,
+					latlng: {lat: row3.latitude, lng: row3.longitude},
+					timestamp: new Date(row3.timestamp),
+					accuracy: row3.accuracy,
+					altitude: row3.altitude,
+					altitudeAccuracy: row3.altitudeAccuracy,
+					heading: row3.heading,
+					speed: row3.speed	
+				};
+				
+				// Closure to persist &quot;i&quot;
+				(function(j) {
+					// Execute position create call (Loopback api)
+					WebApiService.createPosition(position2, function(value, responseHeaders) {
+						// Re-grab the correct position value
+						var row4 = self.mPositionRows[j];
+						
+						// Message main thread about success
+						self.sendMessage(true, row4.id, &quot;positions&quot;, value);	
+						
+						// Check for end of batch and clear if necessary
+						self.mPositionCounter++;
+						if(self.mPositionCounter === self.mPositionRows.length)
+						{							
+							self.mPositionCounter = 0;
+							self.mPositionRows = [];
+						}
+						
+					}, function(httpResponse) {
+						var row6 = self.mPositionRows[j];
+						
+						// Upload failed, notify main thread
+						self.sendMessage(false, row6.id, &quot;positions&quot;, httpResponse);
+					});
+				})(i);
+			}
+		},
+		
+		/**
+		 * Function uploads all reports (and their associated positions) that were passed in reportRows
+		 * 
+		 * @method uploadReports
+		 * @param {Array} reportRows the array of SQL rows (report joined with position) that will be uploaded
+		 * @return void
+		 * @throws none
+		 */
+		uploadReports: function(reportRows) {
+			this.initialize();
+			var self = this;
+			// Save report rows for use later in callback functions
+			self.mReportRows = reportRows;
+			for(var i = 0; i &lt; self.mReportRows.length; i++)
+			{
+				// Grab a reference to the current item
+				// Each row will contain the joined results of a query on the reports and positions table, with
+				// some aliases to separate out the id&#039;s
+				var row = self.mReportRows[i];
+				
+				var position = {
+					userId: row.userId,
+					latlng: {lat: row.latitude, lng: row.longitude},
+					timestamp: new Date(row.timestamp),
+					accuracy: row.accuracy,
+					altitude: row.altitude,
+					altitudeAccuracy: row.altitudeAccuracy,
+					heading: row.heading,
+					speed: row.speed	
+				};
+				
+				// Closure to persist &quot;i&quot;
+				(function(j) {
+					// Execute position create call (Loopback api)
+					WebApiService.createPosition(position, function(value, responseHeaders) {
+						// Re-grab row object
+						var row2 = self.mReportRows[j];
+						
+						// Message main thread about success
+						self.sendMessage(true, row2.positionId, &quot;positions&quot;, value);					
+						
+						// Get returned positionId
+						var posWebId = value.id;
+	
+						// get report object
+						var report = {
+							userId: row2.userId,
+							positionId: posWebId,
+							cloudCover: row2.cloudCover,
+							precipitation: row2.precipitation,
+							visibility: row2.visibility,
+							pressureTendency: row2.pressureTendency,
+							pressureValue: row2.pressureValue,
+							temperatureValue: row2.temperatureValue,
+							temperatureUnits: row2.temperatureUnits,
+							windValue: row2.windValue,
+							windUnits: row2.windUnits,
+							windDirection: row2.windDirection,
+							notes: row2.notes,
+							other: row2.other,
+							attachment: null
+						};
+						
+						// Closure to persist original &quot;i&quot; value
+						(function(k) {
+							// execute weather report create call (Loopback api)
+							WebApiService.createWeatherReport(report, function(value, responseHeaders) {
+								// Re-grab row
+								var row5 = self.mReportRows[k];
+								self.mReportCounter++;
+								
+								if(self.mReportCounter &lt; self.mReportRows.length)
+								{
+									// Send success message
+									self.sendMessage(true, row5.reportId, &quot;reports&quot;, value);
+								}
+								else
+								{
+									self.sendMessage(true, row5.reportId, &quot;reports&quot;, value, true, self.mReportRows.length);
+									
+									// Clear out scope variables
+									self.mReportCounter = 0;
+									self.mReportRows = [];	
+								}					
+		
+							}, function(httpResponse) {
+								var row8 = self.mReportRows[k];
+								self.mReportCounter++;
+								
+								if(self.mReportCounter &lt; self.mReportRows.length)
+								{
+									// Send success message
+									self.sendMessage(false, row8.reportId, &quot;reports&quot;, value);
+								}
+								else
+								{
+									self.sendMessage(false, row8.reportId, &quot;reports&quot;, value, true);
+									
+									// Clear out scope variables
+									self.mReportIdArray = [];
+									self.mReportCounter = 0;
+									self.mReportRows = [];	
+								}	
+							});
+						})(j);						
+								
+					}, function(httpResponse) {
+						var row7 = self.mReportRows[j];
+						// error
+						self.sendMessage(false, row7.positionId, &quot;positions&quot;, httpResponse);
+					});	
+				})(i);
+			}
+		}
+	}
+});</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

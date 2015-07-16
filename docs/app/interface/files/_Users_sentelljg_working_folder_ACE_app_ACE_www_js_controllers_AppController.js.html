@@ -43,6 +43,16 @@
             
                 <li><a href="../classes/AppController.html">AppController</a></li>
             
+                <li><a href="../classes/AuthService.html">AuthService</a></li>
+            
+                <li><a href="../classes/DataShareService.html">DataShareService</a></li>
+            
+                <li><a href="../classes/DbService.html">DbService</a></li>
+            
+                <li><a href="../classes/GeoService.html">GeoService</a></li>
+            
+                <li><a href="../classes/LocalStorageService.html">LocalStorageService</a></li>
+            
                 <li><a href="../classes/LoginController.html">LoginController</a></li>
             
                 <li><a href="../classes/MapController.html">MapController</a></li>
@@ -51,7 +61,23 @@
             
                 <li><a href="../classes/ReportController.html">ReportController</a></li>
             
+                <li><a href="../classes/SettingsController.html">SettingsController</a></li>
+            
+                <li><a href="../classes/SettingsDbController.html">SettingsDbController</a></li>
+            
+                <li><a href="../classes/SettingsGpsController.html">SettingsGpsController</a></li>
+            
+                <li><a href="../classes/SettingsLangController.html">SettingsLangController</a></li>
+            
+                <li><a href="../classes/SettingsService.html">SettingsService</a></li>
+            
+                <li><a href="../classes/UploadService.html">UploadService</a></li>
+            
+                <li><a href="../classes/UploadWorker.html">UploadWorker</a></li>
+            
                 <li><a href="../classes/WeatherReport.html">WeatherReport</a></li>
+            
+                <li><a href="../classes/WebApiService.html">WebApiService</a></li>
             
                 <li><a href="../classes/WorkspaceController.html">WorkspaceController</a></li>
             
@@ -59,7 +85,9 @@
 
             <ul id="api-modules" class="apis modules">
             
-                <li><a href="../modules/starter.controllers.html">starter.controllers</a></li>
+                <li><a href="../modules/ace.controllers.html">ace.controllers</a></li>
+            
+                <li><a href="../modules/ace.services.html">ace.services</a></li>
             
             </ul>
         </div>
@@ -106,16 +134,16 @@
 //--------------------------------------------------------------
 
 /**
- * @module starter.controllers
+ * @module ace.controllers
  */
-// Create the starter.controllers angularjs module
-angular.module(&#x27;starter.controllers&#x27;, [])
+// Create the ace.controllers angularjs module
+angular.module(&#x27;ace.controllers&#x27;, [])
 
 // Create the AppController controller
 /**
  * @class AppController
  */
-.controller(&#x27;AppController&#x27;, function($scope, $ionicSideMenuDelegate, $state) {
+.controller(&#x27;AppController&#x27;, function($scope, Group, UploadService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
   
   // Function toggles sliding the left side-menu out and back in
   /**
@@ -124,38 +152,61 @@ angular.module(&#x27;starter.controllers&#x27;, [])
    * @return void
    * @throws none
    */
-    $scope.toggleLeft = function() {
+	$scope.toggleLeft = function() {
     $ionicSideMenuDelegate.toggleLeft();
   };
   
-  // Function logs out the current user by removing them from local storage
+  $scope.$on(&#x27;$ionicView.beforeEnter&#x27;, function() {
+    	$ionicSideMenuDelegate.canDragContent(true);
+        
+        // Set user name in left side menu
+        document.getElementById(&quot;username_title&quot;).innerText = LocalStorageService.getItem(&quot;currentUser&quot;, null, window).username;
+    });
+  
+  
   /**
+   * Function logs out the current user 
+   * 
    * @method logout
    * @description Function logs out the current user by removing them from local storage
    * @return void
    * @throws none
    */
   $scope.logout = function() {
-    // Grab a new instance of LocalStorageUtil
-    var localStorageHandler = new LocalStorageUtil(window);
+      // Make server logout call
+      AuthService.logoutUser(function(value, responseHeaders) {
+          // Success      
+          // This function was accessed by sliding out the left menu, so close it back up.
+        $ionicSideMenuDelegate.toggleLeft();
     
-    // Clear the username variable (where the current user&#x27;s identity is stored)
-    localStorageHandler.set(&quot;username&quot;, &quot;&quot;);
+        // Disable dragging the left-menu (since we are about to switch to the login screen)
+        $ionicSideMenuDelegate.canDragContent(false);
     
-    // This function was accessed by sliding out the left menu, so close it back up.
-    $ionicSideMenuDelegate.toggleLeft();
-    
-    // Disable dragging the left-menu (since we are about to switch to the login screen)
-    $ionicSideMenuDelegate.canDragContent(false);
-    
-    // Kick the user back out to the login screen
-    $state.go(&#x27;login&#x27;);
-  };
+        // Turn off any active position tracking
+        GeoService.disableTracking();
+        
+        // Stop watching position
+        GeoService.disableWatchPosition(navigator.geolocation);
+        
+        // Stop auto-upload
+        UploadService.disableAutoUpload();
+        
+        // Kill the upload worker thread (if necessary)
+        UploadService.killUploadWorkerThread();
+        
+        // Kick the user back out to the login screen
+        $state.go(&#x27;login&#x27;);
+      
+      }, function(data, httpResponse) {
+          // Error (already alerted in AuthService)
+          //alert(httpResponse.data);
+      });
+    };
   
   // Function provides test access
   $scope.test = function() {
     // Try out getting geolocation
-    navigator.geolocation.getCurrentPosition(function(position) {
+    /*navigator.geolocation.getCurrentPosition(function(position) {
       alert(&#x27;Latitude: &#x27;          + position.coords.latitude          + &#x27;\n&#x27; +
           &#x27;Longitude: &#x27;         + position.coords.longitude         + &#x27;\n&#x27; +
           &#x27;Altitude: &#x27;          + position.coords.altitude          + &#x27;\n&#x27; +
@@ -167,7 +218,141 @@ angular.module(&#x27;starter.controllers&#x27;, [])
     }, function(error) {
       alert(&#x27;code: &#x27;    + error.code    + &#x27;\n&#x27; +
           &#x27;message: &#x27; + error.message + &#x27;\n&#x27;);
-    }, {timeout: 10000, enableHighAccuracy: true});
+    }, {timeout: 10000, enableHighAccuracy: true});*/
+    GeoService.getCurrentPosition(navigator.geolocation, function(position) {
+      alert(&#x27;Latitude: &#x27;          + position.coords.latitude          + &#x27;\n&#x27; +
+          &#x27;Longitude: &#x27;         + position.coords.longitude         + &#x27;\n&#x27; +
+          &#x27;Altitude: &#x27;          + position.coords.altitude          + &#x27;\n&#x27; +
+          &#x27;Accuracy: &#x27;          + position.coords.accuracy          + &#x27;\n&#x27; +
+          &#x27;Altitude Accuracy: &#x27; + position.coords.altitudeAccuracy  + &#x27;\n&#x27; +
+          &#x27;Heading: &#x27;           + position.coords.heading           + &#x27;\n&#x27; +
+          &#x27;Speed: &#x27;             + position.coords.speed             + &#x27;\n&#x27; +
+          &#x27;Timestamp: &#x27;         + position.timestamp                + &#x27;\n&#x27;);
+    }, function(error) {
+      alert(&#x27;code: &#x27;    + error.code    + &#x27;\n&#x27; +
+          &#x27;message: &#x27; + error.message + &#x27;\n&#x27;);
+    });
+  };
+  
+  // Testing HTTPS capabilities
+  $scope.test2 = function() {
+    $http.get(&#x27;https://www.google.com&#x27;).then(function(resp) {
+      alert(&#x27;success: &#x27; + resp);
+    }, function(err) {
+        alert(&#x27;error: &#x27; + err);
+    });
+  };
+  
+  $scope.testSQLite = function() {
+    DbService.openDatabase(window);
+    
+    /*navigator.geolocation.getCurrentPosition(function(pos) {
+      DbService.insertPosition(pos, window);
+      
+      DbService.getAllPositionLogs(window, function(res) {
+        alert(res.rows.length);
+      });
+      
+      DbService.getRecentPositionLogs(window, 3, function(res) {
+        alert(res.rows.length);
+        var i = 0;
+        i++;
+      });
+    });*/
+    
+    /*GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
+      DbService.insertPosition(pos, window);
+      
+      DbService.getAllPositionLogs(window, function(res) {
+        alert(res.rows.length);
+      });
+      
+      DbService.getRecentPositionLogs(window, 3, function(res) {
+        alert(res.rows.length);
+        var i = 0;
+        i++;
+      });
+    }); */
+    DbService.getAllPositionLogs(window, function(res) {
+        var num = res.rows.length;
+        alert(num);
+    }); 
+  };
+  
+  $scope.testReportPosition = function() {
+    DbService.getReportsAndPositions(window, function(reports) {
+      var i = 0;
+      i++;
+      i++;
+    });
+  };
+  
+  $scope.test3 = function() {
+      /*var user = LocalStorageService.getItem(&quot;currentUser&quot;, null, window);
+      
+      Group.groupId({id: user.groupId}, function(value, responseHeaders) {
+          var i = 0;
+          i++;
+      }, function(httpResponse) {
+          var i = 0; i++;
+      });*/
+      /*DbService.getAllUsers(window, function(res) {
+         var i = 0;
+         i = res; 
+         i = null;
+      });*/
+      UploadService.uploadAll();
+      
+  };
+  
+  $scope.lastPos = null;
+  
+  $scope.test4 = function() {
+      GeoService.getCurrentPosition(navigator.geolocation, function(position) {			
+			var insert = false;
+			if(position !== null)
+			{
+				// Automatically insert if no other entries have been inserted
+				if($scope.lastPos === null)
+				{
+					insert = true
+				}
+				else if((position.coords.latitude !== $scope.lastPos.coords.latitude) 
+					|| (position.coords.longitude !== $scope.lastPos.coords.longitude) 
+					|| (position.coords.altitude != $scope.lastPos.coords.altitude) 
+					|| (position.coords.accuracy != $scope.lastPos.coords.accuracy) 
+					|| (position.coords.altitudeAccuracy != $scope.lastPos.coords.altitudeAccuracy))
+				{
+					insert = true;
+				}				
+			}
+			
+			// Insert if necessary
+			if(insert)
+			{
+				DbService.insertPosition(position, window);	
+			}	
+            
+            $scope.lastPos = position;					
+		});			     
+  };
+  
+  /**
+   * Function opens the settings view
+   * 
+   * @method openSettings
+   * @return void
+   * @throws none
+   */
+  $scope.openSettings = function() {    
+    // This function was accessed by sliding out the left menu, so close it back up.
+    $ionicSideMenuDelegate.toggleLeft();
+    
+    // Save previous state (tab)
+    LocalStorageService.setItem(&#x27;previousState&#x27;, $state.current.name, window);
+    
+    // Perform the navigation using the $state object
+    $state.go(&#x27;settings&#x27;);
   };
 });
 
