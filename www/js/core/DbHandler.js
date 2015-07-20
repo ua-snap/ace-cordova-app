@@ -22,6 +22,62 @@ DbHandler.prototype.deleteDb = function() {
 	window.sqlitePlugin.deleteDatabase({name: this.mDbName, location: 1});
 };
 
+ DbHandler.prototype.upsert = function(tableName, keys, values, uniqueCol, uniqueVal, callback) {
+ 	var self = this;
+	this.mDb.transaction(function(tx) {
+		var updateSqlString = "UPDATE OR IGNORE " + tableName + " SET ";	
+		
+		for(var i = 0; i < keys.length; i++)
+		{
+			if(i !== keys.length - 1)
+			{
+				updateSqlString = updateSqlString + keys[i] + "='" + values[i] + "',";
+			}
+			else
+			{
+				updateSqlString = updateSqlString + keys[i] + "='" + values[i] + "' WHERE " + uniqueCol + "=" + uniqueVal + "; ";
+			}			
+		}	
+		
+		var insertSqlString = "INSERT OR IGNORE INTO " + tableName + " (";
+		
+		for(var i = 0; i < keys.length; i++)
+		{
+			if(i !== (keys.length - 1))
+			{
+				insertSqlString = insertSqlString +	keys[i] + ","
+			}
+			else
+			{
+				insertSqlString = insertSqlString + keys[i] + ") VALUES (";	
+			}			 
+		}
+		
+		for(var i = 0; i < values.length; i++)
+		{
+			if(i !== (values.length - 1))
+			{
+				insertSqlString = insertSqlString +	"'" + values[i] + "',";
+			}
+			else
+			{
+				insertSqlString = insertSqlString + "'" + values[i] + "');";	
+			}	
+		}
+		
+		tx.executeSql(updateSqlString, [], function(tx, res) {
+			tx.executeSql(insertSqlString, [], function(tx, res) {
+				if(callback)
+				{
+					callback.call(this, res);
+				}
+			});			
+		});
+	}, function(error) {
+		self.errorHandler(error);
+	});
+ };
+
 /**
  * Function inserts a row into the specified table.  Column names are provided as an array of strings in the "keys"
  * parameter.  Values to insert are provided as an array in the values parameter.  If provided, the callback parameter

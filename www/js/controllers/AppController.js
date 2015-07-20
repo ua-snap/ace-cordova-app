@@ -13,7 +13,7 @@ angular.module('ace.controllers', [])
 /**
  * @class AppController
  */
-.controller('AppController', function($scope, Group, UploadService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
+.controller('AppController', function($scope, Group, DownloadService, UploadService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
   
   // Function toggles sliding the left side-menu out and back in
   /**
@@ -89,7 +89,7 @@ angular.module('ace.controllers', [])
       alert('code: '    + error.code    + '\n' +
           'message: ' + error.message + '\n');
     }, {timeout: 10000, enableHighAccuracy: true});*/
-    GeoService.getCurrentPosition(navigator.geolocation, function(position) {
+    /*GeoService.getCurrentPosition(navigator.geolocation, function(position) {
       alert('Latitude: '          + position.coords.latitude          + '\n' +
           'Longitude: '         + position.coords.longitude         + '\n' +
           'Altitude: '          + position.coords.altitude          + '\n' +
@@ -101,16 +101,26 @@ angular.module('ace.controllers', [])
     }, function(error) {
       alert('code: '    + error.code    + '\n' +
           'message: ' + error.message + '\n');
-    });
+    });*/
+    
+    DownloadService.downloadUsers(1);
+    
+    
   };
   
   // Testing HTTPS capabilities
   $scope.test2 = function() {
-    $http.get('https://www.google.com').then(function(resp) {
+    /*$http.get('https://www.google.com').then(function(resp) {
       alert('success: ' + resp);
     }, function(err) {
         alert('error: ' + err);
+    });*/
+    
+    DbService.getAllUsers(window, function(res) {
+        var a = 0; 
+        a++;
     });
+    
   };
   
   $scope.testSQLite = function() {

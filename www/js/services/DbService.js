@@ -31,13 +31,13 @@ angular.module('ace.services')
 			var createString = "";
 			
 			// Create reports table
-			createString = createString + "CREATE TABLE IF NOT EXISTS reports (id integer primary key, positionId integer, userId integer, webId integer, cloudCover text, precipitation text, visibility text, pressureTendency text, pressureValue text, temperatureValue text, temperatureUnits text, windValue text, windUnits text, windDirection text, notes text, camera text, other text, uploading integer); ";
+			createString = createString + "CREATE TABLE IF NOT EXISTS reports (id integer primary key, positionId integer, userId integer, webId integer unique, cloudCover text, precipitation text, visibility text, pressureTendency text, pressureValue text, temperatureValue text, temperatureUnits text, windValue text, windUnits text, windDirection text, notes text, camera text, other text, uploading integer); ";
 			dbHandler.executeSql(createString);
 			
-			createString = "CREATE TABLE IF NOT EXISTS positions (id integer primary key, userId integer, webId integer, timestamp integer, latitude real, longitude real, accuracy data_num, altitude real, altitudeAccuracy real, heading real, speed real, uploading integer); ";
+			createString = "CREATE TABLE IF NOT EXISTS positions (id integer primary key, userId integer, webId integer unique, timestamp integer, latitude real, longitude real, accuracy data_num, altitude real, altitudeAccuracy real, heading real, speed real, uploading integer); ";
 			dbHandler.executeSql(createString);	
 			
-			createString = "CREATE TABLE IF NOT EXISTS users (id integer primary key, username text unique, email text, groupId integer)";
+			createString = "CREATE TABLE IF NOT EXISTS users (id integer primary key, webId integer unique, username text unique, email text, groupId integer)";
 			dbHandler.executeSql(createString);
 		},
 		
@@ -106,11 +106,21 @@ angular.module('ace.services')
 		insertUser: function(user, window, callback) {
 			var dbHandler = new DbHandler("ace.db", window);
 			
-			var keys = ["username", "email", "groupId"];
+			var keys = ["username", "email", "groupId", "webId"];
 			
-			var values = [user.username, user.email, user.groupId];
+			var values = [user.username, user.email, user.groupId, user.id];
 			
 			dbHandler.insertInto("users", keys, values, callback);
+		},
+		
+		upsertUser: function(user, window, callback) {
+			var dbHandler = new DbHandler("ace.db", window);
+			
+			var keys = ["username", "email", "groupId", "webId"];
+			
+			var values = [user.username, user.email, user.groupId, user.id];
+			
+			dbHandler.upsert("users", keys, values, "webId", user.id, callback);
 		},
 		
 		/**
