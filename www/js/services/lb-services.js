@@ -1,6 +1,6 @@
 (function(window, angular, undefined) {'use strict';
 
-var urlBase = "https://ace-api-dev.herokuapp.com/api";
+var urlBase = "https://ace-api-release.herokuapp.com/api";
 var authHeader = 'authorization';
 
 /**
