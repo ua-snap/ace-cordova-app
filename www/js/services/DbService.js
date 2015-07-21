@@ -93,6 +93,16 @@ angular.module('ace.services')
 			dbHandler.insertInto("positions", keys, values, callback);
 		},
 		
+		upsertPosition: function(pos, window, callback) {
+			var dbHandler = new DbHandler("ace.db", window);
+			
+			var keys = ["timestamp", "userId", "webId", "speed", "heading", "altitudeAccuracy", "altitude", "accuracy", "longitude", "latitude", "uploading"];
+			
+			var values = [pos.timestamp, pos.userId, pos.id, pos.coords.speed, pos.coords.heading, pos.coords.altitudeAccuracy, pos.coords.altitude, pos.coords.accuracy, pos.coords.longitude, pos.coords.latitude, 0];
+			
+			dbHandler.upsert("positions", keys, values, "webId", pos.id, callback);	
+		},
+		
 		/**
 		 * @method insertUser
 		 * @description Inserts the provided user into the ACE database

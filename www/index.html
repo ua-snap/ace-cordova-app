@@ -57,6 +57,9 @@
     <script src="js/workers/UploadWorker-app.js"></script>
     <script src="js/workers/UploadWorkerService.js"></script>
     <script src="lib/angular/angular.js"></script>
+    <script src="js/workers/DownloadWorker.js"></script>
+    <script src="js/workers/DownloadWorker-app.js"></script>
+    <script src="js/workers/DownloadWorkerService.js"></script>
     
     <!-- Core ACE API js files -->
     <script src="js/core/LocalStorageUtil.js"></script>
@@ -110,10 +113,10 @@
           <ion-item ng-click="test2()">
             Get All Users
           </ion-item>
-          <!--<ion-item ng-click="testSQLite()">
-            Test SQLite
+          <ion-item ng-click="testDownload()">
+            Test Download
           </ion-item>
-          <ion-item ng-click="testReportPosition()">
+          <!--<ion-item ng-click="testReportPosition()">
             Test Report &amp; Position Db
           </ion-item>
           <ion-item ng-click="test3()">

@@ -153,6 +153,22 @@ angular.module('ace.services', [])
 		 getGroupUsers: function(params, successCb, errorCb) 
 		 {
 			 Group.MobileUsers(params, successCb, errorCb);
+		 },
+		 
+		 getGroupPositions: function(groupId, successCb, errorCb)
+		 {
+			 var params = {
+				 id: groupId
+			 };
+			 Group.Positions(params, successCb, errorCb);
+		 },
+		 
+		 getGroupReports: function(groupId, successCb, errorCb) 
+		 {
+			 var params = {
+				 id: groupId
+			 };
+			 Group.WeatherReports(params, successCb, errorCb);
 		 }		
 	};
 });

@@ -234,4 +234,10 @@ angular.module('ace.controllers', [])
     // Perform the navigation using the $state object
     $state.go('settings');
   };
+  
+  $scope.testDownload = function() {
+      DownloadService.downloadUsers(LocalStorageService.getItem("currentUser", null, window).groupId);
+      
+      //DownloadService.downloadPositions();
+  };
 });
