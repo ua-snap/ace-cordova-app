@@ -268,7 +268,8 @@ module.exports.metadata =
     "cordova-sqlite-storage": "0.7.9",
     "org.apache.cordova.camera": "0.3.6",
     "org.apache.cordova.file": "1.3.3",
-    "org.apache.cordova.media-capture": "0.3.6"
+    "org.apache.cordova.media-capture": "0.3.6",
+    "cordova-plugin-crosswalk-webview": "1.2.0"
 }
 // BOTTOM OF METADATA
 });

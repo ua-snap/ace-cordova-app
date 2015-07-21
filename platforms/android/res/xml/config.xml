@@ -29,6 +29,7 @@
     <feature name="Capture">
         <param name="android-package" value="org.apache.cordova.mediacapture.Capture" />
     </feature>
+    <preference name="webView" value="org.crosswalk.engine.XWalkWebViewEngine" />
     <icon density="ldpi" src="resources/android/icon/ace_icon.png" />
     <icon density="mdpi" src="resources/android/icon/ace_icon.png" />
     <icon density="hdpi" src="resources/android/icon/ace_icon.png" />
