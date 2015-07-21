@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    
+    <!-- Translation module -->
+    <script src="lib/angular-translate/angular-translate.js"></script>
+    
+    <!-- angular-resource -->
+    <script src="lib/angular-resource/angular-resource.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+
+    <!-- Controller js files (AppController.js must be listed first since it contains the module init function) -->
+    <script src="js/controllers/AppController.js"></script>
+    <script src="js/controllers/MapController.js"></script>
+    <script src="js/controllers/WorkspaceController.js"></script>
+    <script src="js/controllers/LoginController.js"></script>
+    <script src="js/controllers/ReportController.js"></script>
+    <script src="js/controllers/SettingsController.js"></script>
+    <script src="js/controllers/SettingsDbController.js"></script>
+    <script src="js/controllers/SettingsGpsController.js"></script>
+    <script src="js/controllers/BrowseReportsController.js"></script>
+    <script src="js/controllers/ViewReportController.js"></script>
+    <script src="js/controllers/SettingsLangController.js"></script>
+    
+    <!-- Service js files (LoginService.js first - init function) -->
+    <script src="js/services/WebApiService.js"></script>
+    <script src="js/services/GeoService.js"></script>
+    <script src="js/services/DbService.js"></script>
+    <script src="js/services/SettingsService.js"></script>
+    <script src="js/services/DataShareService.js"></script>
+    <script src="js/services/AuthService.js"></script>
+    <script src="js/services/LocalStorageService.js"></script>
+    <script src="js/services/lb-services.js"></script>
+    <script src="js/services/UploadService.js"></script>
+    <script src="js/services/DownloadService.js"></script>
+    
+    <!-- Worker js files -->
+    <script src="js/workers/UploadWorker.js"></script>
+    <script src="js/workers/UploadWorker-app.js"></script>
+    <script src="js/workers/UploadWorkerService.js"></script>
+    <script src="lib/angular/angular.js"></script>
+    <script src="js/workers/DownloadWorker.js"></script>
+    <script src="js/workers/DownloadWorker-app.js"></script>
+    <script src="js/workers/DownloadWorkerService.js"></script>
+    
+    <!-- Core ACE API js files -->
+    <script src="js/core/LocalStorageUtil.js"></script>
+    <script src="js/core/JSONValidator.js"></script>
+    <script src="js/core/Position.js"></script>
+    <script src="js/core/DbHandler.js"></script>
+    <script src="js/core/Settings.js"></script>
+    <script src="js/core/EmailValidator.js"></script>
+    
+    <script src="js/WeatherReport.js"></script>
+    <script src="js/ModalHandler.js"></script>
+    
+    
+    
+    <!-- File Upload module -->
+    <script src="lib/angular-file-upload/angular-file-upload.js"></script>
+      
+    
+
+  </head>
+  <body ng-app="ace" class="platform-ios platform-cordova platform-webview">
+    <ion-side-menus>
+    <ion-pane ion-side-menu-content="" drag-content="false">
+    <!--
+      The nav bar that will be updated as we navigate between views.
+    -->
+    <ion-nav-bar class="bar-stable">
+      <ion-nav-back-button>
+      </ion-nav-back-button>
+    </ion-nav-bar>
+    <!--
+      The views will be rendered in the <ion-nav-view> directive below
+      Templates are in the /templates folder (but you could also
+      have templates inline in this html file if you'd like).
+    -->
+    <ion-nav-view></ion-nav-view>
+    </ion-pane>
+    <!-- Left menu -->
+    <ion-side-menu side="left">
+      <ion-header-bar class="bar-stable">
+        <h1 class="title" id="username_title"></h1>
+      </ion-header-bar>
+      <ion-content scroll="false" ng-controller="AppController">
+        <ion-list>
+          <ion-item ng-click="logout()">
+            {{&apos;LOGOUT&apos; | translate}}
+          </ion-item>
+          <ion-item ng-click="test()">
+            Test Download
+          </ion-item>
+          <ion-item ng-click="test2()">
+            Get All Users
+          </ion-item>
+          <ion-item ng-click="testDownload()">
+            Test Download
+          </ion-item>
+          <!--<ion-item ng-click="testReportPosition()">
+            Test Report &amp; Position Db
+          </ion-item>
+          <ion-item ng-click="test3()">
+            Test Upload Positions
+          </ion-item>
+          <ion-item ng-click="test4()">
+            Test Tracking Callback
+          </ion-item>-->
+          <ion-item ng-click="openSettings()">
+            {{&apos;SETTINGS&apos; | translate}}
+          </ion-item>
+      </ion-list></ion-content>
+    </ion-side-menu>
+    </ion-side-menus>
+    <script src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=true"></script>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<!-- html file defines the layout for the reporting tab -->
+
+<ion-view view-title="{{'WEATHER' | translate}}">
+  <ion-nav-buttons side="left">
+    <button class="button button-icon ion-navicon" ng-click="toggleLeft()"></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <a class="button button-clear icon-right ion-android-send" ng-click="openPopover($event)">{{'SUBMIT' | translate}}  </a>
+    <button class="button button-icon ion-android-more-vertical" ng-click="openOptionsMenu($event)"></button>
+  </ion-nav-buttons>
+  <ion-content>
+    <div class="row">
+      <div class="col report-block" ng-click="openModal1()">
+        <img src="img/cloud_cover.png" class="report-image"></img>
+        <div class="report-text" id="cloud_sum">______</div>
+        <div class="report-title">{{'CLOUD_COVER' | translate}}</div>
+      </div>
+      <div class="col report-block" ng-click="openModal2()">
+        <img src="img/precipitation.png" class="report-image"></img>
+        <div class="report-text" id="precip_sum">______</div>
+        <div class="report-title">{{'PRECIPITATION' | translate}}</div>
+      </div>
+      <div class="col report-block" ng-click="openModal3()">
+        <img src="img/visibility.png" class="report-image"></img>
+        <div class="report-text" id="vis_sum">______</div>
+        <div class="report-title">{{'VISIBILITY' | translate}}</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col report-block" ng-click="openModal4()">
+        <img src="img/pressure.png" class="report-image"></img>
+        <div class="report-text" id="pressure_sum">______</div>
+        <div class="report-title">{{'PRESSURE' | translate}}</div>
+      </div>
+      <div class="col report-block" ng-click="openModal5()">
+        <img src="img/temperature.png" class="report-image"></img>
+        <div class="report-text" id="temp_sum">______</div>
+        <div class="report-title">{{'TEMPERATURE' | translate}}</div>
+      </div>
+      <div class="col report-block" ng-click="openModal6()">
+        <img src="img/wind.png" class="report-image"></img>
+        <div class="report-text" id="wind_sum">______</div>
+        <div class="report-title">{{'WIND' | translate}}</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col report-block" ng-click="openModal7()">
+        <img src="img/note.png" class="report-image"></img>
+        <div class="report-text" id="notes_sum">______</div>
+        <div class="report-title">{{'NOTES' | translate}}</div>
+      </div>
+      <div class="col report-block" ng-click="reportCategory8()">
+        <img src="img/camera.png" class="report-image"></img>
+        <div class="report-text" id="camera_sum">______</div>
+        <div class="report-title">{{'CAMERA' | translate}}</div>
+      </div>
+      <div class="col report-block" ng-click="openModal9()">
+        <img src="img/aurora_borealis.png" class="report-image"></img>
+        <div class="report-text" id="other_sum">______</div>
+        <div class="report-title">{{'OTHER' | translate}}</div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
