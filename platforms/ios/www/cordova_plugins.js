@@ -271,14 +271,14 @@ module.exports.metadata =
 {
     "com.ionic.keyboard": "1.0.4",
     "cordova-plugin-console": "1.0.0",
+    "cordova-plugin-crosswalk-webview": "1.2.0",
     "cordova-plugin-device": "1.0.0",
     "cordova-plugin-splashscreen": "2.0.0",
     "cordova-plugin-whitelist": "1.0.0",
     "cordova-sqlite-storage": "0.7.9",
     "org.apache.cordova.camera": "0.3.6",
     "org.apache.cordova.file": "1.3.3",
-    "org.apache.cordova.media-capture": "0.3.6",
-    "cordova-plugin-crosswalk-webview": "1.2.0"
+    "org.apache.cordova.media-capture": "0.3.6"
 }
 // BOTTOM OF METADATA
 });
