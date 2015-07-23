@@ -20,7 +20,9 @@
     "gulp-yuidoc": "^0.1.2",
     "karma-cordova-launcher": "0.0.8",
     "karma-safari-launcher": "^0.1.1",
-    "shelljs": "^0.3.0"
+    "q": "^1.4.1",
+    "shelljs": "^0.3.0",
+    "which": "^1.1.1"
   },
   "cordovaPlugins": [
     "cordova-plugin-device",
