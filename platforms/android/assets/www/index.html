@@ -72,6 +72,11 @@
     <script src="js/WeatherReport.js"></script>
     <script src="js/ModalHandler.js"></script>
     
+    <!-- Data synchronization files... -->
+    <script src="js/sync/DataService.js"></script>
+    <script src="js/sync/browser.bundle.js"></script>
+    <script src="js/sync/lbclient.js"></script>
+    
     
     
     <!-- File Upload module -->
@@ -115,6 +120,9 @@
           </ion-item>
           <ion-item ng-click="testDownload()">
             Test Download
+          </ion-item>
+          <ion-item ng-click="testSync()">
+            Test Sync
           </ion-item>
           <!--<ion-item ng-click="testReportPosition()">
             Test Report &amp; Position Db

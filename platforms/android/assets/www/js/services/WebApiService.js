@@ -6,7 +6,7 @@ angular.module('ace.services', [])
  * @class WebApiService
  * @constructor
  */
-.service('WebApiService', function(Mobile_user, Weather_report, Position, Group) {
+.service('WebApiService', function(RemoteMobileUser, Group, Position, MobileUser, WeatherReport) {
 	return {
 		
 		/**
@@ -23,7 +23,23 @@ angular.module('ace.services', [])
 		 */
 		authorizeUser: function(credentials, successCb, errorCb)
 		{
-			Mobile_user.login(credentials, successCb, errorCb);
+			var callback = function(err, res) {
+				if(err)
+				{
+					if(errorCb)
+					{
+						errorCb.call(this, err);
+					}
+				}	
+				else
+				{
+					if(successCb)
+					{
+						successCb.call(this, res);
+					}
+				}
+			};
+			RemoteMobileUser.login(credentials, callback);
 		},
 		
 		/**
@@ -38,7 +54,7 @@ angular.module('ace.services', [])
 		 */
 		deAuthorizeUser: function(successCb, errorCb)
 		{
-			Mobile_user.logout(successCb, errorCb);
+			RemoteMobileUser.logout(successCb, errorCb);
 		},
 		
 		/**
@@ -136,7 +152,7 @@ angular.module('ace.services', [])
 		 */
 		createWeatherReport: function(report, successCb, errorCb)
 		{
-			Weather_report.create(report, successCb, errorCb);
+			WeatherReport.create(report, successCb, errorCb);
 		},	
 		
 		/**
