@@ -8,13 +8,6 @@ module.exports = [
         ]
     },
     {
-        "file": "plugins/cordova-plugin-device/www/device.js",
-        "id": "cordova-plugin-device.device",
-        "clobbers": [
-            "device"
-        ]
-    },
-    {
         "file": "plugins/cordova-plugin-console/www/logger.js",
         "id": "cordova-plugin-console.logger",
         "clobbers": [
@@ -29,9 +22,11 @@ module.exports = [
         ]
     },
     {
-        "file": "plugins/cordova-plugin-whitelist/whitelist.js",
-        "id": "cordova-plugin-whitelist.whitelist",
-        "runs": true
+        "file": "plugins/cordova-plugin-device/www/device.js",
+        "id": "cordova-plugin-device.device",
+        "clobbers": [
+            "device"
+        ]
     },
     {
         "file": "plugins/cordova-plugin-splashscreen/www/splashscreen.js",
@@ -39,6 +34,11 @@ module.exports = [
         "clobbers": [
             "navigator.splashscreen"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-whitelist/whitelist.js",
+        "id": "cordova-plugin-whitelist.whitelist",
+        "runs": true
     },
     {
         "file": "plugins/cordova-sqlite-storage/www/SQLitePlugin.js",
@@ -275,11 +275,11 @@ module.exports.metadata =
 // TOP OF METADATA
 {
     "com.ionic.keyboard": "1.0.4",
-    "cordova-plugin-device": "1.0.1",
     "cordova-plugin-console": "1.0.1",
-    "cordova-plugin-whitelist": "1.0.0",
+    "cordova-plugin-crosswalk-webview": "1.3.0-dev",
+    "cordova-plugin-device": "1.0.1",
     "cordova-plugin-splashscreen": "2.1.0",
-    "cordova-plugin-crosswalk-webview": "1.2.0",
+    "cordova-plugin-whitelist": "1.0.0",
     "cordova-sqlite-storage": "0.7.9",
     "org.apache.cordova.camera": "0.3.6",
     "org.apache.cordova.file": "1.3.3",

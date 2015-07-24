@@ -109,9 +109,6 @@
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         },
-        "cordova-plugin-crosswalk-webview": {
-            "PACKAGE_NAME": "com.ionicframework.ace261647"
-        },
         "cordova-sqlite-storage": {
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         },
@@ -122,6 +119,9 @@
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         },
         "org.apache.cordova.media-capture": {
+            "PACKAGE_NAME": "com.ionicframework.ace261647"
+        },
+        "cordova-plugin-crosswalk-webview": {
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         }
     },

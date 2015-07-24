@@ -13,11 +13,23 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Device\"><param name=\"android-package\" value=\"org.apache.cordova.device.Device\" /></feature>",
+                            "xml": "<preference name=\"webView\" value=\"org.crosswalk.engine.XWalkWebViewEngine\" />",
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "xml": "<preference default=\"14+\" name=\"CROSSWALK_ANDROID_VERSION\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference default=\"––disable-pull-to-refresh-effect\" name=\"CROSSWALK_ANDROID_COMMANDLINE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference default=\"embedded\" name=\"LIB_MODE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Device\"><param name=\"android-package\" value=\"org.apache.cordova.device.Device\" /></feature>",
                             "count": 1
                         },
                         {
@@ -25,7 +37,7 @@
                             "count": 1
                         },
                         {
-                            "xml": "<preference name=\"webView\" value=\"org.crosswalk.engine.XWalkWebViewEngine\" />",
+                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
                         },
                         {
@@ -51,15 +63,15 @@
                 "parents": {
                     "/*": [
                         {
+                            "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
+                            "count": 3
+                        },
+                        {
                             "xml": "<uses-permission android:name=\"android.permission.RECORD_AUDIO\" />",
                             "count": 1
                         },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.RECORD_VIDEO\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
                             "count": 1
                         }
                     ]
@@ -71,19 +83,19 @@
         "com.ionic.keyboard": {
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         },
-        "cordova-plugin-device": {
-            "PACKAGE_NAME": "com.ionicframework.ace261647"
-        },
         "cordova-plugin-console": {
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         },
-        "cordova-plugin-whitelist": {
+        "cordova-plugin-crosswalk-webview": {
+            "PACKAGE_NAME": "com.ionicframework.ace261647"
+        },
+        "cordova-plugin-device": {
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         },
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         },
-        "cordova-plugin-crosswalk-webview": {
+        "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         },
         "cordova-sqlite-storage": {
