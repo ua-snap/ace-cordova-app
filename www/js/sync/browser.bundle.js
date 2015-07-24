@@ -25164,17 +25164,7 @@ http.request = function (opts, cb) {
 	opts.method = opts.method || 'GET'
 	opts.headers = opts.headers || {}
 	opts.path = opts.path || '/'
-    
-    // Short circuit logic to protect against undefined errors
-    if(!opts.uri && !opts.uri.protocol)
-    {
-        opts.protocol = opts.protocol || window.location.protocol
-    }
-    else
-    {
-        opts.protocol = opts.uri.protocol;
-    }
-	
+	if(!opts.uri && !opts.uri.protocol){opts.protocol = opts.protocol || window.location.protocol}else{opts.protocol = opts.uri.protocol;}
 	// If the hostname is provided, use the default port for the protocol. If
 	// the url is instead relative, use window.location.port
 	var defaultPort = (opts.hostname || hostHostname) ? (opts.protocol === 'https:' ? 443 : 80) : window.location.port
@@ -86754,7 +86744,7 @@ module.exports={
   "dataSources": {
     "remote": {
       "connector": "remote",
-      "url": "http://ace-api-dev.herokuapp.com/api"
+      "url": "https://ace-api-dev.herokuapp.com/api"
     },
     "local": {
       "connector": "memory",
