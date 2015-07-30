@@ -25,10 +25,6 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"SQLitePlugin\"><param name=\"ios-package\" value=\"SQLitePlugin\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"Camera\"><param name=\"ios-package\" value=\"CDVCamera\" /></feature>",
                             "count": 1
                         },
@@ -107,9 +103,6 @@
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         },
         "cordova-plugin-splashscreen": {
-            "PACKAGE_NAME": "com.ionicframework.ace261647"
-        },
-        "cordova-sqlite-storage": {
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         },
         "org.apache.cordova.camera": {

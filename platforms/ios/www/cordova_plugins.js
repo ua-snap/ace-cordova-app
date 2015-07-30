@@ -36,13 +36,6 @@ module.exports = [
         ]
     },
     {
-        "file": "plugins/cordova-sqlite-storage/www/SQLitePlugin.js",
-        "id": "cordova-sqlite-storage.SQLitePlugin",
-        "clobbers": [
-            "SQLitePlugin"
-        ]
-    },
-    {
         "file": "plugins/org.apache.cordova.camera/www/CameraConstants.js",
         "id": "org.apache.cordova.camera.Camera",
         "clobbers": [
@@ -274,7 +267,6 @@ module.exports.metadata =
     "cordova-plugin-console": "1.0.1",
     "cordova-plugin-whitelist": "1.0.0",
     "cordova-plugin-splashscreen": "2.1.0",
-    "cordova-sqlite-storage": "0.7.9",
     "org.apache.cordova.camera": "0.3.6",
     "org.apache.cordova.file": "1.3.3",
     "org.apache.cordova.media-capture": "0.3.6",

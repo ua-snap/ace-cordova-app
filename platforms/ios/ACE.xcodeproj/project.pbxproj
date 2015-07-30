@@ -45,8 +45,6 @@
 		656F7082FC0441579B942837 /* CDVLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 854EAB45C75D4CE9A74222C7 /* CDVLogger.m */; };
 		D6BEEA1008234A20A5FBFD25 /* CDVSplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 840FB3C76AF74C86813534CC /* CDVSplashScreen.m */; };
 		5AD425A735914C748F586D38 /* CDVViewController+SplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E16FD8A2A5B4B7392F2B0C0 /* CDVViewController+SplashScreen.m */; };
-		ABFB60A6CBFF4C27A718E7AC /* SQLitePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 835BE39F8F454AF19E320DB8 /* SQLitePlugin.m */; };
-		33337ED693C747609E805AA7 /* sqlite3.c in Resources */ = {isa = PBXBuildFile; fileRef = BFF3BF1A405B48819B332229 /* sqlite3.c */; };
 		8659910B525D41A3803A78CA /* UIImage+CropScaleOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = B379C53164CE450B84B15C43 /* UIImage+CropScaleOrientation.m */; };
 		EED2F76226864E4CA0500588 /* CDVCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = CA78D25CFCDE428DB59E26A0 /* CDVCamera.m */; };
 		85E067CEFC5942BF8D7F33A3 /* CDVJpegHeaderWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = EE62F0EE8E484318BADBCB75 /* CDVJpegHeaderWriter.m */; };
@@ -134,10 +132,6 @@
 		6E16FD8A2A5B4B7392F2B0C0 /* CDVViewController+SplashScreen.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVViewController+SplashScreen.m"; path = "cordova-plugin-splashscreen/CDVViewController+SplashScreen.m"; sourceTree = "<group>"; fileEncoding = 4; };
 		0573F811398543DCA827A167 /* CDVSplashScreen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVSplashScreen.h"; path = "cordova-plugin-splashscreen/CDVSplashScreen.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		EEF5E646F7E04C009710F411 /* CDVViewController+SplashScreen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVViewController+SplashScreen.h"; path = "cordova-plugin-splashscreen/CDVViewController+SplashScreen.h"; sourceTree = "<group>"; fileEncoding = 4; };
-		835BE39F8F454AF19E320DB8 /* SQLitePlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "SQLitePlugin.m"; path = "cordova-sqlite-storage/SQLitePlugin.m"; sourceTree = "<group>"; fileEncoding = 4; };
-		BFF3BF1A405B48819B332229 /* sqlite3.c */ = {isa = PBXFileReference; lastKnownFileType = unknown; name = "sqlite3.c"; path = "cordova-sqlite-storage/sqlite3.c"; sourceTree = "<group>"; fileEncoding = 4; };
-		2B5D119EA01F44758870366F /* SQLitePlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "SQLitePlugin.h"; path = "cordova-sqlite-storage/SQLitePlugin.h"; sourceTree = "<group>"; fileEncoding = 4; };
-		EB1DA72C0993469B84FFB77C /* sqlite3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "sqlite3.h"; path = "cordova-sqlite-storage/sqlite3.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		B379C53164CE450B84B15C43 /* UIImage+CropScaleOrientation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIImage+CropScaleOrientation.m"; path = "org.apache.cordova.camera/UIImage+CropScaleOrientation.m"; sourceTree = "<group>"; fileEncoding = 4; };
 		CA78D25CFCDE428DB59E26A0 /* CDVCamera.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVCamera.m"; path = "org.apache.cordova.camera/CDVCamera.m"; sourceTree = "<group>"; fileEncoding = 4; };
 		EE62F0EE8E484318BADBCB75 /* CDVJpegHeaderWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVJpegHeaderWriter.m"; path = "org.apache.cordova.camera/CDVJpegHeaderWriter.m"; sourceTree = "<group>"; fileEncoding = 4; };
@@ -271,10 +265,6 @@
 				6E16FD8A2A5B4B7392F2B0C0 /* CDVViewController+SplashScreen.m */,
 				0573F811398543DCA827A167 /* CDVSplashScreen.h */,
 				EEF5E646F7E04C009710F411 /* CDVViewController+SplashScreen.h */,
-				835BE39F8F454AF19E320DB8 /* SQLitePlugin.m */,
-				BFF3BF1A405B48819B332229 /* sqlite3.c */,
-				2B5D119EA01F44758870366F /* SQLitePlugin.h */,
-				EB1DA72C0993469B84FFB77C /* sqlite3.h */,
 				B379C53164CE450B84B15C43 /* UIImage+CropScaleOrientation.m */,
 				CA78D25CFCDE428DB59E26A0 /* CDVCamera.m */,
 				EE62F0EE8E484318BADBCB75 /* CDVJpegHeaderWriter.m */,
@@ -481,8 +471,6 @@
 				656F7082FC0441579B942837 /* CDVLogger.m in Sources */,
 				D6BEEA1008234A20A5FBFD25 /* CDVSplashScreen.m in Sources */,
 				5AD425A735914C748F586D38 /* CDVViewController+SplashScreen.m in Sources */,
-				ABFB60A6CBFF4C27A718E7AC /* SQLitePlugin.m in Sources */,
-				33337ED693C747609E805AA7 /* sqlite3.c in Resources */,
 				8659910B525D41A3803A78CA /* UIImage+CropScaleOrientation.m in Sources */,
 				EED2F76226864E4CA0500588 /* CDVCamera.m in Sources */,
 				85E067CEFC5942BF8D7F33A3 /* CDVJpegHeaderWriter.m in Sources */,

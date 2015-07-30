@@ -13,7 +13,7 @@ angular.module('ace.services')
  * @class AuthService
  * @constructor
  */
-.service('AuthService', function($http, DbService, LocalStorageService, WebApiService) {
+.service('AuthService', function($http, DbService, LocalStorageService, WebApiService) {    
 	return {
         /**
          * Function logs in the user with the credentials passed in the "name" and "pw" variables.  Note that 
@@ -48,7 +48,9 @@ angular.module('ace.services')
             WebApiService.authorizeUser(credentials, function(value, responseHeaders) {
                 // success 
                 // Save user data
-                LocalStorageService.setItem("currentUser", value.user, window);
+                LocalStorageService.setItem("currentUser", value, window);
+                
+                LocalStorageService.setItem("access_token", value.id);
                 
                 // Fill the user's table with all group member's data
                 WebApiService.getGroupUsers({id: value.user.groupId}, function(value, responseHeaders) {
