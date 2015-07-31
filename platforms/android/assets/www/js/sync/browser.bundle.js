@@ -89241,6 +89241,7 @@ module.exports = function(client) {
         RemoteGroup.replicate(
           LocalGroup,
           since.pull,
+          {where: {id: groupId}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
             cb && cb();
