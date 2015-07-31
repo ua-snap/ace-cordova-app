@@ -47,7 +47,10 @@ angular.module('ace.controllers')
     }
     
     // Turn auto-upload back on (10 second interval)
-    UploadService.enableAutoUpload(10);
+    //UploadService.enableAutoUpload(10);
+    window.setInterval(function() {
+        this.client.sync();
+    }, 10000);
     
   });
   
@@ -235,8 +238,8 @@ angular.module('ace.controllers')
   
   function onDeviceReady() {
     // Open Db and create tables if necessary
-    DbService.openDatabase(window);
-    DbService.createTables(window);
+    //DbService.openDatabase(window);
+    //DbService.createTables(window);
     
     // Grab and set settings
     var localHandler = new LocalStorageUtil(window);

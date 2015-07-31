@@ -13,7 +13,7 @@ angular.module('ace.controllers', [])
 /**
  * @class AppController
  */
-.controller('AppController', function($scope, Group, DownloadService, UploadService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
+.controller('AppController', function(Group, RemoteGroup, MobileUser, RemoteMobileUser, Position, RemotePosition, WeatherReport, RemoteWeatherReport, $scope, DownloadService, UploadService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
   
   // Function toggles sliding the left side-menu out and back in
   /**
@@ -44,7 +44,7 @@ angular.module('ace.controllers', [])
    */
   $scope.logout = function() {
       // Make server logout call
-      AuthService.logoutUser(function(value, responseHeaders) {
+      AuthService.logoutUser(function() {
           // Success      
           // This function was accessed by sliding out the left menu, so close it back up.
         $ionicSideMenuDelegate.toggleLeft();
@@ -67,7 +67,7 @@ angular.module('ace.controllers', [])
         // Kick the user back out to the login screen
         $state.go('login');
       
-      }, function(data, httpResponse) {
+      }, function(err) {
           // Error (already alerted in AuthService)
           //alert(httpResponse.data);
       });
@@ -240,4 +240,10 @@ angular.module('ace.controllers', [])
       
       //DownloadService.downloadPositions();
   };
+  
+  $scope.testSync = function() {
+      var i = 0;
+      i++;
+  };
+  
 });

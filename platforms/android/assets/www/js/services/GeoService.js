@@ -252,7 +252,11 @@ angular.module('ace.services')
 					// Insert if necessary
 					if(insert)
 					{
-						DbService.insertPosition(position, window);	
+						//DbService.insertPosition(position, window);
+						window.client.models.LocalPosition.create(position, function(err, res) {
+							if(err) throw err;
+							
+						});
 			
 						if(mTrackingCallback)
 						{

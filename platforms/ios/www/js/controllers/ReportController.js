@@ -47,7 +47,10 @@ angular.module('ace.controllers')
     }
     
     // Turn auto-upload back on (10 second interval)
-    UploadService.enableAutoUpload(10);
+    //UploadService.enableAutoUpload(10);
+    window.setInterval(function() {
+        this.client.sync();
+    }, 10000);
     
   });
   
