@@ -13,7 +13,7 @@ angular.module('ace.services')
  * @class AuthService
  * @constructor
  */
-.service('AuthService', function($http, DbService, LocalStorageService, WebApiService) {    
+.service('AuthService', function($http, DbService, RemoteGroup, RemoteMobileUser, LocalStorageService, WebApiService) {    
 	return {
         /**
          * Function logs in the user with the credentials passed in the "name" and "pw" variables.  Note that 
@@ -44,36 +44,60 @@ angular.module('ace.services')
                     password: pw
                 }
             }
-                       
-            WebApiService.authorizeUser(credentials, function(value, responseHeaders) {
-                // success 
-                // Save user data
-                LocalStorageService.setItem("currentUser", value, window);
-                
-                LocalStorageService.setItem("access_token", value.id);
-                
-                // Fill the user's table with all group member's data
-                WebApiService.getGroupUsers({id: value.user.groupId}, function(value, responseHeaders) {
-                    // Group members in "value"
-                    if(value)
-                    {
-                        for(var i = 0; i < value.length; i++)
-                        {
-                            DbService.insertUser(value[i], window, null);
-                        }
-                    }                 
-                });
-                
-                // execute callback
-                if(successCallback)
-                {
-                    successCallback.call(this, value.user);
-                }
-            }, function(httpResponse) {
-                // error
-                alert(httpResponse.data);
-            });
             
+            RemoteMobileUser.login(credentials, ['user'], function(err, res) {
+               if(res)
+               {
+                   // Save access token
+                   LocalStorageService.setItem("access_token", res.id, window);
+                   
+                   // Save currentUser item (which contains the group id)
+                   LocalStorageService.setItem("currentUser", res.user, window);
+                   
+                   // Retrieve an array of the id's for users in the current group
+                   var filter = {where: {id: res.user.groupId}, include: "MobileUsers"};
+                   RemoteGroup.findOne(filter, function(err, result) {
+                       if(result)
+                       {
+                           var groupUsersIdArray = [];
+                           var groupUsers = result.__unknownProperties.MobileUsers;
+                           for(var i = 0; i < groupUsers.length; i++)
+                           {
+                               groupUsersIdArray.push(groupUsers[i].id);
+                           }
+                           LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
+                           // SYNC 
+                           window.client.sync();
+                       }                       
+                       else if(err)
+                       {
+                           alert(err);
+                       }
+                       
+                   });
+                   
+                   if(successCallback)
+                   {
+                       successCallback.call(this, res);
+                   }
+               } 
+               else if(err)
+               {
+                   alert(err);
+                   if(errorCallback)
+                   {
+                       errorCallback.call(this, err);
+                   }
+               }
+               else 
+               {
+                   alert('Server not found.  Please connect to the internet and retry.');
+                   if(errorCallback)
+                   {
+                       errorCallback.call(this, err);
+                   }
+               }
+            });            
         },
 		
         /**
@@ -83,9 +107,31 @@ angular.module('ace.services')
          * @param {function} successCallback Success callback function.  Executed on a successful logout operation.
          * @param {function} errorCallback Error callback function.  Executed on a failed logout operation. 
          */
-		logoutUser: function(successCallback, errorCallback) {            
+		logoutUser: function(successCallback, errorCallback) {
             
-            WebApiService.deAuthorizeUser(function(value, responseHeaders) {
+            RemoteMobileUser.logout(LocalStorageService.getItem("access_token", "", window), function(err) {
+              if(err)
+              {
+                  alert(err);
+                  if(errorCallback)
+                  {
+                      errorCallback.call(this, err);
+                  }
+              }  
+              else
+              {
+                  if(successCallback)
+                  {
+                      successCallback.call(this);
+                  }
+                  
+                  // Clear out local user storage
+                  LocalStorageService.setItem("access_token", "", window);
+                  LocalStorageService.setItem("currentUser", "", window);
+              }
+            });           
+            
+            /*WebApiService.deAuthorizeUser(function(value, responseHeaders) {
                 // success
                 // Execute callback
                 if(successCallback)
@@ -100,7 +146,7 @@ angular.module('ace.services')
                 {
                     errorCallback.call(this, httpResponse);
                 }
-            });
+            });*/
         }    
 	};   	 
 });

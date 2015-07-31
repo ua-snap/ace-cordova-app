@@ -68,7 +68,6 @@ angular.module('ace.controllers')
      * @throws none
      */
     $scope.login = function() {
-        $state.go('tab.report');
         AuthService.loginUser($scope.data.username, $scope.data.password, function(user) {
             // Clear out username and password
             $scope.data.username = "";
