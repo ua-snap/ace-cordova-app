@@ -47,12 +47,24 @@ angular.module('ace.controllers')
     }
     
     // Perform initial sync
-    this.client.sync();
+    if(window.navigator.connection.type !== "none") {
+        this.client.sync();
+    }
+    else
+    {
+        $ionicLoading.show({template: 'No internet connection.  Local data may be outdated.', noBackdrop: true, duration: 1500});
+    }
+    
     
     // Turn auto-upload back on (10 second interval)
     //UploadService.enableAutoUpload(10);
     window.setInterval(function() {
-        this.client.sync();
+        // Check online state
+        if(window.navigator.connection.type !== "none")
+        {
+            // Online so attempt to sync
+            this.client.sync();
+        }        
     }, 10000);
     
   });
@@ -178,9 +190,16 @@ angular.module('ace.controllers')
             tempReport.positionId = position.id;
             tempReport.userId = position.userId;
            window.client.models.LocalWeatherReport.create(tempReport, function(err, res) {
-              window.client.sync(function() {
-                  $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
-              }); 
+               if(window.navigator.connection.type !== "none") {
+                   window.client.sync(function() {
+                        $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
+                    });
+               }
+               else
+               {
+                   $ionicLoading.show({template: 'Report saved locally (will be uploaded once internet connection is re-established)', noBackdrop: true, duration: 1500});
+               }
+               
            }); 
         });
         
