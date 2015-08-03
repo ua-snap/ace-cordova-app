@@ -6,7 +6,7 @@
  */
 var DbHandler = function(name, window) {
 	this.mWindow = window;
-	this.mDb = window.sqlitePlugin.openDatabase({name: "ace.db", createFromLocation: 1});
+	//this.mDb = window.sqlitePlugin.openDatabase({name: "ace.db", createFromLocation: 1});
 	this.mDbName = name;
 };
 

@@ -6,7 +6,7 @@ angular.module('ace.services')
  * @class GeoService
  * @constructor
  */
-.service('GeoService', function(DbService, SettingsService) {
+.service('GeoService', function(DbService, SettingsService, LocalStorageService) {
 	
 	// Member variables for the service
 	var mTrackingInterval = 1;
@@ -253,7 +253,20 @@ angular.module('ace.services')
 					if(insert)
 					{
 						//DbService.insertPosition(position, window);
-						window.client.models.LocalPosition.create(position, function(err, res) {
+						var newPosition = {
+							userId: LocalStorageService.getItem("currentUser", {}, window).id,
+							latlng: {
+								lat: position.coords.latitude,
+								lng: position.coords.longitude
+							},
+							timestamp: position.timestamp,
+							accuracy: position.coords.accuracy,
+							altitude: position.coords.altitude,
+							altitudeAccuracy: position.coords.altitudeAccuracy,
+							heading: position.coords.heading,
+							speed: position.coords.speed
+						};
+						window.client.models.LocalPosition.create(newPosition, function(err, res) {
 							if(err) throw err;
 							
 						});
