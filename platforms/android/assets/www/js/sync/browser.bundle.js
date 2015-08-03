@@ -89597,7 +89597,9 @@ module.exports={
             "required": true
           },
           "positionId": {
-            "type": "number",
+            "type": "string",
+            "id": true,
+            "defaultFn": "guid",
             "required": true
           },
           "cloudCover": {

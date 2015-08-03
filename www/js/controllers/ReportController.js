@@ -15,7 +15,7 @@ angular.module('ace.controllers')
  * @description Controller for the Report view.  This controller contains all the
  * UI functionality for entering and saving reports.
  */
-.controller('ReportController', function($scope, $state, $translate, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicModal, UploadService, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
+.controller('ReportController', function($scope, $state, $translate, LocalStorageService, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicModal, UploadService, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
   
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
@@ -45,6 +45,9 @@ angular.module('ace.controllers')
     {
         GeoService.enableTracking(settings.gps.trackingInterval);
     }
+    
+    // Perform initial sync
+    this.client.sync();
     
     // Turn auto-upload back on (10 second interval)
     //UploadService.enableAutoUpload(10);
@@ -150,10 +153,37 @@ angular.module('ace.controllers')
     // Save report to database and upload
     var tempReport = $scope.report;
     GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
-        DbService.insertReportAndPosition(tempReport, pos, window, function(res) {
+        /*DbService.insertReportAndPosition(tempReport, pos, window, function(res) {
             // Manually upload report (an anything else)
             UploadService.uploadAll();
+        });*/
+        
+        var localPos = {
+            userId: LocalStorageService.getItem("currentUser", {}, window).id,
+            latlng: {
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+            },
+            timestamp: new Date(pos.timestamp),
+            accuracy: pos.coords.accuracy,
+            altitude: pos.coords.altitude,
+            altitudeAccuracy: pos.coords.altitudeAccuracy,
+            heading: pos.coords.heading,
+            speed: pos.coords.speed
+        };
+        
+        // Create the local position
+        window.client.models.LocalPosition.create(localPos, function(err, res) {
+            var position = res.toJSON();
+            tempReport.positionId = position.id;
+            tempReport.userId = position.userId;
+           window.client.models.LocalWeatherReport.create(tempReport, function(err, res) {
+              window.client.sync(function() {
+                  $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
+              }); 
+           }); 
         });
+        
     });
     
     // Clear all entered data

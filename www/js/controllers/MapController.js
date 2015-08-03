@@ -13,7 +13,7 @@ angular.module('ace.controllers')
 /**
  * @class MapController
  */
-.controller('MapController', function($scope, $ionicSideMenuDelegate, $translate, $ionicNavBarDelegate, $ionicPopover, GeoService, DbService, SettingsService) {
+.controller('MapController', function($scope, $ionicSideMenuDelegate, LocalStorageService, $translate, $ionicNavBarDelegate, $ionicPopover, GeoService, DbService, SettingsService) {
     // Set up menu options popover
     // Create popover from template and save to $scope variable
       $ionicPopover.fromTemplateUrl('templates/popovers/map-options.html', {
@@ -279,14 +279,29 @@ angular.module('ace.controllers')
        {
            // Show reports on the map
            // Get all reports
-           DbService.getReportsAndPositions(window, function(reports) {
-              if(reports)
-              {
-                 var image = 'img/document-text_small_grn.png';
-                  for(var i = 0; i < reports.length; i++)
+           window.client.models.LocalWeatherReport.find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).userId}}, function(err, res) {
+               // Get the associated positions
+               var reportArray = [];
+               var positionIdArray = [];
+               for(var i = 0; i < res.length; i++)
+               {
+                   var temp = res[i].toJSON();
+                   reportArray.push(temp);
+                   positionIdArray.push(temp.positionId);
+               }                 
+               window.client.models.LocalPosition.find({where: {id: {inq: positionIdArray}}}, function(err, res2) {
+                  var positionMap = {};
+                  for(var i = 0; i < res2.length; i++)
                   {
-                      var pos = new google.maps.LatLng(reports[i].position.coords.latitude, reports[i].position.coords.longitude);
-                      var htmlString = self.makeInfoWindowString(reports[i]);
+                      var temp2 = res2[i].toJSON();
+                      positionMap[temp2.id] = temp2;
+                  } 
+                  var image = 'img/document-text_small_grn.png';
+                  for(var i = 0; i < reportArray.length; i++)
+                  {
+                      var pos = new google.maps.LatLng(positionMap[reportArray[i].positionId].latlng.lat, positionMap[reportArray[i].positionId].latlng.lng);
+                      reportArray[i].position = positionMap[reportArray[i].positionId];
+                      var htmlString = self.makeInfoWindowString(reportArray[i]);
                       var infowindow = new google.maps.InfoWindow({
                         content: htmlString
                       });
@@ -303,7 +318,9 @@ angular.module('ace.controllers')
                         this.infoWindow.open(this.getMap(), this);                         
                       });
                   } 
-              }              
+                  
+               });
+               
            });
        }
        else
@@ -330,10 +347,15 @@ angular.module('ace.controllers')
     $scope.drawHistoryLine = function() {
         // Grab last position entries
         var settings = SettingsService.getSettings(window);
-        var posArr = DbService.getRecentPositionLogs(window, settings.gps.displayedHistoryPoints, function(res) {
-            var latLngArr = DbService.convertPositionArrayToLatLng(res.rows);
-            historyLine = new google.maps.Polyline({
-                path: latLngArr.reverse(),
+        window.client.models.LocalPosition.find({order: 'timestamp DESC', limit: settings.gps.displayedHistoryPoints}, function(err, res) {
+           var latLngArray = [];
+           for(var i = 0; i < res.length; i++)
+           {
+               var temp = res[i].toJSON();
+               latLngArray.push(new google.maps.LatLng(temp.latlng.lat, temp.latlng.lng));
+           }
+           historyLine = new google.maps.Polyline({
+                path: latLngArray.reverse(),
                 strokeColor: '#FF0000',
                 strokeOpacity: 1.0,
                 strokeWeight: 2                

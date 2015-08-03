@@ -25,13 +25,36 @@ angular.module('ace.controllers')
 	// Ensure that the reports info is correct when the view is FIRST displayed.
 	$scope.$on('$ionicView.beforeEnter', function() {
 		// Set up reports item
-		DbService.getReportsAndPositions(window, function(reports) {
+		/*DbService.getReportsAndPositions(window, function(reports) {
 			for(var i = 0; i < reports.length; i++)
 			{
 				reports[i].date = new Date(reports[i].position.timestamp);
 			}
 			$scope.reports = reports;
-		});
+		});*/
+		window.client.models.LocalWeatherReport.find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).id}}, function(err, res) {
+			var reports = [];
+			var positionIdArray = []
+			for(var i = 0; i < res.length; i++)
+			{
+				var temp = res[i].toJSON();
+				reports.push(temp);
+				positionIdArray.push(temp.positionId);
+			}
+			window.client.models.LocalPosition.find({where: {id: {inq: positionIdArray}}}, function(err, res2) {
+				var positionMap = {};
+				for(var i = 0; i < res2.length; i++)
+				{
+					var temp2 = res2[i].toJSON();
+					positionMap[temp2.id] = temp2;
+				}
+				for(var i = 0; i < reports.length; i++)
+				{
+					reports[i].date = positionMap[reports[i].positionId].timestamp;
+				}
+				$scope.reports = reports;				
+			});
+		})
 	});
 	
 	$scope.reports = [];
