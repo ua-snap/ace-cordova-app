@@ -6,7 +6,7 @@ angular.module('ace.services')
  * @class GeoService
  * @constructor
  */
-.service('GeoService', function(DbService, SettingsService, LocalStorageService) {
+.service('GeoService', function(DbService, SettingsService, LocalStorageService, DataService) {
 	
 	// Member variables for the service
 	var mTrackingInterval = 1;
@@ -266,9 +266,8 @@ angular.module('ace.services')
 							heading: position.coords.heading,
 							speed: position.coords.speed
 						};
-						window.client.models.LocalPosition.create(newPosition, function(err, res) {
+						DataService.localPosition_create(newPosition, function(err, res) {
 							if(err) throw err;
-							
 						});
 			
 						if(mTrackingCallback)

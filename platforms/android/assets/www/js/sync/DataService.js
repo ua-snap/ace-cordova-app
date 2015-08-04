@@ -103,8 +103,62 @@ angular.module('ace.services')
 		},
 		
 		// Start of API functions (that can be called through the interface to the worker)
-		remoteLoginUser: function(credentials, filter, cb) {
+		
+		// Login function
+		remoteMobileUser_login: function(credentials, filter, cb) {
 			this.sendMessage("login", credentials, filter, cb);
+		},
+		
+		// RemoteGroup.findOne
+		remoteGroup_findOne: function(filter, cb) {
+			this.sendMessage("remotegroup.findone", null, filter, cb);	
+		},
+		
+		// sync
+		sync: function(cb) {
+			this.sendMessage("sync", null, null, cb);
+		},
+		
+		// Get all local mobile users
+		localMobileUser_find: function(arg1, arg2) {
+			// expecting either...
+			// arg1 = filter, arg2 = callback function
+			// or
+			// arg1 = callback function, arg2 = undefined
+			if(typeof arg1 === "function")
+			{
+				this.sendMessage("localmobileuser.find", null, null, arg1);
+			}
+			else if(typeof arg1 === "object" && typeof arg2 === "function")
+			{
+				this.sendMessage("localmobileuser.find", null, arg1, arg2);
+			}
+				
+		},
+		
+		// Create a position (locally)
+		localPosition_create: function(position, cb) {
+			this.sendMessage("localposition.create", position, null, cb);
+		},
+		
+		// Logout
+		remoteMobileUser_logout: function(accessToken, cb) {
+			this.sendMessage("remotemobileuser.logout", accessToken, null, cb);
+		},
+		
+		// Create a weather report (locally)
+		localWeatherReport_create: function(report, cb) {
+			this.sendMessage("localweatherreport.create", report, null, cb);
+		},
+		
+		// Find function for local weather reports
+		localWeatherReport_find: function(filter, cb) {
+			this.sendMessage("localweatherreport.find", null, filter, cb);
+		},
+		
+		// Find function for local positions
+		localPosition_find: function(filter, cb) {
+			this.sendMessage("localposition.find", null, filter, cb);
 		}
 	}
 });

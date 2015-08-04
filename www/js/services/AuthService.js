@@ -47,11 +47,37 @@ angular.module('ace.services')
             
             DataService.initialize();
             
-            DataService.remoteLoginUser(credentials, ['user'], function(err, res) {
+            DataService.remoteMobileUser_login(credentials, ['user'], function(err, res) {
                 if(res)
                 {
                     // Save only current user on this side...
                     LocalStorageService.setItem("currentUser", res.user, window);
+                    
+                    // Retrieve an array of the id's for users in the current group
+                    var filter = {where: {id: res.user.groupId}, include: "MobileUsers"};
+                    DataService.remoteGroup_findOne(filter, function(err, result) {
+                       if(result)
+                       {
+                           var groupUsersIdArray = [];
+                           var groupUsers = result.__unknownProperties.MobileUsers;
+                           for(var i = 0; i < groupUsers.length; i++)
+                           {
+                               groupUsersIdArray.push(groupUsers[i].id);
+                           }
+                           LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
+                           // SYNC 
+                           //window.client.sync();
+                           DataService.sync(function() {
+                                var i = 0; 
+                                i++;
+                           });
+                       }                       
+                       else if(err)
+                       {
+                           alert(err);
+                       }
+                       
+                   });
                     
                     if(successCallback)
                     {
@@ -132,7 +158,7 @@ angular.module('ace.services')
          */
 		logoutUser: function(successCallback, errorCallback) {
             
-            RemoteMobileUser.logout(LocalStorageService.getItem("access_token", "", window), function(err) {
+            DataService.remoteMobileUser_logout(LocalStorageService.getItem("access_token", "", window), function(err) {
               if(err)
               {
                   alert(err);

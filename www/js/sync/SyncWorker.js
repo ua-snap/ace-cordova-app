@@ -42,6 +42,121 @@ self.onmessage = function(message) {
 	if(msg.req === "login") {
 		(function(id) {
 			window.client.models.RemoteMobileUser.login(msg.params, msg.filter, function(err, res) {
+				
+				if(res) {
+					// Save access token id
+					window.localStorage.setItem("access_token", res.id);
+				}
+				else if(err) {
+					// Make err.stack a simple primitive
+					var temp = err.stack;
+					err.stack = undefined;
+					err.stack = temp;
+				}
+				
+				// Formulate and send response message
+				var args = [err, res];
+				
+				var returnMsg = {
+					cbId: id,
+					args: args
+				};
+				self.postMessage(returnMsg);
+				
+				
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "remotegroup.findone") {
+		(function(id) {
+			window.client.models.RemoteGroup.findOne(msg.filter, function(err, res) {
+				var args = [err, res];
+				var returnMsg = {
+					cbId: id,
+					args: args
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "sync") {
+		(function(id) {
+			window.client.sync(function() {
+				var args = arguments;
+				var returnMsg = {
+					cbId: id,
+					args: args	
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "localmobileuser.find") {
+		(function(id) {
+			if(msg.filter !== null)
+			{
+				window.client.models.LocalMobileUser.find(msg.filter, function(err, res) {
+					var args = [err, res];
+					var returnMsg = {
+						cbId: id,
+						args: args	
+					};
+					self.postMessage(returnMsg);
+				});
+			}
+			else
+			{
+				window.client.models.LocalMobileUser.find(function(err, res) {
+					var args = [err, res];
+					var returnMsg = {
+						cbId: id,
+						args: args	
+					};
+					self.postMessage(returnMsg);
+				});
+			}
+			
+		})(msg.cbId);
+	}
+	else if(msg.req === "localposition.create") {
+		(function(id) {
+			window.client.models.LocalPosition.create(msg.params, function(err, res) {
+				var args = [err, res.toJSON()];
+				var returnMsg = {
+					cbId: id,
+					args: args
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "remotemobileuser.logout") {
+		(function(id) {
+			window.client.models.RemoteMobileUser.logout(msg.params, function(err, res) {
+				var args = [err, res];
+				var returnMsg = {
+					cbId: id,
+					args: args
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "localweatherreport.create") {
+		(function(id) {
+			window.client.models.LocalWeatherReport.create(msg.params, function(err, res) {
+				var args = [err, res];
+				var returnMsg = {
+					cbId: id,
+					args: args
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "localweatherreport.find") {
+		(function(id) {
+			window.client.models.LocalWeatherReport.find(msg.filter, function(err, res) {
 				var args = [err, res];
 				var returnMsg = {
 					cbId: id,

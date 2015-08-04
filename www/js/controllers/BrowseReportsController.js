@@ -13,7 +13,7 @@
   */
 angular.module('ace.controllers')
 
-.controller('BrowseReportsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, LocalStorageService, DbService, DataShareService) {
+.controller('BrowseReportsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, DataService, LocalStorageService, DbService, DataShareService) {
   
   // Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
@@ -32,7 +32,7 @@ angular.module('ace.controllers')
 			}
 			$scope.reports = reports;
 		});*/
-		window.client.models.LocalWeatherReport.find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).id}}, function(err, res) {
+		DataService.localWeatherReport_find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).id}}, function(err, res) {
 			var reports = [];
 			var positionIdArray = []
 			for(var i = 0; i < res.length; i++)
@@ -41,7 +41,7 @@ angular.module('ace.controllers')
 				reports.push(temp);
 				positionIdArray.push(temp.positionId);
 			}
-			window.client.models.LocalPosition.find({where: {id: {inq: positionIdArray}}}, function(err, res2) {
+			DataService.localPosition_find({where: {id: {inq: positionIdArray}}}, function(err, res2) {
 				var positionMap = {};
 				for(var i = 0; i < res2.length; i++)
 				{

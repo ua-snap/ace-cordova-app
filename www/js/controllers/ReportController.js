@@ -15,7 +15,7 @@ angular.module('ace.controllers')
  * @description Controller for the Report view.  This controller contains all the
  * UI functionality for entering and saving reports.
  */
-.controller('ReportController', function($scope, $state, $translate, LocalStorageService, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicModal, UploadService, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
+.controller('ReportController', function($scope, $state, $translate, DataService, LocalStorageService, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicModal, UploadService, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
   
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
@@ -185,7 +185,24 @@ angular.module('ace.controllers')
         };
         
         // Create the local position
-        window.client.models.LocalPosition.create(localPos, function(err, res) {
+        DataService.localPosition_create(localPos, function(err, res) {
+            var position = res;
+            tempReport.positionId = position.id;
+            tempReport.userId = position.userId;
+            
+            // Create weather report
+            DataService.localWeatherReport_create(tempReport, function(err, res) {
+                if(window.navigator.connection.type !== "none") {
+                    DataService.sync(function() {
+                        $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
+                    });
+                }
+                else {
+                    $ionicLoading.show({template: 'Report saved locally (will be uploaded once internet connection is re-established)', noBackdrop: true, duration: 1500});
+                }
+            });
+        });
+        /*window.client.models.LocalPosition.create(localPos, function(err, res) {
             var position = res.toJSON();
             tempReport.positionId = position.id;
             tempReport.userId = position.userId;
@@ -201,7 +218,7 @@ angular.module('ace.controllers')
                }
                
            }); 
-        });
+        });*/
         
     });
     
