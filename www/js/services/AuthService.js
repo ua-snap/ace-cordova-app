@@ -13,7 +13,7 @@ angular.module('ace.services')
  * @class AuthService
  * @constructor
  */
-.service('AuthService', function($http, DbService, RemoteGroup, RemoteMobileUser, LocalStorageService, WebApiService) {    
+.service('AuthService', function($http, DataService, DbService, RemoteGroup, RemoteMobileUser, LocalStorageService, WebApiService) {    
 	return {
         /**
          * Function logs in the user with the credentials passed in the "name" and "pw" variables.  Note that 
@@ -45,7 +45,30 @@ angular.module('ace.services')
                 }
             }
             
-            RemoteMobileUser.login(credentials, ['user'], function(err, res) {
+            DataService.initialize();
+            
+            DataService.remoteLoginUser(credentials, ['user'], function(err, res) {
+                if(res)
+                {
+                    // Save only current user on this side...
+                    LocalStorageService.setItem("currentUser", res.user, window);
+                    
+                    if(successCallback)
+                    {
+                        successCallback.call(this, res);
+                    }
+                }
+                else
+                {
+                    if(errorCallback)
+                    {
+                        errorCallback.call(this, res);
+                    }
+                }
+                
+            });
+            
+            /*RemoteMobileUser.login(credentials, ['user'], function(err, res) {
                if(res)
                {
                    // Save access token
@@ -67,7 +90,7 @@ angular.module('ace.services')
                            }
                            LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
                            // SYNC 
-                           window.client.sync();
+                           //window.client.sync();
                        }                       
                        else if(err)
                        {
@@ -97,7 +120,7 @@ angular.module('ace.services')
                        errorCallback.call(this, err);
                    }
                }
-            });            
+            });*/            
         },
 		
         /**

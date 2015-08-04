@@ -47,7 +47,7 @@ angular.module('ace.controllers')
     }
     
     // Perform initial sync
-    if(window.navigator.connection.type !== "none") {
+    /*if(window.navigator.connection.type !== "none") {
         this.client.sync();
     }
     else
@@ -56,7 +56,7 @@ angular.module('ace.controllers')
     }
     
     
-    // Turn auto-upload back on (10 second interval)
+    // Turn auto-upload back on (1 minute interval)
     //UploadService.enableAutoUpload(10);
     window.setInterval(function() {
         // Check online state
@@ -65,7 +65,7 @@ angular.module('ace.controllers')
             // Online so attempt to sync
             this.client.sync();
         }        
-    }, 10000);
+    }, 60000);*/
     
   });
   

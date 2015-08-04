@@ -73,6 +73,18 @@ angular.module('ace.controllers', [])
       });
     };
   
+  $scope.testLogin = function() {
+    var worker = new Worker("js/sync/SyncWorker.js");
+    var setupMessage = {
+        accessToken: LocalStorageService.getItem("access_token", "", window),
+        currentUser: LocalStorageService.getItem("currentUser", "", window),
+        groupUserIds: LocalStorageService.getItem("groupUserIds", [], window),
+        req: "setup"
+    }
+    worker.postMessage(setupMessage);
+    worker.postMessage({req: "sync"});
+  };
+  
   // Function provides test access
   $scope.test = function() {
     // Try out getting geolocation

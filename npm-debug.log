@@ -1,0 +1,139 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', '-g', 'python' ]
+2 info using npm@2.9.1
+3 info using node@v0.12.3
+4 verbose install initial load of /usr/local/lib/package.json
+5 verbose readDependencies loading dependencies from /usr/local/lib/package.json
+6 silly cache add args [ 'python', null ]
+7 verbose cache add spec python
+8 silly cache add parsed spec { raw: 'python',
+8 silly cache add   scope: null,
+8 silly cache add   name: 'python',
+8 silly cache add   rawSpec: '',
+8 silly cache add   spec: '*',
+8 silly cache add   type: 'range' }
+9 silly addNamed python@*
+10 verbose addNamed "*" is a valid semver range for python
+11 silly addNameRange { name: 'python', range: '*', hasData: false }
+12 silly mapToRegistry name python
+13 silly mapToRegistry using default registry
+14 silly mapToRegistry registry https://registry.npmjs.org/
+15 silly mapToRegistry uri https://registry.npmjs.org/python
+16 verbose addNameRange registry:https://registry.npmjs.org/python not in flight; fetching
+17 verbose request uri https://registry.npmjs.org/python
+18 verbose request no auth needed
+19 info attempt registry request try #1 at 3:29:49 PM
+20 verbose request id ae023865fd1b3f69
+21 http request GET https://registry.npmjs.org/python
+22 http 200 https://registry.npmjs.org/python
+23 silly get cb [ 200,
+23 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+23 silly get     etag: '"4R75J6K7IGU46B0O5U8ZGDZXZ"',
+23 silly get     'content-type': 'application/json',
+23 silly get     'cache-control': 'max-age=60',
+23 silly get     'content-length': '6286',
+23 silly get     'accept-ranges': 'bytes',
+23 silly get     date: 'Mon, 03 Aug 2015 20:29:50 GMT',
+23 silly get     via: '1.1 varnish',
+23 silly get     age: '0',
+23 silly get     connection: 'keep-alive',
+23 silly get     'x-served-by': 'cache-atl6230-ATL',
+23 silly get     'x-cache': 'MISS',
+23 silly get     'x-cache-hits': '0',
+23 silly get     'x-timer': 'S1438633790.116120,VS0,VE343',
+23 silly get     vary: 'Accept' } ]
+24 verbose get saving python to /Users/sentelljg/.npm/registry.npmjs.org/python/.cache.json
+25 silly addNameRange number 2 { name: 'python', range: '*', hasData: true }
+26 silly addNameRange versions [ 'python', [ '0.0.0', '0.0.1', '0.0.2', '0.0.3', '0.0.4' ] ]
+27 silly addNamed python@0.0.4
+28 verbose addNamed "0.0.4" is a plain semver version for python
+29 silly mapToRegistry name python
+30 silly mapToRegistry using default registry
+31 silly mapToRegistry registry https://registry.npmjs.org/
+32 silly mapToRegistry uri https://registry.npmjs.org/python
+33 verbose addRemoteTarball https://registry.npmjs.org/python/-/python-0.0.4.tgz not in flight; adding
+34 verbose addRemoteTarball [ 'https://registry.npmjs.org/python/-/python-0.0.4.tgz',
+34 verbose addRemoteTarball   '3094e898ef17a33aa9c3e973b3848a38e47d1818' ]
+35 info retry fetch attempt 1 at 3:29:50 PM
+36 info attempt registry request try #1 at 3:29:50 PM
+37 http fetch GET https://registry.npmjs.org/python/-/python-0.0.4.tgz
+38 http fetch 200 https://registry.npmjs.org/python/-/python-0.0.4.tgz
+39 silly fetchAndShaCheck shasum 3094e898ef17a33aa9c3e973b3848a38e47d1818
+40 verbose addTmpTarball /var/folders/65/dbs7d5b95k5bdjlg52f0h675mc2p5b/T/npm-71155-4f819a70/registry.npmjs.org/python/-/python-0.0.4.tgz not in flight; adding
+41 verbose addTmpTarball already have metadata; skipping unpack for python@0.0.4
+42 silly cache afterAdd python@0.0.4
+43 verbose afterAdd /Users/sentelljg/.npm/python/0.0.4/package/package.json not in flight; writing
+44 verbose afterAdd /Users/sentelljg/.npm/python/0.0.4/package/package.json written
+45 silly install resolved [ { author: { name: 'Darren DeRidder' },
+45 silly install resolved     name: 'python',
+45 silly install resolved     main: './lib/python.js',
+45 silly install resolved     description: 'Interact with a long-running python child process',
+45 silly install resolved     version: '0.0.4',
+45 silly install resolved     homepage: 'https://github.com/73rhodes/node-python',
+45 silly install resolved     repository:
+45 silly install resolved      { type: 'git',
+45 silly install resolved        url: 'git://github.com/73rhodes/node-python.git' },
+45 silly install resolved     engines: { node: '>= 0.4.1' },
+45 silly install resolved     gitHead: '69754aaa57658193916a1bf5fc391198098f74f6',
+45 silly install resolved     bugs: { url: 'https://github.com/73rhodes/node-python/issues' },
+45 silly install resolved     _id: 'python@0.0.4',
+45 silly install resolved     scripts: {},
+45 silly install resolved     _shasum: '3094e898ef17a33aa9c3e973b3848a38e47d1818',
+45 silly install resolved     _from: 'python@*',
+45 silly install resolved     _npmVersion: '1.4.23',
+45 silly install resolved     _npmUser: { name: 'drderidder', email: 'drderidder@gmail.com' },
+45 silly install resolved     maintainers: [ [Object] ],
+45 silly install resolved     dist:
+45 silly install resolved      { shasum: '3094e898ef17a33aa9c3e973b3848a38e47d1818',
+45 silly install resolved        tarball: 'http://registry.npmjs.org/python/-/python-0.0.4.tgz' },
+45 silly install resolved     directories: {},
+45 silly install resolved     _resolved: 'https://registry.npmjs.org/python/-/python-0.0.4.tgz' } ]
+46 info install python@0.0.4 into /usr/local/lib
+47 info installOne python@0.0.4
+48 verbose installOne of python to /usr/local/lib not in flight; installing
+49 verbose lock using /Users/sentelljg/.npm/_locks/python-a41903c7b691616c.lock for /usr/local/lib/node_modules/python
+50 silly install write writing python 0.0.4 to /usr/local/lib/node_modules/python
+51 verbose unbuild lib/node_modules/python
+52 silly gentlyRm /usr/local/lib/node_modules/python is being purged from base /usr/local
+53 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/python
+54 verbose tar unpack /Users/sentelljg/.npm/python/0.0.4/package.tgz
+55 verbose tar unpacking to /usr/local/lib/node_modules/python
+56 silly gentlyRm /usr/local/lib/node_modules/python is being purged
+57 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/python
+58 silly gunzTarPerm modes [ '755', '644' ]
+59 error tar.unpack untar error /Users/sentelljg/.npm/python/0.0.4/package.tgz
+60 verbose unlock done using /Users/sentelljg/.npm/_locks/python-a41903c7b691616c.lock for /usr/local/lib/node_modules/python
+61 verbose fstream_path /usr/local/lib/node_modules/python
+62 verbose fstream_type Directory
+63 verbose fstream_class DirWriter
+64 verbose stack Error: EACCES, mkdir '/usr/local/lib/node_modules/python'
+64 verbose stack     at Error (native)
+65 verbose fstream_stack /usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23
+65 verbose fstream_stack /usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53
+65 verbose fstream_stack FSReqWrap.oncomplete (fs.js:95:15)
+66 verbose cwd /Users/sentelljg/working_folder/ACE/sync_wkspace/ace-cordova-app
+67 error Darwin 14.4.0
+68 error argv "node" "/usr/local/bin/npm" "install" "-g" "python"
+69 error node v0.12.3
+70 error npm  v2.9.1
+71 error path /usr/local/lib/node_modules/python
+72 error code EACCES
+73 error errno -13
+74 error Error: EACCES, mkdir '/usr/local/lib/node_modules/python'
+74 error     at Error (native)
+74 error  { [Error: EACCES, mkdir '/usr/local/lib/node_modules/python']
+74 error   errno: -13,
+74 error   code: 'EACCES',
+74 error   path: '/usr/local/lib/node_modules/python',
+74 error   fstream_type: 'Directory',
+74 error   fstream_path: '/usr/local/lib/node_modules/python',
+74 error   fstream_class: 'DirWriter',
+74 error   fstream_stack:
+74 error    [ '/usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23',
+74 error      '/usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53',
+74 error      'FSReqWrap.oncomplete (fs.js:95:15)' ] }
+75 error Please try running this command again as root/Administrator.
+76 verbose exit [ -13, true ]
+77 verbose unbuild lib/node_modules/python
+78 silly gentlyRm /usr/local/lib/node_modules/python is being purged from base /usr/local
+79 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/python
