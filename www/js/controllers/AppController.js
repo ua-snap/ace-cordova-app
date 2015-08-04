@@ -13,7 +13,7 @@ angular.module('ace.controllers', [])
 /**
  * @class AppController
  */
-.controller('AppController', function(Group, RemoteGroup, MobileUser, RemoteMobileUser, Position, RemotePosition, WeatherReport, RemoteWeatherReport, $scope, DownloadService, UploadService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
+.controller('AppController', function($scope, DownloadService, UploadService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
   
   // Function toggles sliding the left side-menu out and back in
   /**

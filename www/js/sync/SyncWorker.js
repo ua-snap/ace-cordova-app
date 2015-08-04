@@ -27,6 +27,8 @@ if(self.importScripts !== undefined)
 	// Window shim
 	this.window = this;
 	window.localStorage = localStorage;
+	// Remove partial fetch support (doesn't work anyway).  Force to use XMLHttpRequest
+	window.fetch = undefined;
 }
 
 self.importScripts("../../lib/pouchdb/dist/pouchdb.js");
@@ -45,7 +47,7 @@ self.onmessage = function(message) {
 					cbId: id,
 					args: args
 				};
-				postMessage(returnMsg);
+				self.postMessage(returnMsg);
 			});
 		})(msg.cbId);
 	}
