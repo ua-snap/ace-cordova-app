@@ -33335,7 +33335,13 @@ Memory.prototype.initCollection = function(model) {
 Memory.prototype.collection = function(model, val) {
   model = this.getCollection(model);
   if (arguments.length > 1) this.cache[model] = val;
-  return this.cache[model];
+  // Fill in empty model if undefined
+		if(this.cache[model] === undefined)
+		{
+		  this.cache[model] = {};
+		}  
+		
+		return this.cache[model];
 };
 
 Memory.prototype.collectionSeq = function(model, val) {
@@ -33366,14 +33372,14 @@ Memory.prototype.loadFromFile = function(callback) {
 	    var data = undefined;
 	    window.localPouchDb.get(localStorage).then(function(doc) {
 		  //alert('get returned successful');
-	      data = doc.data;
+	      data = doc.data;	
+		  parseAndLoad(data);	
 	    }).catch(function(err) {
 			//alert('get returned error');
 			console.log(err);
 			data = {};
-		});
-		
-		parseAndLoad(data);		
+			parseAndLoad(data);	
+		});	
 		
 	  } else {
 	    process.nextTick(callback);
@@ -89260,7 +89266,7 @@ module.exports = function(client) {
           {filter: {where: {id: groupId}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
-            cb && cb();
+            cb && cb.call(this, "group");
           });
       });
       
@@ -89275,7 +89281,7 @@ module.exports = function(client) {
           {filter: {where: {groupId: groupId}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
-            cb && cb();
+            cb && cb.call(this, "mobileuser");
           });
       });
       
@@ -89283,6 +89289,13 @@ module.exports = function(client) {
       RemotePosition,
       since.push,
       function pushed(err, conflicts, cps) {
+        if(conflicts)
+        {
+          for(var i = 0; i < conflicts.length; i++)
+          {
+            conflicts[i].resolve();
+          }
+        }        
         since.push = cps;
         RemotePosition.replicate(
           LocalPosition,
@@ -89290,7 +89303,7 @@ module.exports = function(client) {
           {filter: {where: {userId: {inq: groupIdArray}}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
-            cb && cb();
+            cb && cb.call(this, "position");
           });
       });
       
@@ -89305,7 +89318,7 @@ module.exports = function(client) {
           {filter: {where: {userId: {inq: groupIdArray}}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
-            cb && cb();
+            cb && cb.call(this, "report");
           });
       });
   }
@@ -89361,7 +89374,7 @@ module.exports={
   "dataSources": {
     "remote": {
       "connector": "remote",
-      "url": "http://192.168.1.2:3000/api"
+      "url": "https://ace-api-dev.herokuapp.com/api"
     },
     "local": {
       "connector": "memory",

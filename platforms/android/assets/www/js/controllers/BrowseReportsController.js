@@ -33,26 +33,24 @@ angular.module('ace.controllers')
 			$scope.reports = reports;
 		});*/
 		DataService.localWeatherReport_find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).id}}, function(err, res) {
-			var reports = [];
-			var positionIdArray = []
+			// Get the associated positions
+			var reportArray = res;
+			var positionIdArray = [];
 			for(var i = 0; i < res.length; i++)
 			{
-				var temp = res[i].toJSON();
-				reports.push(temp);
-				positionIdArray.push(temp.positionId);
+			   positionIdArray.push(res[i].positionId);
 			}
 			DataService.localPosition_find({where: {id: {inq: positionIdArray}}}, function(err, res2) {
 				var positionMap = {};
 				for(var i = 0; i < res2.length; i++)
 				{
-					var temp2 = res2[i].toJSON();
-					positionMap[temp2.id] = temp2;
-				}
-				for(var i = 0; i < reports.length; i++)
+					positionMap[res2[i].id] = res2[i];
+				} 
+				for(var i = 0; i < reportArray.length; i++)
 				{
-					reports[i].date = positionMap[reports[i].positionId].timestamp;
+					reportArray[i].date = positionMap[reportArray[i].positionId].timestamp;
 				}
-				$scope.reports = reports;				
+				$scope.reports = reportArray;				
 			});
 		})
 	});

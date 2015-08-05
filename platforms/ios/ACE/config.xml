@@ -57,4 +57,7 @@
     <preference name="CROSSWALK_ANDROID_COMMANDLINE" value="––disable-pull-to-refresh-effect" />
     <preference name="LIB_MODE" value="embedded" />
     <preference name="CROSSWALK_ANDROID_VERSION" value="14+" />
+    <feature name="NetworkStatus">
+        <param name="ios-package" value="CDVConnection" />
+    </feature>
 </widget>

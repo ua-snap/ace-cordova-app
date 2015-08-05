@@ -13,7 +13,7 @@ angular.module('ace.controllers')
 /**
  * @class MapController
  */
-.controller('MapController', function($scope, $ionicSideMenuDelegate, LocalStorageService, $translate, $ionicNavBarDelegate, $ionicPopover, GeoService, DbService, SettingsService) {
+.controller('MapController', function($scope, $ionicSideMenuDelegate, DataService, LocalStorageService, $translate, $ionicNavBarDelegate, $ionicPopover, GeoService, DbService, SettingsService) {
     // Set up menu options popover
     // Create popover from template and save to $scope variable
       $ionicPopover.fromTemplateUrl('templates/popovers/map-options.html', {
@@ -279,22 +279,19 @@ angular.module('ace.controllers')
        {
            // Show reports on the map
            // Get all reports
-           window.client.models.LocalWeatherReport.find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).userId}}, function(err, res) {
+           DataService.localWeatherReport_find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).userId}}, function(err, res) {
                // Get the associated positions
-               var reportArray = [];
+               var reportArray = res;
                var positionIdArray = [];
                for(var i = 0; i < res.length; i++)
                {
-                   var temp = res[i].toJSON();
-                   reportArray.push(temp);
-                   positionIdArray.push(temp.positionId);
+                   positionIdArray.push(res[i].positionId);
                }                 
-               window.client.models.LocalPosition.find({where: {id: {inq: positionIdArray}}}, function(err, res2) {
+               DataService.localPosition_find({where: {id: {inq: positionIdArray}}}, function(err, res2) {
                   var positionMap = {};
                   for(var i = 0; i < res2.length; i++)
                   {
-                      var temp2 = res2[i].toJSON();
-                      positionMap[temp2.id] = temp2;
+                      positionMap[res2[i].id] = res2[i];
                   } 
                   var image = 'img/document-text_small_grn.png';
                   for(var i = 0; i < reportArray.length; i++)
@@ -347,12 +344,11 @@ angular.module('ace.controllers')
     $scope.drawHistoryLine = function() {
         // Grab last position entries
         var settings = SettingsService.getSettings(window);
-        window.client.models.LocalPosition.find({order: 'timestamp DESC', limit: settings.gps.displayedHistoryPoints}, function(err, res) {
+        DataService.localPosition_find({order: 'timestamp DESC', limit: settings.gps.displayedHistoryPoints}, function(err, res) {
            var latLngArray = [];
            for(var i = 0; i < res.length; i++)
            {
-               var temp = res[i].toJSON();
-               latLngArray.push(new google.maps.LatLng(temp.latlng.lat, temp.latlng.lng));
+               latLngArray.push(new google.maps.LatLng(res[i].latlng.lat, res[i].latlng.lng));
            }
            historyLine = new google.maps.Polyline({
                 path: latLngArray.reverse(),

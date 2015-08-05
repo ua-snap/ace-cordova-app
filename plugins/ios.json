@@ -39,6 +39,10 @@
                         {
                             "xml": "<feature name=\"Capture\"><param name=\"ios-package\" value=\"CDVCapture\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"NetworkStatus\"><param name=\"ios-package\" value=\"CDVConnection\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -72,6 +76,12 @@
                     "MobileCoreServices.framework": [
                         {
                             "xml": false,
+                            "count": 1
+                        }
+                    ],
+                    "SystemConfiguration.framework": [
+                        {
+                            "xml": true,
                             "count": 1
                         }
                     ]
@@ -115,6 +125,9 @@
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         },
         "cordova-plugin-crosswalk-webview": {
+            "PACKAGE_NAME": "com.ionicframework.ace261647"
+        },
+        "cordova-plugin-network-information": {
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         }
     },

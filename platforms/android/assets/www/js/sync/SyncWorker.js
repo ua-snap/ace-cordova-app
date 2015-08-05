@@ -47,9 +47,16 @@ self.onmessage = function(message) {
 					// Save access token id
 					window.localStorage.setItem("access_token", res.id);
 				}
+				else if(err) {
+					// Make err.stack a simple primitive to allow passing as a message
+					var errCpy = {
+						message: err.message,
+						stack: err.stack.toString()
+					}
+				}
 				
 				// Formulate and send response message
-				var args = [err, res];
+				var args = [errCpy, res];
 				
 				var returnMsg = {
 					cbId: id,
@@ -75,8 +82,8 @@ self.onmessage = function(message) {
 	}
 	else if(msg.req === "sync") {
 		(function(id) {
-			window.client.sync(function() {
-				var args = arguments;
+			window.client.sync(function(arg) {
+				var args = [arg];
 				var returnMsg = {
 					cbId: id,
 					args: args	
@@ -151,7 +158,29 @@ self.onmessage = function(message) {
 	else if(msg.req === "localweatherreport.find") {
 		(function(id) {
 			window.client.models.LocalWeatherReport.find(msg.filter, function(err, res) {
-				var args = [err, res];
+				var reports = [];
+				for(var i = 0; i < res.length; i++)
+				{
+					reports.push(res[i].toJSON());
+				}
+				var args = [err, reports];
+				var returnMsg = {
+					cbId: id,
+					args: args
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "localposition.find") {
+		(function(id) {
+			window.client.models.LocalPosition.find(msg.filter, function(err, res) {
+				var positions = [];
+				for(var i = 0; i < res.length; i++)
+				{
+					positions.push(res[i].toJSON());
+				}
+				var args = [err, positions];
 				var returnMsg = {
 					cbId: id,
 					args: args

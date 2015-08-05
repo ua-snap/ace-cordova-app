@@ -44,28 +44,17 @@ angular.module('ace.controllers')
     if(!GeoService.isTrackingEnabled() && settings.gps.positionTrackingEnabled)
     {
         GeoService.enableTracking(settings.gps.trackingInterval);
-    }
+    }    
     
-    // Perform initial sync
-    /*if(window.navigator.connection.type !== "none") {
-        this.client.sync();
-    }
-    else
-    {
-        $ionicLoading.show({template: 'No internet connection.  Local data may be outdated.', noBackdrop: true, duration: 1500});
-    }
-    
-    
-    // Turn auto-upload back on (1 minute interval)
-    //UploadService.enableAutoUpload(10);
+    // Turn auto-upload back on (15 second interval)
     window.setInterval(function() {
         // Check online state
         if(window.navigator.connection.type !== "none")
         {
             // Online so attempt to sync
-            this.client.sync();
+            DataService.sync();
         }        
-    }, 60000);*/
+    }, 15000);
     
   });
   
@@ -193,8 +182,11 @@ angular.module('ace.controllers')
             // Create weather report
             DataService.localWeatherReport_create(tempReport, function(err, res) {
                 if(window.navigator.connection.type !== "none") {
-                    DataService.sync(function() {
-                        $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
+                    DataService.sync(function(model) {
+                        if(model === "report")
+                        {
+                            $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
+                        }
                     });
                 }
                 else {

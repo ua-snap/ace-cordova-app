@@ -67,10 +67,9 @@ angular.module('ace.services')
                            LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
                            // SYNC 
                            //window.client.sync();
-                           DataService.sync(function() {
-                                var i = 0; 
-                                i++;
-                           });
+                           DataService.sync();
+
+                           
                        }                       
                        else if(err)
                        {
