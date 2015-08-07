@@ -13,7 +13,7 @@ angular.module('ace.controllers')
 /**
  * @class MapController
  */
-.controller('MapController', function($scope, $ionicSideMenuDelegate, $translate, $ionicNavBarDelegate, $ionicPopover, GeoService, DbService, SettingsService) {
+.controller('MapController', function($scope, $ionicSideMenuDelegate, DataService, LocalStorageService, $translate, $ionicNavBarDelegate, $ionicPopover, GeoService, DbService, SettingsService) {
     // Set up menu options popover
     // Create popover from template and save to $scope variable
       $ionicPopover.fromTemplateUrl('templates/popovers/map-options.html', {
@@ -41,6 +41,10 @@ angular.module('ace.controllers')
     
     $scope.reportMarkers = [];
     
+    $scope.userMarkers = [];
+    
+    $scope.otherUserMarkers = [];
+    
     var timer = null;
     
     var currentLocationMarker = null;
@@ -49,13 +53,21 @@ angular.module('ace.controllers')
     
     $scope.curPos = null;
     
+    var lastMidnight = new Date();
+    lastMidnight.setHours(0, 0, 0, 0);
+    
+    var nextMidnight = new Date();
+    nextMidnight.setHours(24, 0, 0, 0);
+    
     $scope.settings = {
       displayPos: {
           checked: true
       },  
       followPos: false,
       displayHistory: {
-          checked: false
+          checked: false,
+          startDate: lastMidnight,
+          endDate: nextMidnight
       },
       displayReports: {
           checked: false
@@ -231,6 +243,18 @@ angular.module('ace.controllers')
     $scope.displayHistoryChanged = function() {
       if($scope.settings.displayHistory.checked)
       {
+          // If an old history line exists, remove it before redrawing
+          if(historyLine)
+          {
+              // Remove tracking callback (positions will still be recorded)
+              GeoService.setTrackingCallback(null);
+                
+              // remove the history line
+              historyLine.setMap(null);  
+              
+              historyLine = null;
+          }
+          
           // Draw the history line
           $scope.drawHistoryLine();
           
@@ -279,14 +303,26 @@ angular.module('ace.controllers')
        {
            // Show reports on the map
            // Get all reports
-           DbService.getReportsAndPositions(window, function(reports) {
-              if(reports)
-              {
-                 var image = 'img/document-text_small_grn.png';
-                  for(var i = 0; i < reports.length; i++)
+           DataService.localWeatherReport_find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).userId}}, function(err, res) {
+               // Get the associated positions
+               var reportArray = res;
+               var positionIdArray = [];
+               for(var i = 0; i < res.length; i++)
+               {
+                   positionIdArray.push(res[i].positionId);
+               }                 
+               DataService.localPosition_find({where: {id: {inq: positionIdArray}}}, function(err, res2) {
+                  var positionMap = {};
+                  for(var i = 0; i < res2.length; i++)
                   {
-                      var pos = new google.maps.LatLng(reports[i].position.coords.latitude, reports[i].position.coords.longitude);
-                      var htmlString = self.makeInfoWindowString(reports[i]);
+                      positionMap[res2[i].id] = res2[i];
+                  } 
+                  var image = 'img/document-text_small_grn.png';
+                  for(var i = 0; i < reportArray.length; i++)
+                  {
+                      var pos = new google.maps.LatLng(positionMap[reportArray[i].positionId].latlng.lat, positionMap[reportArray[i].positionId].latlng.lng);
+                      reportArray[i].position = positionMap[reportArray[i].positionId];
+                      var htmlString = self.makeInfoWindowString(reportArray[i]);
                       var infowindow = new google.maps.InfoWindow({
                         content: htmlString
                       });
@@ -303,7 +339,9 @@ angular.module('ace.controllers')
                         this.infoWindow.open(this.getMap(), this);                         
                       });
                   } 
-              }              
+                  
+               });
+               
            });
        }
        else
@@ -326,14 +364,65 @@ angular.module('ace.controllers')
         }        
     };
     
+    // Display the most recent position of all other users
+    $scope.displayOtherUserPositions = function() {
+        var filter = {
+            where: {
+                groupId: LocalStorageService.getItem("currentUser", {}, window).groupId
+            }
+        };
+        DataService.localMobileUser_find(filter, function(err, res) {
+            // Res contains an array of all users in the current group
+            var users = res;
+            var groupUserIds = [];
+            for(var i = 0; i < res.length; i++)
+            {
+                groupUserIds.push(res[i].id);
+            }
+            
+            // groupUserIds contains all user ids in the current group
+            var filter = {
+                where: {userId: {inq: groupUserIds}},
+                limit: 1,
+                order: 'timestamp DESC'
+            };
+            DataService.localPosition_find(filter, function(err, res2) {
+                // Res2 should coutain the latest position for each user
+                for(var i = 0; i < res2.length; i++)
+                {
+                    var latlng = new google.maps.LatLng(res2[i].latlng.lat, res2[i].latlng.lng);
+                    var marker = new google.maps.Marker({
+                            position: latlng,
+                            map: $scope.map,
+                            title: "current_pos",
+                    });
+                    $scope.otherUserMarkers.push(marker);
+                }
+            });
+        });
+    };
+    
     // Draws a line on the map where the user has traveled
     $scope.drawHistoryLine = function() {
         // Grab last position entries
         var settings = SettingsService.getSettings(window);
-        var posArr = DbService.getRecentPositionLogs(window, settings.gps.displayedHistoryPoints, function(res) {
-            var latLngArr = DbService.convertPositionArrayToLatLng(res.rows);
-            historyLine = new google.maps.Polyline({
-                path: latLngArr.reverse(),
+        var filter = {
+            order: 'timestamp DESC',
+            where: {
+                and: [
+                    {timestamp: {gt: $scope.settings.displayHistory.startDate}},
+                    {timestamp: {lt: $scope.settings.displayHistory.endDate}}
+                ]
+            }
+        };
+        DataService.localPosition_find(filter, function(err, res) {
+           var latLngArray = [];
+           for(var i = 0; i < res.length; i++)
+           {
+               latLngArray.push(new google.maps.LatLng(res[i].latlng.lat, res[i].latlng.lng));
+           }
+           historyLine = new google.maps.Polyline({
+                path: latLngArray.reverse(),
                 strokeColor: '#FF0000',
                 strokeOpacity: 1.0,
                 strokeWeight: 2                

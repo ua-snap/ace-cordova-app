@@ -89302,6 +89302,13 @@ module.exports = function(client) {
           since.pull,
           {filter: {where: {userId: {inq: groupIdArray}}}},
           function pulled(err, conflicts, cps) {
+            if(conflicts)
+            {
+              for(var i = 0; i < conflicts.length; i++)
+              {
+                conflicts[i].resolve();
+              }
+            }    
             since.pull = cps;
             cb && cb.call(this, "position");
           });

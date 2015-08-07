@@ -13,7 +13,7 @@ angular.module('ace.controllers', [])
 /**
  * @class AppController
  */
-.controller('AppController', function(Group, RemoteGroup, MobileUser, RemoteMobileUser, Position, RemotePosition, WeatherReport, RemoteWeatherReport, $scope, DownloadService, UploadService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
+.controller('AppController', function($scope, DataService, DownloadService, UploadService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
   
   // Function toggles sliding the left side-menu out and back in
   /**
@@ -66,12 +66,30 @@ angular.module('ace.controllers', [])
         
         // Kick the user back out to the login screen
         $state.go('login');
+        
+        // Kill the sync thread
+        DataService.terminate();
+        
+        // Remove any notifications
+        window.plugin.notification.local.cancel(230476843);
       
       }, function(err) {
           // Error (already alerted in AuthService)
           //alert(httpResponse.data);
       });
     };
+  
+  $scope.testLogin = function() {
+    var worker = new Worker("js/sync/SyncWorker.js");
+    var setupMessage = {
+        accessToken: LocalStorageService.getItem("access_token", "", window),
+        currentUser: LocalStorageService.getItem("currentUser", "", window),
+        groupUserIds: LocalStorageService.getItem("groupUserIds", [], window),
+        req: "setup"
+    }
+    worker.postMessage(setupMessage);
+    worker.postMessage({req: "sync"});
+  };
   
   // Function provides test access
   $scope.test = function() {
@@ -242,8 +260,31 @@ angular.module('ace.controllers', [])
   };
   
   $scope.testSync = function() {
-      var i = 0;
-      i++;
+      GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
+          if(pos !== null)
+          {
+              var newPosition = {
+    			userId: LocalStorageService.getItem("currentUser", {}, window).id,
+    			latlng: {
+    				lat: pos.coords.latitude,
+    				lng: pos.coords.longitude
+    			},
+    			timestamp: pos.timestamp,
+    			accuracy: pos.coords.accuracy,
+    			altitude: pos.coords.altitude,
+    			altitudeAccuracy: pos.coords.altitudeAccuracy,
+    			heading: pos.coords.heading,
+    			speed: pos.coords.speed
+    		};
+            
+            DataService.localPosition_create(newPosition, function(err, res) {
+                  var i = 0;
+                  i++;
+              });
+          }
+      }, function(err) {
+          var error = err;
+      });
   };
   
 });

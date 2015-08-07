@@ -13,7 +13,7 @@ angular.module('ace.services')
  * @class AuthService
  * @constructor
  */
-.service('AuthService', function($http, DbService, RemoteGroup, RemoteMobileUser, LocalStorageService, WebApiService) {    
+.service('AuthService', function($http, DataService, DbService, LocalStorageService, WebApiService) {    
 	return {
         /**
          * Function logs in the user with the credentials passed in the "name" and "pw" variables.  Note that 
@@ -45,7 +45,55 @@ angular.module('ace.services')
                 }
             }
             
-            RemoteMobileUser.login(credentials, ['user'], function(err, res) {
+            DataService.initialize();
+            
+            DataService.remoteMobileUser_login(credentials, ['user'], function(err, res) {
+                if(res)
+                {
+                    // Save only current user on this side...
+                    LocalStorageService.setItem("currentUser", res.user, window);
+                    
+                    // Retrieve an array of the id's for users in the current group
+                    var filter = {where: {id: res.user.groupId}, include: "MobileUsers"};
+                    DataService.remoteGroup_findOne(filter, function(err, result) {
+                       if(result)
+                       {
+                           var groupUsersIdArray = [];
+                           var groupUsers = result.__unknownProperties.MobileUsers;
+                           for(var i = 0; i < groupUsers.length; i++)
+                           {
+                               groupUsersIdArray.push(groupUsers[i].id);
+                           }
+                           LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
+                           // SYNC 
+                           //window.client.sync();
+                           DataService.sync();
+
+                           
+                       }                       
+                       else if(err)
+                       {
+                           alert(err);
+                       }
+                       
+                   });
+                    
+                    if(successCallback)
+                    {
+                        successCallback.call(this, res);
+                    }
+                }
+                else
+                {
+                    if(errorCallback)
+                    {
+                        errorCallback.call(this, res);
+                    }
+                }
+                
+            });
+            
+            /*RemoteMobileUser.login(credentials, ['user'], function(err, res) {
                if(res)
                {
                    // Save access token
@@ -67,7 +115,7 @@ angular.module('ace.services')
                            }
                            LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
                            // SYNC 
-                           window.client.sync();
+                           //window.client.sync();
                        }                       
                        else if(err)
                        {
@@ -97,7 +145,7 @@ angular.module('ace.services')
                        errorCallback.call(this, err);
                    }
                }
-            });            
+            });*/            
         },
 		
         /**
@@ -109,7 +157,7 @@ angular.module('ace.services')
          */
 		logoutUser: function(successCallback, errorCallback) {
             
-            RemoteMobileUser.logout(LocalStorageService.getItem("access_token", "", window), function(err) {
+            DataService.remoteMobileUser_logout(LocalStorageService.getItem("access_token", "", window), function(err) {
               if(err)
               {
                   alert(err);

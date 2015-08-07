@@ -13,7 +13,7 @@
   */
 angular.module('ace.controllers')
 
-.controller('BrowseReportsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, LocalStorageService, DbService, DataShareService) {
+.controller('BrowseReportsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, DataService, LocalStorageService, DbService, DataShareService) {
   
   // Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
@@ -25,13 +25,34 @@ angular.module('ace.controllers')
 	// Ensure that the reports info is correct when the view is FIRST displayed.
 	$scope.$on('$ionicView.beforeEnter', function() {
 		// Set up reports item
-		DbService.getReportsAndPositions(window, function(reports) {
+		/*DbService.getReportsAndPositions(window, function(reports) {
 			for(var i = 0; i < reports.length; i++)
 			{
 				reports[i].date = new Date(reports[i].position.timestamp);
 			}
 			$scope.reports = reports;
-		});
+		});*/
+		DataService.localWeatherReport_find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).id}}, function(err, res) {
+			// Get the associated positions
+			var reportArray = res;
+			var positionIdArray = [];
+			for(var i = 0; i < res.length; i++)
+			{
+			   positionIdArray.push(res[i].positionId);
+			}
+			DataService.localPosition_find({where: {id: {inq: positionIdArray}}}, function(err, res2) {
+				var positionMap = {};
+				for(var i = 0; i < res2.length; i++)
+				{
+					positionMap[res2[i].id] = res2[i];
+				} 
+				for(var i = 0; i < reportArray.length; i++)
+				{
+					reportArray[i].date = positionMap[reportArray[i].positionId].timestamp;
+				}
+				$scope.reports = reportArray;				
+			});
+		})
 	});
 	
 	$scope.reports = [];

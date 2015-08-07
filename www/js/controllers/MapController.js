@@ -351,6 +351,7 @@ angular.module('ace.controllers')
            {
                $scope.reportMarkers[i].setMap(null);
            }
+           $scope.reportMarkers = [];
        }
     };
     
@@ -364,6 +365,23 @@ angular.module('ace.controllers')
         }        
     };
     
+    $scope.displayOtherUsersChanged = function() {
+        if($scope.settings.displayOtherUsers.checked === true)
+        {
+            // Add other position markers
+            $scope.displayOtherUserPositions();
+        }  
+        else
+        {
+            // Remove other users markers
+            for(var i = 0; i < $scope.otherUserMarkers.length; i++)
+            {
+                $scope.otherUserMarkers[i].setMap(null);
+            }
+            $scope.otherUserMarkers = [];
+        }
+    };
+    
     // Display the most recent position of all other users
     $scope.displayOtherUserPositions = function() {
         var filter = {
@@ -374,31 +392,38 @@ angular.module('ace.controllers')
         DataService.localMobileUser_find(filter, function(err, res) {
             // Res contains an array of all users in the current group
             var users = res;
-            var groupUserIds = [];
-            for(var i = 0; i < res.length; i++)
-            {
-                groupUserIds.push(res[i].id);
-            }
             
-            // groupUserIds contains all user ids in the current group
-            var filter = {
-                where: {userId: {inq: groupUserIds}},
-                limit: 1,
-                order: 'timestamp DESC'
-            };
-            DataService.localPosition_find(filter, function(err, res2) {
-                // Res2 should coutain the latest position for each user
-                for(var i = 0; i < res2.length; i++)
-                {
-                    var latlng = new google.maps.LatLng(res2[i].latlng.lat, res2[i].latlng.lng);
-                    var marker = new google.maps.Marker({
-                            position: latlng,
-                            map: $scope.map,
-                            title: "current_pos",
-                    });
-                    $scope.otherUserMarkers.push(marker);
-                }
-            });
+            // Get the latest position from all users
+            for(var i = 0; i < users.length; i++)
+            {                
+                var filter = {
+                    where: {and: [
+                        {userId: users[i].id},
+                        {timestamp: {gt: $scope.settings.displayHistory.startDate}},
+                        {timestamp: {lt: $scope.settings.displayHistory.endDate}}
+                        ]},
+                    limit: 1,
+                    order: 'timestamp DESC'
+                };
+            
+                DataService.localPosition_find(filter, function(err, res2) {
+                    // Res2 contains at most 1 position (limit: 1 in filter)
+                    if(res2.length > 0)
+                    {
+                        if(res2[0].userId !== LocalStorageService.getItem("currentUser", {}, window).id)
+                        {
+                            var latlng = new google.maps.LatLng(res2[0].latlng.lat, res2[0].latlng.lng);
+                            var marker = new google.maps.Marker({
+                                    position: latlng,
+                                    map: $scope.map,
+                                    title: "current_pos",
+                                    icon: 'img/ic_person_pin_red_18dp_2x.png'
+                            });
+                            $scope.otherUserMarkers.push(marker);
+                        } 
+                    }                                       
+                });
+            }           
         });
     };
     

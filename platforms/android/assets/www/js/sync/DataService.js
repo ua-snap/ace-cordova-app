@@ -42,6 +42,15 @@ angular.module('ace.services')
 			window.thread_messenger.syncCounter = 0;
 		},
 		
+		terminate: function() {
+			// Close the worker thread
+			// Note: WILL KILL ALL DATA ACCESS.  Should only be performed on logout
+			if(window.thread_messenger && window.thread_messenger.worker)
+			{
+				window.thread_messenger.worker.terminate();
+			}	
+		},
+		
 		// Send message handler
 		sendMessage: function(req, params, filter, cb) {
 			

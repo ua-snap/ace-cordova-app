@@ -6,7 +6,8 @@ angular.module('ace.services', [])
  * @class WebApiService
  * @constructor
  */
-.service('WebApiService', function(RemoteMobileUser, Group, Position, MobileUser, WeatherReport) {
+ 
+.service('WebApiService', function() {
 	return {
 		
 		/**

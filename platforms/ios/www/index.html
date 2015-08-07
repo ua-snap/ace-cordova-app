@@ -26,6 +26,10 @@
 
     <!-- your app's js -->
     <script src="js/app.js"></script>
+    
+    <script src="lib/pouchdb/dist/pouchdb.js"></script>
+    <script src="lib/pouchdb-upsert/dist/pouchdb.upsert.js"></script>
+    <script src="js/sync/browser.bundle.js"></script>
 
     <!-- Controller js files (AppController.js must be listed first since it contains the module init function) -->
     <script src="js/controllers/AppController.js"></script>
@@ -39,6 +43,7 @@
     <script src="js/controllers/BrowseReportsController.js"></script>
     <script src="js/controllers/ViewReportController.js"></script>
     <script src="js/controllers/SettingsLangController.js"></script>
+    <script src="js/controllers/SettingsGeneralController.js"></script>
     
     <!-- Service js files (LoginService.js first - init function) -->
     <script src="js/services/WebApiService.js"></script>
@@ -73,19 +78,13 @@
     <script src="js/ModalHandler.js"></script>
     
     <!-- Data synchronization files... -->
-    <script src="lib/pouchdb/dist/pouchdb.js"></script>
-    <script src="lib/pouchdb-upsert/dist/pouchdb.upsert.js"></script>
-    <script src="js/sync/DataService.js"></script>
-    <script src="js/sync/browser.bundle.js"></script>
+    
+    <script src="js/sync/DataService.js"></script>    
     <script src="js/sync/lbclient.js"></script>
-    
-    
-    
+    <script src="js/sync/SyncWorker.js"></script>   
     
     <!-- File Upload module -->
-    <script src="lib/angular-file-upload/angular-file-upload.js"></script>
-      
-    
+    <script src="lib/angular-file-upload/angular-file-upload.js"></script>   
 
   </head>
   <body ng-app="ace" class="platform-ios platform-cordova platform-webview">
@@ -127,15 +126,9 @@
           <ion-item ng-click="testSync()">
             Test Sync
           </ion-item>
-          <!--<ion-item ng-click="testReportPosition()">
-            Test Report &amp; Position Db
+          <ion-item ng-click="testLogin()">
+            Test Login
           </ion-item>
-          <ion-item ng-click="test3()">
-            Test Upload Positions
-          </ion-item>
-          <ion-item ng-click="test4()">
-            Test Tracking Callback
-          </ion-item>-->
           <ion-item ng-click="openSettings()">
             {{&apos;SETTINGS&apos; | translate}}
           </ion-item>

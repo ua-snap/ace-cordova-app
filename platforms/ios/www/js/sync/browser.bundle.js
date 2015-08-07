@@ -33335,7 +33335,13 @@ Memory.prototype.initCollection = function(model) {
 Memory.prototype.collection = function(model, val) {
   model = this.getCollection(model);
   if (arguments.length > 1) this.cache[model] = val;
-  return this.cache[model];
+  // Fill in empty model if undefined
+		if(this.cache[model] === undefined)
+		{
+		  this.cache[model] = {};
+		}  
+		
+		return this.cache[model];
 };
 
 Memory.prototype.collectionSeq = function(model, val) {
@@ -33345,92 +33351,148 @@ Memory.prototype.collectionSeq = function(model, val) {
 };
 
 Memory.prototype.loadFromFile = function(callback) {
-  var self = this;
-  var hasLocalStorage = typeof window !== 'undefined' && window.localStorage;
-  var localStorage = hasLocalStorage && this.settings.localStorage;
-
-  if (self.settings.file) {
-    fs.readFile(self.settings.file, {encoding: 'utf8', flag: 'r'}, function (err, data) {
-      if (err && err.code !== 'ENOENT') {
-        callback && callback(err);
-      } else {
-        parseAndLoad(data);
-      }
-    });
-  } else if(localStorage) {
-    var data = window.localStorage.getItem(localStorage);
-    data = data || '{}';
-    parseAndLoad(data);
-  } else {
-    process.nextTick(callback);
-  }
-
-  function parseAndLoad(data) {
-    if (data) {
-      try {
-        data = JSON.parse(data.toString());
-      } catch(e) {
-        return callback(e);
-      }
-
-      self.ids = data.ids || {};
-      self.cache = data.models || {};
-    } else {
-      if(!self.cache) {
-        self.ids = {};
-        self.cache = {};
-      }
-    }
-    callback && callback();
-  }
-};
+	  var self = this;
+	  var hasLocalStorage = typeof window !== 'undefined' && window.localStorage;
+	  var localStorage = hasLocalStorage && this.settings.localStorage;
+	
+	  if (self.settings.file) {
+	    fs.readFile(self.settings.file, {encoding: 'utf8', flag: 'r'}, function (err, data) {
+	      if (err && err.code !== 'ENOENT') {
+	        callback && callback(err);
+	      } else {
+	        parseAndLoad(data);
+	      }
+	    });
+	  } else if(localStorage) {
+	    if(!window.localPouchDb)
+	    {
+	      window.localPouchDb = new PouchDB('pouch-db');
+	    }
+	    //var data = window.localStorage.getItem(localStorage);
+	    var data = undefined;
+	    window.localPouchDb.get(localStorage).then(function(doc) {
+		  //alert('get returned successful');
+	      data = doc.data;	
+		  parseAndLoad(data);	
+	    }).catch(function(err) {
+			//alert('get returned error');
+			console.log(err);
+			data = {};
+			parseAndLoad(data);	
+		});	
+		
+	  } else {
+	    process.nextTick(callback);
+	  }
+	
+	  function parseAndLoad(data) {
+	    if (data) {
+	      /*try {
+	        data = JSON.parse(data.toString());
+	      } catch(e) {
+	        return callback(e);
+	      }*/
+	
+	      self.ids = data.ids || {};
+	      self.cache = data.models || {};
+	    } else {
+	      if(!self.cache) {
+	        self.ids = {};
+	        self.cache = {};
+	      }
+	    }
+	    callback && callback();
+	  }
+	};
 
 /*!
  * Flush the cache into the json file if necessary
  * @param {Function} callback
  */
 Memory.prototype.saveToFile = function (result, callback) {
-  var self = this;
-  var file = this.settings.file;
-  var hasLocalStorage = typeof window !== 'undefined' && window.localStorage;
-  var localStorage = hasLocalStorage && this.settings.localStorage;
-  if (file) {
-    if(!self.writeQueue) {
-      // Create a queue for writes
-      self.writeQueue = async.queue(function (task, cb) {
-        // Flush out the models/ids
-        var data = JSON.stringify({
-          ids: self.ids,
-          models: self.cache
-        }, null, '  ');
+	  var self = this;
+	  var file = this.settings.file;
+	  var hasLocalStorage = typeof window !== 'undefined' && window.localStorage;
+	  var localStorage = hasLocalStorage && this.settings.localStorage;
+	  if (file) {
+	    if(!self.writeQueue) {
+	      // Create a queue for writes
+	      self.writeQueue = async.queue(function (task, cb) {
+	        // Flush out the models/ids
+	        var data = JSON.stringify({
+	          ids: self.ids,
+	          models: self.cache
+	        }, null, '  ');
+	
+	        fs.writeFile(self.settings.file, data, function (err) {
+	          cb(err);
+	          task.callback && task.callback(err, task.data);
+	        });
+	      }, 1);
+	    }
+	    // Enqueue the write
+	    self.writeQueue.push({
+	      data: result,
+	      callback: callback
+	    });
+	  } else if (localStorage) {
+	    // Flush out the models/ids
+	    /*var data = JSON.stringify({
+	      ids: self.ids,
+	      models: self.cache
+	    }, null, '  ');*/
+		var data = {
+			ids: self.ids,
+			models: self.cache
+		};
+		
 
-        fs.writeFile(self.settings.file, data, function (err) {
-          cb(err);
-          task.callback && task.callback(err, task.data);
-        });
-      }, 1);
-    }
-    // Enqueue the write
-    self.writeQueue.push({
-      data: result,
-      callback: callback
-    });
-  } else if (localStorage) {
-    // Flush out the models/ids
-    var data = JSON.stringify({
-      ids: self.ids,
-      models: self.cache
-    }, null, '  ');
-    window.localStorage.setItem(localStorage, data);
-    process.nextTick(function () {
-      callback && callback(null, result);
-    });
-  } else {
-    process.nextTick(function () {
-      callback && callback(null, result);
-    });
-  }
-};
+		// always in worker thread
+		if(!window.localPouchDb)
+	    {
+	      window.localPouchDb = new PouchDB('pouch-db');
+		}
+		
+		window.localPouchDb.upsert(localStorage, function(doc) {
+			doc.data = data;
+			return doc;			
+		}).catch(function(err) {
+			console.log(err);
+			var newDoc = {
+				_id: localStorage,
+				data: data
+			};
+			window.localPouchDb.putIfNotExists(newDoc);
+		});
+		
+		
+		/*window.localPouchDb.get(localStorage).then(function(doc) {
+			data._rev = doc._rev;
+			data._id = localStorage;
+			window.localPouchDb.put(data).then(function(res) {
+				console.log("successful insert");
+			}).catch(function(err) {
+				throw err;
+			});
+		}).catch(function(err) {
+			// If this is the first time the database document is requested, call put with no rev field
+			if(err.status === 404 && err.name === "not_found" && err.reason === "missing")
+			{
+				data._id = localStorage;
+				window.localPouchDb.put(data);
+			}
+		});*/
+		
+	    //window.localStorage.setItem(localStorage, data);
+	    process.nextTick(function () {
+	      callback && callback(null, result);
+	    });
+	  } else {
+	    process.nextTick(function () {
+	      callback && callback(null, result);
+	    });
+	  }
+	};
 
 Memory.prototype.define = function defineModel(definition) {
   this.constructor.super_.prototype.define.apply(this, [].slice.call(arguments));
@@ -89188,50 +89250,10 @@ module.exports = function(client) {
   function sync(cb) {
     
     // Get the current group id
-    var groupId = JSON.parse(window.localStorage.getItem("currentUser", {})).groupId;
+    var groupId = JSON.parse(window.localStorage.getItem("currentUser", "{}")).groupId;
     
     // Get array of user ids for users in the group
-    var groupIdArray = JSON.parse(window.localStorage.getItem("groupUserIds", []));
-    
-    // GROUP AND MOBILE USERS
-    
-    // Replicate the remote group item (only one)
-    /*RemoteGroup.findOne({where: {id: groupId}}, function(err, res) {
-      LocalGroup.upsert(res.toJSON(), function(err, res) {
-        if(err) throw err;
-      });
-    });
-    
-    RemoteMobileUser.find({where: {groupId: groupId}}, function(err, res) {
-      for(var i = 0; i < res.length; i++)
-      {
-        var user = res[i].toJSON();
-        user.password = "password";
-        LocalMobileUser.upsert(user, function(err, res) {
-          if(err) throw err;
-        });
-      }
-    });
-    
-    // Positions
-    RemoteGroup.find({where: {id: groupId}, include: "Positions"}, function(err, res) {
-      for(var i = 0; i < res.length; i++)
-      {
-        LocalPosition.upsert(res[i].toJSON(), function(err, res) {
-          if(err) throw err;
-        });
-      }
-    });
-    
-    // Weather Reports
-    RemoteGroup.find({where: {id: groupId}, include: "WeatherReports"}, function(err, res) {
-      for(var i = 0; i < res.length; i++)
-      {
-        LocalWeatherReport.upsert(res[i].toJSON(), function(err, res) {
-          if(err) throw err;
-        });
-      }
-    });*/
+    var groupIdArray = JSON.parse(window.localStorage.getItem("groupUserIds", "[]"));
     
     LocalGroup.replicate(
       RemoteGroup,
@@ -89241,10 +89263,10 @@ module.exports = function(client) {
         RemoteGroup.replicate(
           LocalGroup,
           since.pull,
-          {where: {id: groupId}},
+          {filter: {where: {id: groupId}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
-            cb && cb();
+            cb && cb.call(this, "group");
           });
       });
       
@@ -89256,9 +89278,10 @@ module.exports = function(client) {
         RemoteMobileUser.replicate(
           LocalMobileUser,
           since.pull,
+          {filter: {where: {groupId: groupId}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
-            cb && cb();
+            cb && cb.call(this, "mobileuser");
           });
       });
       
@@ -89266,13 +89289,21 @@ module.exports = function(client) {
       RemotePosition,
       since.push,
       function pushed(err, conflicts, cps) {
+        if(conflicts)
+        {
+          for(var i = 0; i < conflicts.length; i++)
+          {
+            conflicts[i].resolve();
+          }
+        }        
         since.push = cps;
         RemotePosition.replicate(
           LocalPosition,
           since.pull,
+          {filter: {where: {userId: {inq: groupIdArray}}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
-            cb && cb();
+            cb && cb.call(this, "position");
           });
       });
       
@@ -89284,9 +89315,10 @@ module.exports = function(client) {
         RemoteWeatherReport.replicate(
           LocalWeatherReport,
           since.pull,
+          {filter: {where: {userId: {inq: groupIdArray}}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
-            cb && cb();
+            cb && cb.call(this, "report");
           });
       });
   }
@@ -89342,7 +89374,7 @@ module.exports={
   "dataSources": {
     "remote": {
       "connector": "remote",
-      "url": "http://192.168.1.2:3000/api"
+      "url": "https://ace-api-dev.herokuapp.com/api"
     },
     "local": {
       "connector": "memory",
@@ -89634,7 +89666,9 @@ module.exports={
             "required": true
           },
           "positionId": {
-            "type": "number",
+            "type": "string",
+            "id": true,
+            "defaultFn": "guid",
             "required": true
           },
           "cloudCover": {

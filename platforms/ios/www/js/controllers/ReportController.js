@@ -15,7 +15,7 @@ angular.module('ace.controllers')
  * @description Controller for the Report view.  This controller contains all the
  * UI functionality for entering and saving reports.
  */
-.controller('ReportController', function($scope, $state, $translate, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicModal, UploadService, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
+.controller('ReportController', function($scope, $state, $translate, DataService, LocalStorageService, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicModal, UploadService, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
   
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
@@ -44,13 +44,30 @@ angular.module('ace.controllers')
     if(!GeoService.isTrackingEnabled() && settings.gps.positionTrackingEnabled)
     {
         GeoService.enableTracking(settings.gps.trackingInterval);
-    }
+    }    
     
-    // Turn auto-upload back on (10 second interval)
-    //UploadService.enableAutoUpload(10);
+    // Turn auto-upload back on (15 second interval)
     window.setInterval(function() {
-        this.client.sync();
-    }, 10000);
+        // Check online state
+        if(window.navigator.connection.type !== "none")
+        {
+            // Online so attempt to sync
+            DataService.sync();
+        }        
+    }, 30000);
+    
+    // Ensure permission to add notifications
+    window.plugin.notification.local.hasPermission(function(granted) {
+        if(!granted)
+        {
+            window.plugin.notification.local.promptForPermission();
+        }
+    });
+    
+    // Setup to sync whenever you come online from being offline
+    document.addEventListener("online", function() {
+        DataService.sync();
+    }, false)
     
   });
   
@@ -150,10 +167,64 @@ angular.module('ace.controllers')
     // Save report to database and upload
     var tempReport = $scope.report;
     GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
-        DbService.insertReportAndPosition(tempReport, pos, window, function(res) {
+        /*DbService.insertReportAndPosition(tempReport, pos, window, function(res) {
             // Manually upload report (an anything else)
             UploadService.uploadAll();
+        });*/
+        
+        var localPos = {
+            userId: LocalStorageService.getItem("currentUser", {}, window).id,
+            latlng: {
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+            },
+            timestamp: new Date(pos.timestamp),
+            accuracy: pos.coords.accuracy,
+            altitude: pos.coords.altitude,
+            altitudeAccuracy: pos.coords.altitudeAccuracy,
+            heading: pos.coords.heading,
+            speed: pos.coords.speed
+        };
+        
+        // Create the local position
+        DataService.localPosition_create(localPos, function(err, res) {
+            var position = res;
+            tempReport.positionId = position.id;
+            tempReport.userId = position.userId;
+            
+            // Create weather report
+            DataService.localWeatherReport_create(tempReport, function(err, res) {
+                if(window.navigator.connection.type !== "none") {
+                    DataService.sync(function(model) {
+                        if(model === "report")
+                        {
+                            $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
+                        }
+                    });
+                }
+                else {
+                    $ionicLoading.show({template: 'Report saved locally (will be uploaded once internet connection is re-established)', noBackdrop: true, duration: 1500});
+                }
+            });
         });
+        /*window.client.models.LocalPosition.create(localPos, function(err, res) {
+            var position = res.toJSON();
+            tempReport.positionId = position.id;
+            tempReport.userId = position.userId;
+           window.client.models.LocalWeatherReport.create(tempReport, function(err, res) {
+               if(window.navigator.connection.type !== "none") {
+                   window.client.sync(function() {
+                        $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
+                    });
+               }
+               else
+               {
+                   $ionicLoading.show({template: 'Report saved locally (will be uploaded once internet connection is re-established)', noBackdrop: true, duration: 1500});
+               }
+               
+           }); 
+        });*/
+        
     });
     
     // Clear all entered data
@@ -238,8 +309,8 @@ angular.module('ace.controllers')
   
   function onDeviceReady() {
     // Open Db and create tables if necessary
-    DbService.openDatabase(window);
-    DbService.createTables(window);
+    //DbService.openDatabase(window);
+    //DbService.createTables(window);
     
     // Grab and set settings
     var localHandler = new LocalStorageUtil(window);
