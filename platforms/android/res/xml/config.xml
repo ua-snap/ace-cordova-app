@@ -33,6 +33,9 @@
     <feature name="NetworkStatus">
         <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
     </feature>
+    <feature name="LocalNotification">
+        <param name="android-package" value="de.appplant.cordova.plugin.localnotification.LocalNotification" />
+    </feature>
     <icon density="ldpi" src="resources/android/icon/ace_icon.png" />
     <icon density="mdpi" src="resources/android/icon/ace_icon.png" />
     <icon density="hdpi" src="resources/android/icon/ace_icon.png" />

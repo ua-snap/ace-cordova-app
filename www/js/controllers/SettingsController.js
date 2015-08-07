@@ -90,4 +90,15 @@ angular.module('ace.controllers')
 	$scope.languageSettingsClicked = function() {
 		$state.go('settings-language');
 	}
+	
+	/**
+	 * Function called when the General Settings item is clicked.  Opens the General settings interface
+	 * 
+	 * @method generalSettingsClicked
+	 * @return void
+	 * @throws none
+	 */
+	$scope.generalSettingsClicked = function() {
+		$state.go('settings-general');
+	}
 });

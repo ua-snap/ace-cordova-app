@@ -41,6 +41,10 @@ angular.module('ace.controllers')
     
     $scope.reportMarkers = [];
     
+    $scope.userMarkers = [];
+    
+    $scope.otherUserMarkers = [];
+    
     var timer = null;
     
     var currentLocationMarker = null;
@@ -49,13 +53,21 @@ angular.module('ace.controllers')
     
     $scope.curPos = null;
     
+    var lastMidnight = new Date();
+    lastMidnight.setHours(0, 0, 0, 0);
+    
+    var nextMidnight = new Date();
+    nextMidnight.setHours(24, 0, 0, 0);
+    
     $scope.settings = {
       displayPos: {
           checked: true
       },  
       followPos: false,
       displayHistory: {
-          checked: false
+          checked: false,
+          startDate: lastMidnight,
+          endDate: nextMidnight
       },
       displayReports: {
           checked: false
@@ -231,6 +243,18 @@ angular.module('ace.controllers')
     $scope.displayHistoryChanged = function() {
       if($scope.settings.displayHistory.checked)
       {
+          // If an old history line exists, remove it before redrawing
+          if(historyLine)
+          {
+              // Remove tracking callback (positions will still be recorded)
+              GeoService.setTrackingCallback(null);
+                
+              // remove the history line
+              historyLine.setMap(null);  
+              
+              historyLine = null;
+          }
+          
           // Draw the history line
           $scope.drawHistoryLine();
           
@@ -340,11 +364,58 @@ angular.module('ace.controllers')
         }        
     };
     
+    // Display the most recent position of all other users
+    $scope.displayOtherUserPositions = function() {
+        var filter = {
+            where: {
+                groupId: LocalStorageService.getItem("currentUser", {}, window).groupId
+            }
+        };
+        DataService.localMobileUser_find(filter, function(err, res) {
+            // Res contains an array of all users in the current group
+            var users = res;
+            var groupUserIds = [];
+            for(var i = 0; i < res.length; i++)
+            {
+                groupUserIds.push(res[i].id);
+            }
+            
+            // groupUserIds contains all user ids in the current group
+            var filter = {
+                where: {userId: {inq: groupUserIds}},
+                limit: 1,
+                order: 'timestamp DESC'
+            };
+            DataService.localPosition_find(filter, function(err, res2) {
+                // Res2 should coutain the latest position for each user
+                for(var i = 0; i < res2.length; i++)
+                {
+                    var latlng = new google.maps.LatLng(res2[i].latlng.lat, res2[i].latlng.lng);
+                    var marker = new google.maps.Marker({
+                            position: latlng,
+                            map: $scope.map,
+                            title: "current_pos",
+                    });
+                    $scope.otherUserMarkers.push(marker);
+                }
+            });
+        });
+    };
+    
     // Draws a line on the map where the user has traveled
     $scope.drawHistoryLine = function() {
         // Grab last position entries
         var settings = SettingsService.getSettings(window);
-        DataService.localPosition_find({order: 'timestamp DESC', limit: settings.gps.displayedHistoryPoints}, function(err, res) {
+        var filter = {
+            order: 'timestamp DESC',
+            where: {
+                and: [
+                    {timestamp: {gt: $scope.settings.displayHistory.startDate}},
+                    {timestamp: {lt: $scope.settings.displayHistory.endDate}}
+                ]
+            }
+        };
+        DataService.localPosition_find(filter, function(err, res) {
            var latLngArray = [];
            for(var i = 0; i < res.length; i++)
            {

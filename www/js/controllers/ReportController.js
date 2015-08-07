@@ -54,7 +54,20 @@ angular.module('ace.controllers')
             // Online so attempt to sync
             DataService.sync();
         }        
-    }, 15000);
+    }, 30000);
+    
+    // Ensure permission to add notifications
+    window.plugin.notification.local.hasPermission(function(granted) {
+        if(!granted)
+        {
+            window.plugin.notification.local.promptForPermission();
+        }
+    });
+    
+    // Setup to sync whenever you come online from being offline
+    document.addEventListener("online", function() {
+        DataService.sync();
+    }, false)
     
   });
   

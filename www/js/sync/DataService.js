@@ -1,6 +1,6 @@
 angular.module('ace.services')
 
-.service('DataService', function($http, DbService, LocalStorageService, WebApiService) {    
+.service('DataService', function($http, DbService, LocalStorageService, WebApiService, SettingsService) {    
 	return {
 		// All callbacks should take the following args (err, res)
 		
@@ -37,10 +37,29 @@ angular.module('ace.services')
 				// Set up recieve message handler
 				window.thread_messenger.worker.onmessage = this.recieveMessage;
 			}
+			
+			// Reset sync counter
+			window.thread_messenger.syncCounter = 0;
+		},
+		
+		terminate: function() {
+			// Close the worker thread
+			// Note: WILL KILL ALL DATA ACCESS.  Should only be performed on logout
+			if(window.thread_messenger && window.thread_messenger.worker)
+			{
+				window.thread_messenger.worker.terminate();
+			}	
 		},
 		
 		// Send message handler
 		sendMessage: function(req, params, filter, cb) {
+			
+			// Initialize if necessary
+			if(window.thread_messenger === undefined)
+			{
+				this.initialize();
+			}
+			
 			// Create GUID for callback
 			var guid = this.createGUID();
 			var message = {
@@ -116,7 +135,59 @@ angular.module('ace.services')
 		
 		// sync
 		sync: function(cb) {
-			this.sendMessage("sync", null, null, cb);
+			// Reset the syncCounter (in the case of an exceptionally long sync)
+			window.thread_messenger.syncounter = 0;
+			
+			// Check notifications setting
+			var settings = SettingsService.getSettings(window);
+			if(settings.general.notifications)
+			{
+				// Display syncing notification (random number id)
+				window.plugin.notification.local.schedule({
+					id: 230476843,
+					text: 'Syncing with remote server...',
+					title: 'ACE Mobile App',
+					ongoing: false,
+					sound: "file://sounds/point1sec.mp3",
+					at: Date.now(),
+					smallIcon: 'ic_cloud_white_24dp' 			
+				});
+			}		
+			
+			// Clear sync notification on return (after 4 success messages)
+			var callbackWrapper = function() {
+				window.thread_messenger.syncCounter++;
+				if(window.thread_messenger.syncCounter === 4)
+				{
+					// Reset counter and clear notification
+					window.thread_messenger.syncCounter = 0;
+					
+					window.plugin.notification.local.isPresent(230476843, function(present) {
+						if(present)
+						{
+							window.plugin.notification.local.update({
+								id: 230476843,
+								text: 'Sync complete!',
+								title: 'ACE Mobile App',
+								smallIcon: "ic_cloud_done_white_24dp"
+							});
+							
+							// Let "complete" stay displayed for 1 second, then clear
+							window.setTimeout(function() {
+								window.plugin.notification.local.cancel(230476843);
+							}, 1000);
+						}
+					});
+				}
+				
+				// Execute callback
+				if(cb)
+				{
+					cb.apply(this, arguments);
+				}
+			}
+			
+			this.sendMessage("sync", null, null, callbackWrapper);
 		},
 		
 		// Get all local mobile users

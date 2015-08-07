@@ -43,6 +43,10 @@
                         {
                             "xml": "<feature name=\"NetworkStatus\"><param name=\"ios-package\" value=\"CDVConnection\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"LocalNotification\"><param name=\"ios-package\" onload=\"true\" value=\"APPLocalNotification\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -128,6 +132,9 @@
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         },
         "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.ionicframework.ace261647"
+        },
+        "de.appplant.cordova.plugin.local-notification": {
             "PACKAGE_NAME": "com.ionicframework.ace261647"
         }
     },

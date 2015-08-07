@@ -14,5 +14,8 @@ var Settings = function() {
 		trackingInterval: 1,
 		displayedHistoryPoints: 100
 	};
+	this.general = {
+		notifications: true	
+	};
 	this.language = "en";
 };

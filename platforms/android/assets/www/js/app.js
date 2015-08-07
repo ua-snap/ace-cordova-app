@@ -97,6 +97,13 @@ angular.module('ace', ['ionic', 'ace.controllers', 'ace.services', 'pascalprecht
       controller: 'SettingsLangController'
   })
   
+  // General settings state
+  .state('settings-general', {
+    url: '/settings_general',
+    templateUrl: 'templates/settings_general.html',
+    controller: 'SettingsGeneralController'
+  })
+  
   // Report Browser State
   .state('browse-reports', {
     url: '/report_browser',
