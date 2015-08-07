@@ -67,8 +67,10 @@ angular.module('ace.controllers', [])
         // Kick the user back out to the login screen
         $state.go('login');
         
-        // Kill the sync thread
+        // Kill the sync thread and stop the sync interval timer
         DataService.terminate();
+        window.clearInterval(window.thread_messenger.syncTimer);
+        window.thread_messenger = undefined;
         
         // Remove any notifications
         window.plugin.notification.local.cancel(230476843);
