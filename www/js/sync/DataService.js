@@ -62,15 +62,18 @@ angular.module('ace.services')
 			
 			// Create GUID for callback
 			var guid = this.createGUID();
+			
+			
+			// Save the callback in the map (updating guid in case of collision)
+			guid = this.saveCallback(guid, cb);
+			
+			// Create message
 			var message = {
 				req: req,
 				params: params,
 				filter: filter,
 				cbId: guid
 			};
-			
-			// Save the callback in the map
-			this.saveCallback(guid, cb);
 			
 			// send the message
 			window.thread_messenger.worker.postMessage(message);				
@@ -90,7 +93,18 @@ angular.module('ace.services')
 		
 		// Saves a callback at id
 		saveCallback: function(id, cb) {
-			window.thread_messenger.callbackMap[id] = cb;	
+			// Check for collision (added because of window.performance.now() polyfill used in iOS web views)
+			if(window.thread_messenger.callbackMap[id] === undefined)
+			{
+				window.thread_messenger.callbackMap[id] = cb;	
+				return id;
+			}
+			else
+			{
+				// Append a "c" and retry
+				return this.saveCallback(id + "c", cb);
+			}
+			
 		},
 		
 		// Synchronous function returns a Globally Unique Identifier to associate with a callback

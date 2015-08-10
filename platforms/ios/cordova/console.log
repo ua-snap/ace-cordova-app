@@ -1,0 +1,79 @@
+2015-08-10 10:16:00.753 ACE[17757:66640] DiskCookieStorage changing policy from 2 to 0, cookie file: file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Data/Application/1B0DC06D-D1C3-4BC2-AE96-DEBDDD068950/Library/Cookies/Cookies.binarycookies
+2015-08-10 10:16:01.004 ACE[17757:66640] Apache Cordova native platform version 3.8.0 is starting.
+2015-08-10 10:16:01.004 ACE[17757:66640] Multi-tasking -> Device: YES, App: YES
+2015-08-10 10:16:01.015 ACE[17757:66640] Unlimited access to network resources
+2015-08-10 10:16:01.610 ACE[17757:66640] [CDVTimer][keyboard] 0.070989ms
+2015-08-10 10:16:01.735 ACE[17757:66640] [CDVTimer][splashscreen] 125.081956ms
+2015-08-10 10:16:01.743 ACE[17757:66640] [CDVTimer][file] 7.223010ms
+2015-08-10 10:16:01.743 ACE[17757:66640] [CDVTimer][localnotification] 0.086010ms
+2015-08-10 10:16:01.743 ACE[17757:66640] [CDVTimer][localnotification] 0.006974ms
+2015-08-10 10:16:01.743 ACE[17757:66640] [CDVTimer][TotalPluginStartup] 133.185983ms
+2015-08-10 10:16:02.721 ACE[17757:66640] Resetting plugins due to page load.
+2015-08-10 10:16:03.149 ACE[17757:66640] THREAD WARNING: ['Device'] took '24.887695' ms. Plugin should use a background thread.
+2015-08-10 10:16:03.409 ACE[17757:66640] Finished load of: file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/index.html#/login
+2015-08-10 10:16:03.439 ACE[17757:66640] WARN: pascalprecht.translate.$translateSanitization: No sanitization strategy has been configured. This can have serious security implications. See http://angular-translate.github.io/docs/#/guide/19_security for details.
+2015-08-10 10:16:24.697 ACE[17757:66715] NSURLConnection/CFURLConnection HTTP load failed (kCFStreamErrorDomainSSL, -9813)
+2015-08-10 10:16:37.202 ACE[17757:66715] NSURLConnection/CFURLConnection HTTP load failed (kCFStreamErrorDomainSSL, -9813)
+2015-08-10 10:17:00.371 ACE[17757:66640] WARN: Depreated: Please use `notification.local.registerPermission` instead.
+2015-08-10 10:17:05.598 ACE[17757:66640] WARN: Unknown property: ongoing
+2015-08-10 10:17:05.598 ACE[17757:66640] WARN: Unknown property: smallIcon
+2015-08-10 10:17:25.329 ACE[17757:66640] ERROR: Error: undefined is not a constructor (evaluating 'new google.maps.LatLng(37.3000, -120.4833)')
+initialize@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/js/controllers/MapController.js:158:48
+file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/js/controllers/MapController.js:99:19
+$emit@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:23346:38
+emit@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:46622:26
+transitionComplete@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:46580:26
+onReflow@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:46560:33
+file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:24922:30
+completeOutstandingRequest@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:13604:15
+file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:13984:33
+2015-08-10 10:17:30.328 ACE[17757:66640] WARN: Unknown property: ongoing
+2015-08-10 10:17:30.329 ACE[17757:66640] WARN: Unknown property: smallIcon
+2015-08-10 10:17:48.501 ACE[17757:66640] ERROR: Error: null is not an object (evaluating '$scope.map.getCenter')
+saveMapState@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/js/controllers/MapController.js:113:44
+file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/js/controllers/MapController.js:104:28
+$emit@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:23346:38
+onTabsLeave@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:48191:37
+$broadcast@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:23419:33
+emitLifecycleEvent@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:54992:43
+$emit@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:23346:38
+emit@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:46638:26
+transitionComplete@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:46580:26
+onReflow@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:46560:33
+file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:24922:30
+completeOutstandingRequest@file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:13604:15
+file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/2EA16CED-E070-4F0A-AED3-0B4DF3D259F7/ACE.app/www/lib/ionic/js/ionic.bundle.js:13984:33
+2015-08-10 10:18:05.422 ACE[17757:66640] WARN: Unknown property: ongoing
+2015-08-10 10:18:05.422 ACE[17757:66640] WARN: Unknown property: smallIcon
+2015-08-10 10:19:04.789 ACE[18550:69930] DiskCookieStorage changing policy from 2 to 0, cookie file: file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Data/Application/CDFDC6D0-C798-4DD0-BC6D-5010E53CE14B/Library/Cookies/Cookies.binarycookies
+2015-08-10 10:19:04.962 ACE[18550:69930] Apache Cordova native platform version 3.8.0 is starting.
+2015-08-10 10:19:04.963 ACE[18550:69930] Multi-tasking -> Device: YES, App: YES
+2015-08-10 10:19:04.964 ACE[18550:69930] Unlimited access to network resources
+2015-08-10 10:19:05.375 ACE[18550:69930] [CDVTimer][keyboard] 0.065029ms
+2015-08-10 10:19:05.433 ACE[18550:69930] [CDVTimer][splashscreen] 58.188021ms
+2015-08-10 10:19:05.442 ACE[18550:69930] [CDVTimer][file] 9.123981ms
+2015-08-10 10:19:05.443 ACE[18550:69930] [CDVTimer][localnotification] 0.074983ms
+2015-08-10 10:19:05.443 ACE[18550:69930] [CDVTimer][localnotification] 0.007033ms
+2015-08-10 10:19:05.443 ACE[18550:69930] [CDVTimer][TotalPluginStartup] 68.219006ms
+2015-08-10 10:19:06.378 ACE[18550:69930] Resetting plugins due to page load.
+2015-08-10 10:19:06.954 ACE[18550:69930] Finished load of: file:///Users/sentelljg/Library/Developer/CoreSimulator/Devices/F4042986-4523-4F89-8680-5EDB1474C967/data/Containers/Bundle/Application/812030EB-D855-431D-83FD-778B7781B5E5/ACE.app/www/index.html#/login
+2015-08-10 10:19:06.986 ACE[18550:69930] WARN: pascalprecht.translate.$translateSanitization: No sanitization strategy has been configured. This can have serious security implications. See http://angular-translate.github.io/docs/#/guide/19_security for details.
+2015-08-10 10:19:40.439 ACE[18550:69930] WARN: Unknown property: ongoing
+2015-08-10 10:19:40.440 ACE[18550:69930] WARN: Unknown property: smallIcon
+2015-08-10 10:19:42.707 ACE[18550:69930] WARN: Unknown property: ongoing
+2015-08-10 10:19:42.707 ACE[18550:69930] WARN: Unknown property: smallIcon
+2015-08-10 10:20:10.082 ACE[18550:69930] WARN: Unknown property: ongoing
+2015-08-10 10:20:10.083 ACE[18550:69930] WARN: Unknown property: smallIcon
+2015-08-10 10:20:21.195 ACE[18550:69930] WARN: Unknown property: ongoing
+2015-08-10 10:20:21.197 ACE[18550:69930] WARN: Unknown property: smallIcon
+2015-08-10 10:20:37.937 ACE[18550:69977] bool _WebTryThreadLock(bool), 0x7be66450: Multiple locks on web thread not allowed! Please file a bug. Crashing now...
+1   0x5759698 WebRunLoopLock(__CFRunLoopObserver*, unsigned long, void*)
+2   0x2439de __CFRUNLOOP_IS_CALLING_OUT_TO_AN_OBSERVER_CALLBACK_FUNCTION__
+3   0x243920 __CFRunLoopDoObservers
+4   0x239218 __CFRunLoopRun
+5   0x238bcb CFRunLoopRunSpecific
+6   0x2389fb CFRunLoopRunInMode
+7   0x5759660 RunWebThread(void*)
+8   0x32e7e13 _pthread_body
+9   0x32e7d89 _pthread_body
+10  0x32e5e52 thread_start
