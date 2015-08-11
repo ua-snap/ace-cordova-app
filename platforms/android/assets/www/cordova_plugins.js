@@ -178,6 +178,13 @@ module.exports = [
         ]
     },
     {
+        "file": "plugins/com.borismus.webintent/www/webintent.js",
+        "id": "com.borismus.webintent.WebIntent",
+        "clobbers": [
+            "WebIntent"
+        ]
+    },
+    {
         "file": "plugins/cordova-plugin-file/www/DirectoryEntry.js",
         "id": "cordova-plugin-file.DirectoryEntry",
         "clobbers": [
@@ -339,6 +346,7 @@ module.exports.metadata =
     "de.appplant.cordova.plugin.local-notification": "0.8.2dev",
     "cordova-plugin-media-capture": "1.0.1",
     "com.synconset.imagepicker": "1.0.6",
+    "com.borismus.webintent": "1.0.0",
     "cordova-plugin-file": "2.1.0"
 }
 // BOTTOM OF METADATA

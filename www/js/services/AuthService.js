@@ -68,11 +68,12 @@ angular.module('ace.services')
                                groupUsersIdArray.push(groupUsers[i].id);
                            }
                            LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
-                           // SYNC 
-                           //window.client.sync();
-                           DataService.sync();
-
                            
+                           // Save group name (to be used when uploading to group containers)
+                           LocalStorageService.setItem("groupName", result.__data.name, window);
+                           
+                           // SYNC 
+                           DataService.sync();                           
                        }                       
                        else if(err)
                        {

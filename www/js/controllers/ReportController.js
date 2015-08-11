@@ -189,6 +189,7 @@ angular.module('ace.controllers')
         
         // Create the local position
         DataService.localPosition_create(localPos, function(err, res) {
+            // Add position data to report
             var position = res;
             tempReport.positionId = position.id;
             tempReport.userId = position.userId;
@@ -196,6 +197,56 @@ angular.module('ace.controllers')
             // Create weather report
             DataService.localWeatherReport_create(tempReport, function(err, res) {
                 if(window.navigator.connection.type !== "none") {
+                    
+                    // Upload attachment file if there is one
+                    if(tempReport.attachment && tempReport.attachment !== "")
+                    {
+                        // Need to handle attachment
+                        
+                        // Create new url string
+                        var uploadUrl = "https://ace-api-dev.herokuapp.com/api/containers/" + LocalStorageService.getItem("groupName", "null", window) + "/upload";
+                        
+                        // Create upload call
+                        // Set up options
+                        var options = {
+                            headers: {},
+                        };
+                        options.headers['authorization'] = LocalStorageService.getItem("access_token", "", window);
+                        
+                        // Grab the file name
+                        var fileName = tempReport.attachment.replace(/^.*[\\\/]/, '');
+                        
+                        // Can use file without adding type qualifier
+                        if(fileName.indexOf(".") !== -1)
+                        {
+                            options.fileName = fileName;
+                        }
+                        else
+                        {
+                            options.fileName = fileName + "." + tempReport.attachmentType.substr(tempReport.attachmentType.lastIndexOf("/") + 1);
+                        }
+                        
+                        // Mime type
+                        options.mimeType = tempReport.attachmentType;
+                        
+                        // Closure to persist report id
+                        (function(reportId, fName) {
+                            var fileTransfer = new FileTransfer();
+                            fileTransfer.upload(tempReport.attachment, encodeURI(uploadUrl), function(response) {                            
+                                // Upload successful
+                                // Create url
+                                var url = "https://ace-api-dev.herokuapp.com/api/Containers/" + LocalStorageService.getItem("groupName", "", window) + "/download/" + fName;
+                                DataService.localWeatherReport_updateAll({id: res.id}, {attachment: url}, function(err, res) {
+                                    if(err) console.log(err);
+                                });
+                            }, function(error) {
+                                // Upload failed
+                                console.log(error);
+                            }, options);
+                        })(res.id, fileName);
+                        
+                    }
+                    
                     DataService.sync(function(model) {
                         if(model === "report")
                         {
@@ -1210,27 +1261,90 @@ angular.module('ace.controllers')
       $scope.cameraModal = modal;
   });
   
+  // Launch an intent to open the attachment
+  $scope.openAttachment = function() {
+      var dataType = "";
+      if($scope.cameraModal.tempAttachment.indexOf("jpg") !== -1)
+      {
+          dataType = "image/jpg";
+      }
+      else if($scope.cameraModal.tempAttachment.indexOf("mp4") !== -1)
+      {
+          dataType = "video/mp4";
+      }
+      else
+      {
+          dataType = "image/png";
+      }
+      
+      // Start intent
+      window.plugins.webintent.startActivity({
+          action: window.plugins.webintent.ACTION_VIEW,
+          url: $scope.cameraModal.tempAttachment,
+          type: dataType
+      }, function() {}, function(err) {alert(err);});
+  };
+  
   // Take a picture
   $scope.takePic = function() {
     navigator.camera.getPicture(function(uri) {
-        var img = document.getElementById("pic");
-        img.src = uri;
-        $scope.cameraModal.tempAttachment = uri;
-        $scope.$apply();      
+        // Store uri
+        $scope.cameraModal.tempAttachment = uri;   
+        
+        // Get type
+        $scope.determineAttachmentType(uri, function(fileType) {
+            $scope.cameraModal.tempAttachmentType = fileType;
+        });
+           
       }, function() {
         alert("error");
       }, {limit:1});
   };
   
+  $scope.determineAttachmentType = function(uri, cb) {
+    // Get the file type
+    
+    // First, check uri for .jpg or equivalent
+    var fileType = uri.substring(uri.lastIndexOf("."));
+    if(fileType && fileType.indexOf(".") !== -1)
+    {
+        if(fileType === ".jpg")
+        {
+            fileType = "image/jpg";
+        }
+        else if(fileType === ".png")
+        {
+            fileType = "image/png";
+        }
+        else if(fileType === ".mp4")
+        {
+            fileType = "video/mp4";
+        }
+        if(cb)
+        {
+            cb.call(this, fileType);
+        }
+    }
+    else
+    {
+        // Lookup the file
+        window.resolveLocalFileSystemURL(uri, function(fileEntry) {
+            fileEntry.file(function(file) {
+               cb.call(this, file.type);
+            });
+        }, function(err) {
+            console.log(err);
+        });
+    }
+  };
+  
   // Take a video
   $scope.takeVid = function() {
-    navigator.device.capture.captureVideo(function() {
-        var img = document.getElementById("pic");
-        img.src = "";
-        var video = document.getElementById("vid");
-        var source = document.createElement('source');
-        video.appendChild(source);
-        $scope.apply;
+    navigator.device.capture.captureVideo(function(mediaFiles) {
+        // Store path
+        $scope.cameraModal.tempAttachment = mediaFiles[0].fullPath;
+        // Save type
+        $scope.cameraModal.tempAttachmentType = mediaFiles[0].type;
     }, function() {
         alert("error");
     }, {limit:1});
@@ -1245,10 +1359,15 @@ angular.module('ace.controllers')
              photo_split = uri.split("%3A");
              uri = "content://media/external/images/media/" + photo_split[1];
          }
-         var img = document.getElementById("pic");
-         img.src = uri;
+                  
+         // Initially set the tempAttachment
          $scope.cameraModal.tempAttachment = uri;
-         $scope.$apply();
+        
+        // Determine attachment type
+         $scope.determineAttachmentType(uri, function(fileType) {
+             $scope.cameraModal.tempAttachmentType = fileType;
+         });
+         
       }, function(err) {
           alert(err);
       }, {destinationType: Camera.DestinationType.FILE_URI, sourceType: Camera.PictureSourceType.PHOTOLIBRARY});
@@ -1259,15 +1378,9 @@ angular.module('ace.controllers')
       $scope.cameraModal.show();
       var img = document.getElementById("pic");
       if($scope.report.attachment && $scope.report.attachment !== "")
-      {          
-          img.src = $scope.report.attachment;
-      }
-      else
-      {
-          img.src = "";
-      }
-      
-      
+      {      
+          $scope.cameraModal.tempAttachment = $scope.report.attachment;
+      }     
   };
   
   // Close the camera modal
@@ -1284,6 +1397,7 @@ angular.module('ace.controllers')
   // Function called when user presses save on modal8
   $scope.saveModal8 = function() {
       $scope.report.attachment = $scope.cameraModal.tempAttachment;
+      $scope.report.attachmentType = $scope.cameraModal.tempAttachmentType;
       this.closeModal8();
   };
 

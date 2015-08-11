@@ -147,6 +147,10 @@ angular.module('ace.services')
 			this.sendMessage("remotegroup.findone", null, filter, cb);	
 		},
 		
+		localWeatherReport_updateAll: function(filter, data, cb) {
+			this.sendMessage("localweatherreport.updateall", data, filter, cb);	
+		},
+		
 		// sync
 		sync: function(cb) {
 			// Reset the syncCounter (in the case of an exceptionally long sync)

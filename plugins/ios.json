@@ -147,6 +147,9 @@
         },
         "com.synconset.imagepicker": {
             "PACKAGE_NAME": "com.ionicframework.ace261647"
+        },
+        "com.borismus.webintent": {
+            "PACKAGE_NAME": "com.ionicframework.ace261647"
         }
     },
     "dependent_plugins": {

@@ -351,4 +351,15 @@ self.onmessage = function(message) {
 			
 		})(msg.cbId);
 	}
+	else if(msg.req === "localweatherreport.updateall") {
+		(function(id) {
+			window.client.models.LocalWeatherReport.update(msg.filter, msg.params, function(err, res) {
+				var returnMsg = {
+					cbId: id,
+					args: [err, res]
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
 }

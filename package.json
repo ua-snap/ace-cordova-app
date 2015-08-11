@@ -47,6 +47,10 @@
     {
       "locator": "https://github.com/wymsee/cordova-imagePicker.git",
       "id": "com.synconset.imagepicker"
+    },
+    {
+      "locator": "https://github.com/Initsogar/cordova-webintent.git",
+      "id": "com.borismus.webintent"
     }
   ],
   "cordovaPlatforms": [
