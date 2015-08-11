@@ -161,9 +161,9 @@ angular.module('ace.services')
 					id: 230476843,
 					text: 'Syncing with remote server...',
 					title: 'ACE Mobile App',
-					ongoing: false,
 					sound: "file://sounds/point1sec.mp3",
 					at: Date.now(),
+					ongoing: false,
 					smallIcon: 'ic_cloud_white_24dp' 			
 				});
 			}		

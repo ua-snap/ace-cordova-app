@@ -148,7 +148,8 @@ angular.module('ace.controllers')
         var notes = document.getElementById("sumcat7");
         notes.innerText = translations.NOTES + ":\n" + $scope.report.notes;
         
-        var pic = document.getElementById("sumcat8");
+        var attachment = document.getElementById("sumcat8");
+        attachment.innerText = "Attachment: " + $scope.report.attachment; 
     });
     
     
@@ -1211,27 +1212,62 @@ angular.module('ace.controllers')
   
   // Take a picture
   $scope.takePic = function() {
-    navigator.device.capture.captureImage(function(mediaFiles) {
-      var image = document.getElementById("modal9preview");
-      image.src = mediaFiles[0].fullPath;
-      alert(mediaFiles[0].name);
-      
-      }, function() {alert("error");}, {limit:1});
+    navigator.camera.getPicture(function(uri) {
+        var img = document.getElementById("pic");
+        img.src = uri;
+        $scope.cameraModal.tempAttachment = uri;
+        $scope.$apply();      
+      }, function() {
+        alert("error");
+      }, {limit:1});
   };
   
   // Take a video
   $scope.takeVid = function() {
-    navigator.device.capture.captureVideo(function() {alert("success");}, function() {alert("error");}, {limit:1});
+    navigator.device.capture.captureVideo(function() {
+        var img = document.getElementById("pic");
+        img.src = "";
+        var video = document.getElementById("vid");
+        var source = document.createElement('source');
+        video.appendChild(source);
+        $scope.apply;
+    }, function() {
+        alert("error");
+    }, {limit:1});
   };
   
   // Select a picture from the file browser
   $scope.selectPic = function() {
-    navigator.camera.getPicture(function() {alert("success");}, function() {alert("error");}, {quality: 50, destinationType: Camera.DestinationType.FILE_URI, sourceType: Camera.PictureSourceType.PHOTOLIBRARY})
+      navigator.camera.getPicture(function(uri) {
+         // Dirty workaround for kitkat document content uri bug
+         var photo_split;
+         if(uri.substring(0, 21) === "content://com.android") {
+             photo_split = uri.split("%3A");
+             uri = "content://media/external/images/media/" + photo_split[1];
+         }
+         var img = document.getElementById("pic");
+         img.src = uri;
+         $scope.cameraModal.tempAttachment = uri;
+         $scope.$apply();
+      }, function(err) {
+          alert(err);
+      }, {destinationType: Camera.DestinationType.FILE_URI, sourceType: Camera.PictureSourceType.PHOTOLIBRARY});
   };
   
   // Open the camera modal
   $scope.openModal8 = function() {
       $scope.cameraModal.show();
+      var img = document.getElementById("pic");
+      if($scope.report.attachment && $scope.report.attachment !== "")
+      {          
+          img.src = $scope.report.attachment;
+      }
+      else
+      {
+          img.src = "";
+      }
+      
+      
   };
   
   // Close the camera modal
@@ -1241,11 +1277,13 @@ angular.module('ace.controllers')
   
   // Function called when user presses cancel on modal8
   $scope.cancelModal8 = function() {
+      $scope.cameraModal.tempAttachment = "";
       this.closeModal8();
   };
 
   // Function called when user presses save on modal8
   $scope.saveModal8 = function() {
+      $scope.report.attachment = $scope.cameraModal.tempAttachment;
       this.closeModal8();
   };
 

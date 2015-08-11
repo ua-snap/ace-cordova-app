@@ -53,6 +53,9 @@ angular.module('ace.services')
                     // Save only current user on this side...
                     LocalStorageService.setItem("currentUser", res.user, window);
                     
+                    // Save access token for use in file upload functions
+                    LocalStorageService.setItem("access_token", res.id, window);
+                    
                     // Retrieve an array of the id's for users in the current group
                     var filter = {where: {id: res.user.groupId}, include: "MobileUsers"};
                     DataService.remoteGroup_findOne(filter, function(err, result) {

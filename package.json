@@ -32,16 +32,21 @@
     "cordova-plugin-splashscreen",
     "com.ionic.keyboard",
     "org.apache.cordova.camera",
-    "org.apache.cordova.file",
-    "org.apache.cordova.media-capture",
     {
       "locator": "https://github.com/crosswalk-project/cordova-plugin-crosswalk-webview.git",
       "id": "cordova-plugin-crosswalk-webview"
     },
     "cordova-plugin-network-information",
+    "cordova-plugin-file-transfer",
     {
       "locator": "https://github.com/katzer/cordova-plugin-local-notifications.git",
       "id": "de.appplant.cordova.plugin.local-notification"
+    },
+    "cordova-plugin-file",
+    "cordova-plugin-media-capture",
+    {
+      "locator": "https://github.com/wymsee/cordova-imagePicker.git",
+      "id": "com.synconset.imagepicker"
     }
   ],
   "cordovaPlatforms": [

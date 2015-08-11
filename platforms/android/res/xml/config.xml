@@ -23,6 +23,15 @@
     <feature name="Camera">
         <param name="android-package" value="org.apache.cordova.camera.CameraLauncher" />
     </feature>
+    <feature name="NetworkStatus">
+        <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
+    </feature>
+    <feature name="FileTransfer">
+        <param name="android-package" value="org.apache.cordova.filetransfer.FileTransfer" />
+    </feature>
+    <feature name="LocalNotification">
+        <param name="android-package" value="de.appplant.cordova.plugin.localnotification.LocalNotification" />
+    </feature>
     <feature name="File">
         <param name="android-package" value="org.apache.cordova.file.FileUtils" />
         <param name="onload" value="true" />
@@ -30,11 +39,8 @@
     <feature name="Capture">
         <param name="android-package" value="org.apache.cordova.mediacapture.Capture" />
     </feature>
-    <feature name="NetworkStatus">
-        <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
-    </feature>
-    <feature name="LocalNotification">
-        <param name="android-package" value="de.appplant.cordova.plugin.localnotification.LocalNotification" />
+    <feature name="ImagePicker">
+        <param name="android-package" value="com.synconset.ImagePicker" />
     </feature>
     <icon density="ldpi" src="resources/android/icon/ace_icon.png" />
     <icon density="mdpi" src="resources/android/icon/ace_icon.png" />
@@ -73,4 +79,5 @@
     <preference name="CROSSWALK_ANDROID_COMMANDLINE" value="––disable-pull-to-refresh-effect" />
     <preference name="LIB_MODE" value="embedded" />
     <preference name="CROSSWALK_ANDROID_VERSION" value="14+" />
+    <access origin="content:/*" />
 </widget>
