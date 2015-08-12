@@ -15,7 +15,8 @@ var Settings = function() {
 		displayedHistoryPoints: 100
 	};
 	this.general = {
-		notifications: true	
+		notifications: true,
+		units: "English"
 	};
 	this.language = "en";
 };

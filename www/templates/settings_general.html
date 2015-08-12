@@ -4,7 +4,14 @@
   </ion-nav-buttons>
   <ion-content>
     <ion-list>
-      <ion-toggle ng-model="generalSettings.notifications.checked" ng-change="notificationsChanged()">Sync Notifications</ion-toggle>    
+      <ion-toggle ng-model="generalSettings.notifications.checked" ng-change="notificationsChanged()">Sync Notifications</ion-toggle>
+      <div class="item">
+          Units:
+          <ion-radio ng-repeat="unit in unitsArray" ng-value="unit" ng-model="generalSettings.units" ng-change="unitsChanged()">
+              {{unit}}
+          </ion-radio>
+      </div>
+      
     </ion-list>
   </ion-content>
 </ion-view>

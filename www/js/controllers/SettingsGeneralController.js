@@ -56,8 +56,11 @@ angular.module('ace.controllers')
 	$scope.generalSettings = {
 		notifications: {
 			checked: true
-		}
+		},
+		units: "English"
 	};
+	
+	$scope.unitsArray = ["English", "Metric"];
 	
 	$scope.notificationsChanged = function() {
 		var settings = SettingsService.getSettings(window);
@@ -65,8 +68,16 @@ angular.module('ace.controllers')
 		SettingsService.updateSettings(window, settings);
 	};
 	
+	$scope.unitsChanged = function() {
+		var settings = SettingsService.getSettings(window);
+		settings.general.units = $scope.generalSettings.units;
+		SettingsService.updateSettings(window, settings);
+	};
+	
 	$scope.$on('$ionicView.beforeEnter', function() {
 		var settings = SettingsService.getSettings(window);
 		$scope.generalSettings.notifications.checked = settings.general.notifications;
+		$scope.generalSettings.units = settings.general.units;
+		
 	});
 });

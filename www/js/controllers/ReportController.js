@@ -149,7 +149,7 @@ angular.module('ace.controllers')
         notes.innerText = translations.NOTES + ":\n" + $scope.report.notes;
         
         var attachment = document.getElementById("sumcat8");
-        attachment.innerText = "Attachment: " + $scope.report.attachment; 
+        attachment.innerText = "Attachment: " + $scope.report.attachment.replace(/^.*[\\\/]/, ''); 
     });
     
     
@@ -972,8 +972,16 @@ angular.module('ace.controllers')
   // Open temperature modal
   $scope.openModal5 = function() {
       
-      // Select degrees C
-      $scope.surfaceTempModal.selectTemp = "C";
+      // Check settings and select units appropriately
+      var settings = SettingsService.getSettings(window);
+      if(settings.general.units === "English")
+      {
+          $scope.surfaceTempModal.selectTemp = "F";
+      }
+      else
+      {
+          $scope.surfaceTempModal.selectTemp = "C";
+      }
       
     $scope.modalHandler.openModal(document, $scope.surfaceTempModal);
     
@@ -1087,8 +1095,17 @@ angular.module('ace.controllers')
     }
     else
     {
-      // Default to the 1st value (knots) selected
-      document.getElementById("wind_sel_units").selectedIndex = 1;
+        // Check units settings and select units appropriately
+        var settings = SettingsService.getSettings(window);
+        if(settings.general.units === "English")
+        {
+            $scope.windModal.select1Temp = "m";
+        }
+        else if(settings.general.units === "Metric")
+        {
+            $scope.windModal.select1Temp = "k";
+        }
+      
     }
     
     // Handle any previous wind direction values
@@ -1295,6 +1312,10 @@ angular.module('ace.controllers')
         $scope.determineAttachmentType(uri, function(fileType) {
             $scope.cameraModal.tempAttachmentType = fileType;
         });
+        
+        // Display the attachment button
+        var btn = document.getElementById("openAttachmentButton");
+        btn.style.display = "block";
            
       }, function() {
         alert("error");
@@ -1345,6 +1366,10 @@ angular.module('ace.controllers')
         $scope.cameraModal.tempAttachment = mediaFiles[0].fullPath;
         // Save type
         $scope.cameraModal.tempAttachmentType = mediaFiles[0].type;
+        
+        // Display the attachment button
+        var btn = document.getElementById("openAttachmentButton");
+        btn.style.display = "block";
     }, function() {
         alert("error");
     }, {limit:1});
@@ -1362,7 +1387,11 @@ angular.module('ace.controllers')
                   
          // Initially set the tempAttachment
          $scope.cameraModal.tempAttachment = uri;
-        
+         
+         // Display the attachment button
+         var btn = document.getElementById("openAttachmentButton");
+         btn.style.display = "block";
+         
         // Determine attachment type
          $scope.determineAttachmentType(uri, function(fileType) {
              $scope.cameraModal.tempAttachmentType = fileType;
@@ -1376,11 +1405,17 @@ angular.module('ace.controllers')
   // Open the camera modal
   $scope.openModal8 = function() {
       $scope.cameraModal.show();
-      var img = document.getElementById("pic");
+      var btn = document.getElementById("openAttachmentButton");
       if($scope.report.attachment && $scope.report.attachment !== "")
       {      
           $scope.cameraModal.tempAttachment = $scope.report.attachment;
+          btn.style.margin = "auto";
       }     
+      else
+      {
+          btn.style.display = "none";
+      }
+      $scope.$apply();
   };
   
   // Close the camera modal
@@ -1398,6 +1433,12 @@ angular.module('ace.controllers')
   $scope.saveModal8 = function() {
       $scope.report.attachment = $scope.cameraModal.tempAttachment;
       $scope.report.attachmentType = $scope.cameraModal.tempAttachmentType;
+      
+      // Update the summary field
+      var summary = document.getElementById("camera_sum");
+      var fileName = $scope.report.attachment.replace(/^.*[\\\/]/, '');
+      summary.innerText = fileName;
+      
       this.closeModal8();
   };
 
