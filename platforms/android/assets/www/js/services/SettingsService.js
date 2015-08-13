@@ -6,7 +6,7 @@ angular.module('ace.services')
  * @class SettingsService
  * @constructor
  */
-.service('SettingsService', function() {
+.service('SettingsService', function(DataService, LocalStorageService) {
 	var settingsKey = "settings";
 	return {
 		/**
@@ -19,11 +19,20 @@ angular.module('ace.services')
 		 * @throws none
 		 */
 		getSettings: function(window) {
-			var localHandler = new LocalStorageUtil(window);
-			var settings = localHandler.get(settingsKey, null);
+			var settings = LocalStorageService.getItem("currentUser", {}, window).settings;
 			if(settings === null)
 			{
 				settings = new Settings();
+				
+				// Update the cached copy of the current user
+				var currentUser = LocalStorageService.getItem("currentUser", {}, window);
+				currentUser.settings = settings;
+				LocalStorageService.setItem("currentUser", currentUser, window);
+								
+				// Update the local mobile user (in data store)
+				DataService.remoteMobileUser_updateAll({id: currentUser.id}, currentUser, function(err, res) {
+					var i = 0;
+				});
 			}
 			return settings;
 		},
@@ -39,8 +48,14 @@ angular.module('ace.services')
 		 */
 		updateSettings: function(window, settings)
 		{
-			var localHandler = new LocalStorageUtil(window);
-			localHandler.set(settingsKey, settings);
+			var currentUser = LocalStorageService.getItem("currentUser", {}, window);
+			currentUser.settings = settings;
+			LocalStorageService.setItem("currentUser", currentUser, window);
+			
+			// Update the local mobile user (in data store)
+			DataService.remoteMobileUser_updateAll({id: currentUser.id}, currentUser, function(err, res) {
+				var i = 0;
+			});
 		}
 	};
 });

@@ -115,7 +115,7 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
-	this.camera = "";
+	this.attachment = "";
 	
 	/**
 	 * Other (Aurora Borealis or Tornado)
@@ -138,6 +138,6 @@ WeatherReport.prototype.importSqlRow = function(sqlRow) {
 	this.windUnits = sqlRow.windUnits;
 	this.windDirection = sqlRow.windDirection;
 	this.notes = sqlRow.notes;
-	this.camera = sqlRow.camera;
+	this.attachment = sqlRow.camera;
 	this.other = sqlRow.other;	
 };

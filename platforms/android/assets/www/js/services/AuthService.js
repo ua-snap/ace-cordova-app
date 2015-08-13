@@ -13,7 +13,7 @@ angular.module('ace.services')
  * @class AuthService
  * @constructor
  */
-.service('AuthService', function($http, DataService, DbService, LocalStorageService, WebApiService) {    
+.service('AuthService', function($http, DataService, DbService, LocalStorageService, WebApiService, SettingsService) {    
 	return {
         /**
          * Function logs in the user with the credentials passed in the "name" and "pw" variables.  Note that 
@@ -50,7 +50,7 @@ angular.module('ace.services')
             DataService.remoteMobileUser_login(credentials, ['user'], function(err, res) {
                 if(res)
                 {
-                    // Save only current user on this side...
+                    // Save current user (including user settings)
                     LocalStorageService.setItem("currentUser", res.user, window);
                     
                     // Save access token for use in file upload functions
@@ -73,7 +73,8 @@ angular.module('ace.services')
                            LocalStorageService.setItem("groupName", result.__data.name, window);
                            
                            // SYNC 
-                           DataService.sync();                           
+                           var settings = SettingsService.getSettings(window);
+                           DataService.sync(null, settings.general.notifications);                           
                        }                       
                        else if(err)
                        {

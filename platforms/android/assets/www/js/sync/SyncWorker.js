@@ -267,15 +267,26 @@ self.onmessage = function(message) {
 	else if(msg.req === "localweatherreport.create") {
 		(function(id) {
 			window.client.models.LocalWeatherReport.create(msg.params, function(err, res) {
+				var report = res;
+				var errCpy = err;
 				if(res)
 				{
-					var args = [err, res.toJSON()];
-					var returnMsg = {
-						cbId: id,
-						args: args
+					report = res.toJSON();
+				}	
+				else if(err)
+				{
+					errCpy = {
+						message: err.message,
+						stack: err.stack.toString()
 					};
-					self.postMessage(returnMsg);
-				}				
+				}
+				
+				var args = [errCpy, report];
+				var returnMsg = {
+					cbId: id,
+					args: args
+				};
+				self.postMessage(returnMsg);			
 			});
 		})(msg.cbId);
 	}
@@ -353,7 +364,7 @@ self.onmessage = function(message) {
 	}
 	else if(msg.req === "localweatherreport.updateall") {
 		(function(id) {
-			window.client.models.LocalWeatherReport.update(msg.filter, msg.params, function(err, res) {
+			window.client.models.LocalWeatherReport.updateAll(msg.filter, msg.params, function(err, res) {
 				var returnMsg = {
 					cbId: id,
 					args: [err, res]
@@ -362,4 +373,86 @@ self.onmessage = function(message) {
 			});
 		})(msg.cbId);
 	}
+	else if(msg.req === "localsettings.find") {
+		(function(id) {
+			window.client.models.LocalSettings.find(msg.filter, function(err, res) {
+				var settingsArray = [];
+				for(var i = 0; i < res.length; i++)
+				{
+					settingsArray.push(res[i].toJSON());
+				}
+				var args = [err, settingsArray];
+				var returnMsg = {
+					cbId: id,
+					args: args
+				};
+				self.postMessage(returnMsg);
+			});			
+		})(msg.cbId);
+	}
+	else if(msg.req === "localsettings.updateall") {
+		(function(id) {
+			window.client.models.LocalSettings.updateAll(msg.filter, msg.params, function(err, res) {
+				var returnMsg = {
+					cbId: id,
+					args: [err, res]
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "localsettings.upsert") {
+		(function(id) {
+			window.client.models.LocalSettings.upsert(msg.params, function(err, res) {
+				var settings;
+				if(res)
+				{
+					settings = res.toJSON();
+				}
+				var returnMsg = {
+					cbId: id,
+					args: [err, settings]
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "localmobileuser.updateall") {
+		(function(id) {
+			window.client.models.LocalMobileUser.updateAll(msg.filter, msg.params, function(err, res) {
+				var returnMsg = {
+					cbId: id,
+					args: [err, res]
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "localmobileuser.upsert") {
+		(function(id) {
+			window.client.models.LocalMobileUser.upsert(msg.params, function(err, res) {
+				var user;
+				if(res)
+				{
+					user = res.toJSON();
+				}
+				var returnMsg = {
+					cbId: id,
+					args: [err, user]
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "remotemobileuser.updateall") {
+		(function(id) {
+			window.client.models.RemoteMobileUser.updateAll(msg.filter, msg.params, function(err, res) {
+				var returnMsg = {
+					cbId: id,
+					args: [err, res]
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}	
 }

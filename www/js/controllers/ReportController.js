@@ -52,7 +52,8 @@ angular.module('ace.controllers')
         if(window.navigator.connection.type !== "none")
         {
             // Online so attempt to sync
-            DataService.sync();
+            var settings = SettingsService.getSettings(window);
+            DataService.sync(null, settings.general.notifications);
         }        
     }, 30000);
     
@@ -66,7 +67,8 @@ angular.module('ace.controllers')
     
     // Setup to sync whenever you come online from being offline
     document.addEventListener("online", function() {
-        DataService.sync();
+        var settings = SettingsService.getSettings(window);
+        DataService.sync(null, settings.general.notifications);
     }, false)
     
   });
@@ -246,37 +248,19 @@ angular.module('ace.controllers')
                         })(res.id, fileName);
                         
                     }
-                    
+                    var settings = SettingsService.getSettings(window);
                     DataService.sync(function(model) {
                         if(model === "report")
                         {
                             $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
                         }
-                    });
+                    }, settings.general.notifications);
                 }
                 else {
                     $ionicLoading.show({template: 'Report saved locally (will be uploaded once internet connection is re-established)', noBackdrop: true, duration: 1500});
                 }
             });
-        });
-        /*window.client.models.LocalPosition.create(localPos, function(err, res) {
-            var position = res.toJSON();
-            tempReport.positionId = position.id;
-            tempReport.userId = position.userId;
-           window.client.models.LocalWeatherReport.create(tempReport, function(err, res) {
-               if(window.navigator.connection.type !== "none") {
-                   window.client.sync(function() {
-                        $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
-                    });
-               }
-               else
-               {
-                   $ionicLoading.show({template: 'Report saved locally (will be uploaded once internet connection is re-established)', noBackdrop: true, duration: 1500});
-               }
-               
-           }); 
-        });*/
-        
+        });        
     });
     
     // Clear all entered data
@@ -365,13 +349,13 @@ angular.module('ace.controllers')
     //DbService.createTables(window);
     
     // Grab and set settings
-    var localHandler = new LocalStorageUtil(window);
+    /*var localHandler = new LocalStorageUtil(window);
     var settings = localHandler.get("settings", null);
     if(settings === null)
     {
       settings = new Settings();
       localHandler.set("settings", settings);
-    }
+    }*/
   };
   
   // Additional Options
