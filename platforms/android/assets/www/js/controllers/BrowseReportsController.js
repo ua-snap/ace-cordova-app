@@ -13,7 +13,7 @@
   */
 angular.module('ace.controllers')
 
-.controller('BrowseReportsController', function($scope, $ionicLoading, SettingsService, $ionicSideMenuDelegate, GeoService, $ionicHistory, $state, DataService, LocalStorageService, DbService, DataShareService) {
+.controller('BrowseReportsController', function($scope, $ionicListDelegate, $ionicLoading, SettingsService, $ionicSideMenuDelegate, GeoService, $ionicHistory, $state, DataService, LocalStorageService, DbService, DataShareService) {
   
   // Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
@@ -22,17 +22,13 @@ angular.module('ace.controllers')
 		$ionicSideMenuDelegate.canDragContent(false);
 	});
 	
-	// Ensure that the reports info is correct when the view is FIRST displayed.
-	$scope.$on('$ionicView.beforeEnter', function() {
-		// Set up reports item
-		/*DbService.getReportsAndPositions(window, function(reports) {
-			for(var i = 0; i < reports.length; i++)
-			{
-				reports[i].date = new Date(reports[i].position.timestamp);
-			}
-			$scope.reports = reports;
-		});*/
-		DataService.localWeatherReport_find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).id}}, function(err, res) {
+	// Function called from pull to refresh
+	$scope.doRefresh = function() {
+		$scope.refresh();
+	};
+	
+	$scope.refresh = function() {
+			DataService.localWeatherReport_find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).id}}, function(err, res) {
 			// Get the associated positions
 			var reportArray = res;
 			var positionIdArray = [];
@@ -50,10 +46,19 @@ angular.module('ace.controllers')
 				{
 					reportArray[i].date = positionMap[reportArray[i].positionId].timestamp;
 				}
-				$scope.reports = reportArray;	
-				$scope.$apply;			
+				$scope.$apply(function() {
+					$scope.reports = reportArray;
+					$scope.$broadcast('scroll.refreshComplete');	
+				});		
 			});
-		})
+		});
+	};
+	
+	// Ensure that the reports info is correct when the view is FIRST displayed.
+	$scope.$on('$ionicView.beforeEnter', function() {
+		// Set up reports item
+		$scope.refresh();
+
 	});
 	
 	$scope.reports = [];
@@ -95,8 +100,11 @@ angular.module('ace.controllers')
  	};
 	 
 	 $scope.resendClicked = function(report) {
+		// Close the opened option button
+		$ionicListDelegate.closeOptionButtons();
+		 
 		// Get report info
-		var newReport = report;
+		var newReport = JSON.parse(JSON.stringify(report));
 		
 		// Remove position, temporary date info, and id
 		delete newReport.positionId;
@@ -137,7 +145,7 @@ angular.module('ace.controllers')
                             $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
 							
 							// Refresh the view
-							$scope.$apply;
+							$scope.refresh();
                         }
                     }, settings.general.notifications);
 				});

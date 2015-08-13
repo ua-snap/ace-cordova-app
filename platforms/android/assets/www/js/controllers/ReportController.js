@@ -46,7 +46,7 @@ angular.module('ace.controllers')
         GeoService.enableTracking(settings.gps.trackingInterval);
     }    
     
-    // Turn auto-upload back on (30 second interval)
+    // Turn auto-upload back on (60 second interval)
     window.thread_messenger.syncTimer = window.setInterval(function() {
         // Check online state
         if(window.navigator.connection.type !== "none")
@@ -55,7 +55,7 @@ angular.module('ace.controllers')
             var settings = SettingsService.getSettings(window);
             DataService.sync(null, settings.general.notifications);
         }        
-    }, 30000);
+    }, 60000);
     
     // Ensure permission to add notifications
     window.plugin.notification.local.hasPermission(function(granted) {
@@ -275,6 +275,7 @@ angular.module('ace.controllers')
     $scope.windModal.clearData();
     $scope.notesModal.clearData();
     $scope.otherModal.clearData();
+    $scope.cameraModal.clearData();
     
     // Hide the popover
     $scope.submitPopover.hide();
@@ -1260,6 +1261,15 @@ angular.module('ace.controllers')
       animation: 'slide-in-up',
   }).then(function(modal) {
       $scope.cameraModal = modal;
+      
+      // Clear function
+      $scope.cameraModal.clearData = function() {
+          var summary = document.getElementById("camera_sum");
+          summary.innerText = "______";
+          
+          delete $scope.cameraModal.tempAttachment;
+          delete $scope.cameraModal.tempAttachmentType
+      };
   });
   
   // Launch an intent to open the attachment

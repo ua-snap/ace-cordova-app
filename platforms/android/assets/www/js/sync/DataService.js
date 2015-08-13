@@ -174,11 +174,11 @@ angular.module('ace.services')
 			}
 			else
 			{
-				// Reset the syncCounter (in the case of an exceptionally long sync)
-				window.thread_messenger.syncounter = 0;
-				
 				// Set syncing indicator
 				window.thread_messenger.syncing = true;
+				
+				// Reset the syncCounter (in the case of an exceptionally long sync)
+				window.thread_messenger.syncounter = 0;				
 				
 				if(notification)
 				{
