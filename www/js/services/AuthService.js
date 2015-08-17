@@ -47,56 +47,111 @@ angular.module('ace.services')
             
             DataService.initialize();
             
-            DataService.remoteMobileUser_login(credentials, ['user'], function(err, res) {
-                if(res)
-                {
-                    // Save current user (including user settings)
-                    LocalStorageService.setItem("currentUser", res.user, window);
-                    
-                    // Save access token for use in file upload functions
-                    LocalStorageService.setItem("access_token", res.id, window);
-                    
-                    // Retrieve an array of the id's for users in the current group
-                    var filter = {where: {id: res.user.groupId}, include: "MobileUsers"};
-                    DataService.remoteGroup_findOne(filter, function(err, result) {
-                       if(result)
-                       {
-                           var groupUsersIdArray = [];
-                           var groupUsers = result.__unknownProperties.MobileUsers;
-                           for(var i = 0; i < groupUsers.length; i++)
-                           {
-                               groupUsersIdArray.push(groupUsers[i].id);
-                           }
-                           LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
-                           
-                           // Save group name (to be used when uploading to group containers)
-                           LocalStorageService.setItem("groupName", result.__data.name, window);
-                           
-                           // SYNC 
-                           var settings = SettingsService.getSettings(window);
-                           DataService.sync(null, settings.general.notifications);                           
-                       }                       
-                       else if(err)
-                       {
-                           alert(err);
-                       }
-                       
-                   });
-                    
-                    if(successCallback)
+            // Check offline/online
+            if(window.navigator.connection.type !== "none")
+            {
+                DataService.remoteMobileUser_login(credentials, ['user'], function(err, res) {
+                    if(res)
                     {
-                        successCallback.call(this, res);
+                        // Save current user (including user settings)
+                        LocalStorageService.setItem("currentUser", res.user, window);
+                        
+                        // Save access token for use in file upload functions
+                        LocalStorageService.setItem("access_token", res.id, window);
+                        
+                        // Retrieve an array of the id's for users in the current group
+                        var filter = {where: {id: res.user.groupId}, include: "MobileUsers"};
+                        DataService.remoteGroup_findOne(filter, function(err, result) {
+                        if(result)
+                        {
+                            var groupUsersIdArray = [];
+                            var groupUsers = result.__unknownProperties.MobileUsers;
+                            for(var i = 0; i < groupUsers.length; i++)
+                            {
+                                groupUsersIdArray.push(groupUsers[i].id);
+                            }
+                            LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
+                            
+                            // Save group name (to be used when uploading to group containers)
+                            LocalStorageService.setItem("groupName", result.__data.name, window);
+                            
+                            // SYNC 
+                            var settings = SettingsService.getSettings(window);
+                            DataService.sync(null, settings.general.notifications);                           
+                        }                       
+                        else if(err)
+                        {
+                            alert(err);
+                        }
+                        
+                    });
+                        
+                        if(successCallback)
+                        {
+                            successCallback.call(this, res);
+                        }
                     }
-                }
-                else
-                {
-                    if(errorCallback)
+                    else
                     {
-                        errorCallback.call(this, res);
+                        if(errorCallback)
+                        {
+                            errorCallback.call(this, res);
+                        }
                     }
-                }
-                
-            });
+                    
+                });
+            }
+            else
+            {
+                // Offline login
+                DataService.localMobileUser_login(credentials, ['user'], function(err, res) {
+                    if(res)
+                    {
+                        // Save current user (including user settings)
+                        LocalStorageService.setItem("currentUser", res.user, window);
+                        
+                        // No access token to save
+                        
+                        // Retrieve an array of the id's for users in the current group
+                        var filter = {where: {id: res.user.groupId}};
+                        DataService.localGroup_findOne(filter, function(err, result) {
+                            // Save group name (to be used when uploading to group containers)
+                            LocalStorageService.setItem("groupName", result.__data.name, window);
+                            // Get the users in the group
+                            DataService.localMobileUser_find({where: {groupId: result.__data.id}}, function(err, result) {
+                                if(result)
+                                {
+                                    var groupUsersIdArray = [];
+                                    var groupUsers = result;
+                                    for(var i = 0; i < groupUsers.length; i++)
+                                    {
+                                        groupUsersIdArray.push(groupUsers[i].id);
+                                    }
+                                    LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
+                                }
+                                 else if(err)
+                                {
+                                    alert(err);
+                                }
+                            });                       
+                        });
+                        
+                        if(successCallback)
+                        {
+                            successCallback.call(this, res);
+                        }
+                    }
+                    else
+                    {
+                        if(errorCallback)
+                        {
+                            errorCallback.call(this, res);
+                        }
+                    }
+                });
+            }
+            
+            
             
             /*RemoteMobileUser.login(credentials, ['user'], function(err, res) {
                if(res)

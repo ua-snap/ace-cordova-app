@@ -46,15 +46,16 @@ angular.module('ace.controllers')
         GeoService.enableTracking(settings.gps.trackingInterval);
     }    
     
-    // Turn auto-upload back on (30 second interval)
+    // Turn auto-upload back on (60 second interval)
     window.thread_messenger.syncTimer = window.setInterval(function() {
         // Check online state
         if(window.navigator.connection.type !== "none")
         {
             // Online so attempt to sync
-            DataService.sync();
+            var settings = SettingsService.getSettings(window);
+            DataService.sync(null, settings.general.notifications);
         }        
-    }, 30000);
+    }, 60000);
     
     // Ensure permission to add notifications
     window.plugin.notification.local.hasPermission(function(granted) {
@@ -66,7 +67,8 @@ angular.module('ace.controllers')
     
     // Setup to sync whenever you come online from being offline
     document.addEventListener("online", function() {
-        DataService.sync();
+        var settings = SettingsService.getSettings(window);
+        DataService.sync(null, settings.general.notifications);
     }, false)
     
   });
@@ -148,7 +150,8 @@ angular.module('ace.controllers')
         var notes = document.getElementById("sumcat7");
         notes.innerText = translations.NOTES + ":\n" + $scope.report.notes;
         
-        var pic = document.getElementById("sumcat8");
+        var attachment = document.getElementById("sumcat8");
+        attachment.innerText = "Attachment: " + $scope.report.attachment.replace(/^.*[\\\/]/, ''); 
     });
     
     
@@ -188,6 +191,7 @@ angular.module('ace.controllers')
         
         // Create the local position
         DataService.localPosition_create(localPos, function(err, res) {
+            // Add position data to report
             var position = res;
             tempReport.positionId = position.id;
             tempReport.userId = position.userId;
@@ -195,36 +199,68 @@ angular.module('ace.controllers')
             // Create weather report
             DataService.localWeatherReport_create(tempReport, function(err, res) {
                 if(window.navigator.connection.type !== "none") {
+                    
+                    // Upload attachment file if there is one
+                    if(tempReport.attachment && tempReport.attachment !== "")
+                    {
+                        // Need to handle attachment
+                        
+                        // Create new url string
+                        var uploadUrl = "https://ace-api-dev.herokuapp.com/api/containers/" + LocalStorageService.getItem("groupName", "null", window) + "/upload";
+                        
+                        // Create upload call
+                        // Set up options
+                        var options = {
+                            headers: {},
+                        };
+                        options.headers['authorization'] = LocalStorageService.getItem("access_token", "", window);
+                        
+                        // Grab the file name
+                        var fileName = tempReport.attachment.replace(/^.*[\\\/]/, '');
+                        
+                        // Can use file without adding type qualifier
+                        if(fileName.indexOf(".") !== -1)
+                        {
+                            options.fileName = fileName;
+                        }
+                        else
+                        {
+                            options.fileName = fileName + "." + tempReport.attachmentType.substr(tempReport.attachmentType.lastIndexOf("/") + 1);
+                        }
+                        
+                        // Mime type
+                        options.mimeType = tempReport.attachmentType;
+                        
+                        // Closure to persist report id
+                        (function(reportId, fName) {
+                            var fileTransfer = new FileTransfer();
+                            fileTransfer.upload(tempReport.attachment, encodeURI(uploadUrl), function(response) {                            
+                                // Upload successful
+                                // Create url
+                                var url = "https://ace-api-dev.herokuapp.com/api/Containers/" + LocalStorageService.getItem("groupName", "", window) + "/download/" + fName;
+                                DataService.localWeatherReport_updateAll({id: res.id}, {attachment: url}, function(err, res) {
+                                    if(err) console.log(err);
+                                });
+                            }, function(error) {
+                                // Upload failed
+                                console.log(error);
+                            }, options);
+                        })(res.id, fileName);
+                        
+                    }
+                    var settings = SettingsService.getSettings(window);
                     DataService.sync(function(model) {
                         if(model === "report")
                         {
                             $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
                         }
-                    });
+                    }, settings.general.notifications);
                 }
                 else {
                     $ionicLoading.show({template: 'Report saved locally (will be uploaded once internet connection is re-established)', noBackdrop: true, duration: 1500});
                 }
             });
-        });
-        /*window.client.models.LocalPosition.create(localPos, function(err, res) {
-            var position = res.toJSON();
-            tempReport.positionId = position.id;
-            tempReport.userId = position.userId;
-           window.client.models.LocalWeatherReport.create(tempReport, function(err, res) {
-               if(window.navigator.connection.type !== "none") {
-                   window.client.sync(function() {
-                        $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
-                    });
-               }
-               else
-               {
-                   $ionicLoading.show({template: 'Report saved locally (will be uploaded once internet connection is re-established)', noBackdrop: true, duration: 1500});
-               }
-               
-           }); 
-        });*/
-        
+        });        
     });
     
     // Clear all entered data
@@ -239,6 +275,7 @@ angular.module('ace.controllers')
     $scope.windModal.clearData();
     $scope.notesModal.clearData();
     $scope.otherModal.clearData();
+    $scope.cameraModal.clearData();
     
     // Hide the popover
     $scope.submitPopover.hide();
@@ -313,13 +350,13 @@ angular.module('ace.controllers')
     //DbService.createTables(window);
     
     // Grab and set settings
-    var localHandler = new LocalStorageUtil(window);
+    /*var localHandler = new LocalStorageUtil(window);
     var settings = localHandler.get("settings", null);
     if(settings === null)
     {
       settings = new Settings();
       localHandler.set("settings", settings);
-    }
+    }*/
   };
   
   // Additional Options
@@ -920,8 +957,16 @@ angular.module('ace.controllers')
   // Open temperature modal
   $scope.openModal5 = function() {
       
-      // Select degrees C
-      $scope.surfaceTempModal.selectTemp = "C";
+      // Check settings and select units appropriately
+      var settings = SettingsService.getSettings(window);
+      if(settings.general.units === "English")
+      {
+          $scope.surfaceTempModal.selectTemp = "F";
+      }
+      else
+      {
+          $scope.surfaceTempModal.selectTemp = "C";
+      }
       
     $scope.modalHandler.openModal(document, $scope.surfaceTempModal);
     
@@ -1035,8 +1080,17 @@ angular.module('ace.controllers')
     }
     else
     {
-      // Default to the 1st value (knots) selected
-      document.getElementById("wind_sel_units").selectedIndex = 1;
+        // Check units settings and select units appropriately
+        var settings = SettingsService.getSettings(window);
+        if(settings.general.units === "English")
+        {
+            $scope.windModal.select1Temp = "m";
+        }
+        else if(settings.general.units === "Metric")
+        {
+            $scope.windModal.select1Temp = "k";
+        }
+      
     }
     
     // Handle any previous wind direction values
@@ -1207,31 +1261,155 @@ angular.module('ace.controllers')
       animation: 'slide-in-up',
   }).then(function(modal) {
       $scope.cameraModal = modal;
+      
+      // Clear function
+      $scope.cameraModal.clearData = function() {
+          var summary = document.getElementById("camera_sum");
+          summary.innerText = "______";
+          
+          delete $scope.cameraModal.tempAttachment;
+          delete $scope.cameraModal.tempAttachmentType
+      };
   });
+  
+  // Launch an intent to open the attachment
+  $scope.openAttachment = function() {
+      var dataType = "";
+      if($scope.cameraModal.tempAttachment.indexOf("jpg") !== -1)
+      {
+          dataType = "image/jpg";
+      }
+      else if($scope.cameraModal.tempAttachment.indexOf("mp4") !== -1)
+      {
+          dataType = "video/mp4";
+      }
+      else
+      {
+          dataType = "image/png";
+      }
+      
+      // Start intent
+      window.plugins.webintent.startActivity({
+          action: window.plugins.webintent.ACTION_VIEW,
+          url: $scope.cameraModal.tempAttachment,
+          type: dataType
+      }, function() {}, function(err) {alert(err);});
+  };
   
   // Take a picture
   $scope.takePic = function() {
-    navigator.device.capture.captureImage(function(mediaFiles) {
-      var image = document.getElementById("modal9preview");
-      image.src = mediaFiles[0].fullPath;
-      alert(mediaFiles[0].name);
-      
-      }, function() {alert("error");}, {limit:1});
+    navigator.camera.getPicture(function(uri) {
+        // Store uri
+        $scope.cameraModal.tempAttachment = uri;   
+        
+        // Get type
+        $scope.determineAttachmentType(uri, function(fileType) {
+            $scope.cameraModal.tempAttachmentType = fileType;
+        });
+        
+        // Display the attachment button
+        var btn = document.getElementById("openAttachmentButton");
+        btn.style.display = "block";
+           
+      }, function() {
+        alert("error");
+      }, {limit:1});
+  };
+  
+  $scope.determineAttachmentType = function(uri, cb) {
+    // Get the file type
+    
+    // First, check uri for .jpg or equivalent
+    var fileType = uri.substring(uri.lastIndexOf("."));
+    if(fileType && fileType.indexOf(".") !== -1)
+    {
+        if(fileType === ".jpg")
+        {
+            fileType = "image/jpg";
+        }
+        else if(fileType === ".png")
+        {
+            fileType = "image/png";
+        }
+        else if(fileType === ".mp4")
+        {
+            fileType = "video/mp4";
+        }
+        if(cb)
+        {
+            cb.call(this, fileType);
+        }
+    }
+    else
+    {
+        // Lookup the file
+        window.resolveLocalFileSystemURL(uri, function(fileEntry) {
+            fileEntry.file(function(file) {
+               cb.call(this, file.type);
+            });
+        }, function(err) {
+            console.log(err);
+        });
+    }
   };
   
   // Take a video
   $scope.takeVid = function() {
-    navigator.device.capture.captureVideo(function() {alert("success");}, function() {alert("error");}, {limit:1});
+    navigator.device.capture.captureVideo(function(mediaFiles) {
+        // Store path
+        $scope.cameraModal.tempAttachment = mediaFiles[0].fullPath;
+        // Save type
+        $scope.cameraModal.tempAttachmentType = mediaFiles[0].type;
+        
+        // Display the attachment button
+        var btn = document.getElementById("openAttachmentButton");
+        btn.style.display = "block";
+    }, function() {
+        alert("error");
+    }, {limit:1});
   };
   
   // Select a picture from the file browser
   $scope.selectPic = function() {
-    navigator.camera.getPicture(function() {alert("success");}, function() {alert("error");}, {quality: 50, destinationType: Camera.DestinationType.FILE_URI, sourceType: Camera.PictureSourceType.PHOTOLIBRARY})
+      navigator.camera.getPicture(function(uri) {
+         // Dirty workaround for kitkat document content uri bug
+         var photo_split;
+         if(uri.substring(0, 21) === "content://com.android") {
+             photo_split = uri.split("%3A");
+             uri = "content://media/external/images/media/" + photo_split[1];
+         }
+                  
+         // Initially set the tempAttachment
+         $scope.cameraModal.tempAttachment = uri;
+         
+         // Display the attachment button
+         var btn = document.getElementById("openAttachmentButton");
+         btn.style.display = "block";
+         
+        // Determine attachment type
+         $scope.determineAttachmentType(uri, function(fileType) {
+             $scope.cameraModal.tempAttachmentType = fileType;
+         });
+         
+      }, function(err) {
+          alert(err);
+      }, {destinationType: Camera.DestinationType.FILE_URI, sourceType: Camera.PictureSourceType.PHOTOLIBRARY});
   };
   
   // Open the camera modal
   $scope.openModal8 = function() {
       $scope.cameraModal.show();
+      var btn = document.getElementById("openAttachmentButton");
+      if($scope.report.attachment && $scope.report.attachment !== "")
+      {      
+          $scope.cameraModal.tempAttachment = $scope.report.attachment;
+          btn.style.margin = "auto";
+      }     
+      else
+      {
+          btn.style.display = "none";
+      }
+      $scope.$apply();
   };
   
   // Close the camera modal
@@ -1241,11 +1419,20 @@ angular.module('ace.controllers')
   
   // Function called when user presses cancel on modal8
   $scope.cancelModal8 = function() {
+      $scope.cameraModal.tempAttachment = "";
       this.closeModal8();
   };
 
   // Function called when user presses save on modal8
   $scope.saveModal8 = function() {
+      $scope.report.attachment = $scope.cameraModal.tempAttachment;
+      $scope.report.attachmentType = $scope.cameraModal.tempAttachmentType;
+      
+      // Update the summary field
+      var summary = document.getElementById("camera_sum");
+      var fileName = $scope.report.attachment.replace(/^.*[\\\/]/, '');
+      summary.innerText = fileName;
+      
       this.closeModal8();
   };
 

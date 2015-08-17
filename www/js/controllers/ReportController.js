@@ -65,7 +65,7 @@ angular.module('ace.controllers')
         }
     });
     
-    // Setup to sync whenever you come online from being offline
+    // Setup to to perform when going online from being offline
     document.addEventListener("online", function() {
         var settings = SettingsService.getSettings(window);
         DataService.sync(null, settings.general.notifications);

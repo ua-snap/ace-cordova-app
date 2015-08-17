@@ -72,6 +72,7 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
+    <access origin="content:/*" />
     <preference name="webviewbounce" value="false" />
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
@@ -82,5 +83,4 @@
     <preference name="CROSSWALK_ANDROID_COMMANDLINE" value="––disable-pull-to-refresh-effect" />
     <preference name="LIB_MODE" value="embedded" />
     <preference name="CROSSWALK_ANDROID_VERSION" value="14+" />
-    <access origin="content:/*" />
 </widget>

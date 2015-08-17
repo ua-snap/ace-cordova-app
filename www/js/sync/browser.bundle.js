@@ -33351,147 +33351,111 @@ Memory.prototype.collectionSeq = function(model, val) {
 };
 
 Memory.prototype.loadFromFile = function(callback) {
-	  var self = this;
-	  var hasLocalStorage = typeof window !== 'undefined' && window.localStorage;
-	  var localStorage = hasLocalStorage && this.settings.localStorage;
-	
-	  if (self.settings.file) {
-	    fs.readFile(self.settings.file, {encoding: 'utf8', flag: 'r'}, function (err, data) {
-	      if (err && err.code !== 'ENOENT') {
-	        callback && callback(err);
-	      } else {
-	        parseAndLoad(data);
-	      }
-	    });
-	  } else if(localStorage) {
-	    if(!window.localPouchDb)
-	    {
-	      window.localPouchDb = new PouchDB('pouch-db');
-	    }
-	    //var data = window.localStorage.getItem(localStorage);
-	    var data = undefined;
-	    window.localPouchDb.get(localStorage).then(function(doc) {
-		  //alert('get returned successful');
-	      data = doc.data;	
-		  parseAndLoad(data);	
-	    }).catch(function(err) {
-			//alert('get returned error');
-			console.log(err);
-			data = {};
-			parseAndLoad(data);	
-		});	
+	  	var self = this;
+		var hasLocalStorage = typeof window !== 'undefined' && window.localStorage;
+		var localStorage = hasLocalStorage && this.settings.localStorage;
 		
-	  } else {
-	    process.nextTick(callback);
-	  }
-	
-	  function parseAndLoad(data) {
-	    if (data) {
-	      /*try {
-	        data = JSON.parse(data.toString());
-	      } catch(e) {
-	        return callback(e);
-	      }*/
-	
-	      self.ids = data.ids || {};
-	      self.cache = data.models || {};
-	    } else {
-	      if(!self.cache) {
-	        self.ids = {};
-	        self.cache = {};
-	      }
-	    }
-	    callback && callback();
-	  }
-	};
-
-/*!
- * Flush the cache into the json file if necessary
- * @param {Function} callback
- */
-Memory.prototype.saveToFile = function (result, callback) {
-	  var self = this;
-	  var file = this.settings.file;
-	  var hasLocalStorage = typeof window !== 'undefined' && window.localStorage;
-	  var localStorage = hasLocalStorage && this.settings.localStorage;
-	  if (file) {
-	    if(!self.writeQueue) {
-	      // Create a queue for writes
-	      self.writeQueue = async.queue(function (task, cb) {
-	        // Flush out the models/ids
-	        var data = JSON.stringify({
-	          ids: self.ids,
-	          models: self.cache
-	        }, null, '  ');
-	
-	        fs.writeFile(self.settings.file, data, function (err) {
-	          cb(err);
-	          task.callback && task.callback(err, task.data);
-	        });
-	      }, 1);
-	    }
-	    // Enqueue the write
-	    self.writeQueue.push({
-	      data: result,
-	      callback: callback
-	    });
-	  } else if (localStorage) {
-	    // Flush out the models/ids
-	    /*var data = JSON.stringify({
-	      ids: self.ids,
-	      models: self.cache
-	    }, null, '  ');*/
-		var data = {
-			ids: self.ids,
-			models: self.cache
-		};
-		
-
-		// always in worker thread
-		if(!window.localPouchDb)
-	    {
-	      window.localPouchDb = new PouchDB('pouch-db');
+		if (self.settings.file) {
+			fs.readFile(self.settings.file, {encoding: 'utf8', flag: 'r'}, function (err, data) {
+			if (err && err.code !== 'ENOENT') {
+				callback && callback(err);
+			} else {
+				parseAndLoad(data);
+			}
+			});
+		} else if(localStorage) {
+			var data = window.localStorage.getItem(localStorage);
+			data = data || '{}';
+			parseAndLoad(data);			
+			/*if(window.saveWorkerPort)
+			{
+				window.saveWorkerPort.postMessage({req: "load"});
+				window.saveWorkerPort.onmessage = function(message) {
+					self.ids = message.data.ids || {};
+					self.cache = message.data.cache || {};
+					callback && callback();
+				};
+			} */   
+		} else {
+			process.nextTick(callback);
 		}
 		
-		window.localPouchDb.upsert(localStorage, function(doc) {
-			doc.data = data;
-			return doc;			
-		}).catch(function(err) {
-			console.log(err);
-			var newDoc = {
-				_id: localStorage,
-				data: data
-			};
-			window.localPouchDb.putIfNotExists(newDoc);
-		});
-		
-		
-		/*window.localPouchDb.get(localStorage).then(function(doc) {
-			data._rev = doc._rev;
-			data._id = localStorage;
-			window.localPouchDb.put(data).then(function(res) {
-				console.log("successful insert");
-			}).catch(function(err) {
-				throw err;
-			});
-		}).catch(function(err) {
-			// If this is the first time the database document is requested, call put with no rev field
-			if(err.status === 404 && err.name === "not_found" && err.reason === "missing")
-			{
-				data._id = localStorage;
-				window.localPouchDb.put(data);
+		function parseAndLoad(data) {
+			if (data) {
+			try {
+				data = JSON.parse(data.toString());
+			} catch(e) {
+				return callback(e);
 			}
-		});*/
 		
-	    //window.localStorage.setItem(localStorage, data);
-	    process.nextTick(function () {
-	      callback && callback(null, result);
-	    });
-	  } else {
-	    process.nextTick(function () {
-	      callback && callback(null, result);
-	    });
-	  }
+			self.ids = data.ids || {};
+			self.cache = data.models || {};
+			} else {
+			if(!self.cache) {
+				self.ids = {};
+				self.cache = {};
+			}
+			}
+			callback && callback();
+		}
+		};
+	
+	/*!
+	 * Flush the cache into the json file if necessary
+	 * @param {Function} callback
+	 */
+	Memory.prototype.saveToFile = function (result, callback) {
+		var self = this;
+		var file = this.settings.file;
+		var hasLocalStorage = typeof window !== 'undefined' && window.localStorage;
+		var localStorage = hasLocalStorage && this.settings.localStorage;
+		if (file) {
+			if(!self.writeQueue) {
+			// Create a queue for writes
+			self.writeQueue = async.queue(function (task, cb) {
+				// Flush out the models/ids
+				var data = JSON.stringify({
+				ids: self.ids,
+				models: self.cache
+				}, null, '  ');
+		
+				fs.writeFile(self.settings.file, data, function (err) {
+				cb(err);
+				task.callback && task.callback(err, task.data);
+				});
+			}, 1);
+			}
+			// Enqueue the write
+			self.writeQueue.push({
+			data: result,
+			callback: callback
+			});
+		} else if (localStorage) {
+			// Flush out the models/ids
+			/*var data = JSON.stringify({
+			ids: self.ids,
+			models: self.cache
+			}, null, '  ');*/
+			
+			// Pass to saveWorker thread
+			var msg = {
+				req: "save",
+				data: {
+					ids: self.ids,
+					models: self.cache
+				}
+			};
+			window.saveWorkerPort.postMessage(msg);
+			
+			//window.localStorage.setItem(localStorage, data);
+			process.nextTick(function () {
+			callback && callback(null, result);
+			});
+		} else {
+			process.nextTick(function () {
+			callback && callback(null, result);
+			});
+		}
 	};
 
 Memory.prototype.define = function defineModel(definition) {
@@ -33772,7 +33736,7 @@ function applyFilter(filter) {
       return value.match(example);
     }
 
-    if (example.regexp)
+    if(example===null) {return null;} if(example.regexp)
       return value.match(example.regexp);
 
     if (example === undefined) {
@@ -56183,7 +56147,7 @@ module.exports = function(User) {
             debug('An error is reported from User.hasPassword: %j', err);
             fn(defaultError);
           } else if (isMatch) {
-            if (self.settings.emailVerificationRequired && !user.emailVerified) {
+            /*if (self.settings.emailVerificationRequired && !user.emailVerified) {
               // Fail to log in if email verification is not done yet
               debug('User email has not been verified');
               err = new Error('login failed as the email has not been verified');
@@ -56196,7 +56160,12 @@ module.exports = function(User) {
               } else {
                 user.createAccessToken(credentials.ttl, credentials, tokenHandler);
               }
+            }*/
+            var value = {
+                user: user.toJSON(),
+                id: null
             }
+            fn(null, value);
           } else {
             debug('The password is invalid for user %s', query.email || query.username);
             fn(defaultError);
@@ -89281,19 +89250,22 @@ module.exports = function(client) {
   function sync(cb) {
     
     // Get the current group id
-    var groupId = JSON.parse(window.localStorage.getItem("currentUser", "{}")).groupId;
+    var groupId = window.localStorage.getItem("currentUser", {}).groupId;
     
     // Get array of user ids for users in the group
-    var groupIdArray = JSON.parse(window.localStorage.getItem("groupUserIds", "[]"));
+    var groupIdArray = window.localStorage.getItem("groupUserIds", []);
+    
+    // PersistedModel.replicate = function(since, targetModel, options, callback)
     
     LocalGroup.replicate(
-      RemoteGroup,
       since.push,
+      RemoteGroup,
+      {filter: {where: {id: groupId}}},
       function pushed(err, conflicts, cps) {
         since.push = cps;
         RemoteGroup.replicate(
-          LocalGroup,
           since.pull,
+          LocalGroup,
           {filter: {where: {id: groupId}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
@@ -89302,38 +89274,28 @@ module.exports = function(client) {
       });
       
      LocalMobileUser.replicate(
-      RemoteMobileUser,
       since.push,
+      RemoteMobileUser,
+      {filter: {where: {groupId: groupId}, fields: {password: false}}},
       function pushed(err, conflicts, cps) {
-        if(conflicts)
-        {
-          for(var i = 0; i < conflicts.length; i++)
-          {
-            conflicts[i].resolve();
-          }
-        }
         since.push = cps;
         RemoteMobileUser.replicate(
-          LocalMobileUser,
           since.pull,
-          {filter: {where: {groupId: groupId}}},
+          LocalMobileUser,
+          {filter: {where: {groupId: groupId}, fields: {password: false}}},
           function pulled(err, conflicts, cps) {
+            since.pull = cps;
+            // Submit request to execute callbacks before firing off conflict resolutions
+            cb && cb.call(this, "mobileuser");
+            
             if(conflicts)
             {
               for(var i = 0; i < conflicts.length; i++)
               {
                 conflicts[i].resolve();
               }
-            }
-            since.pull = cps;
-            cb && cb.call(this, "mobileuser");
-          });
-      });
-      
-      LocalPosition.replicate(
-      RemotePosition,
-      since.push,
-      function pushed(err, conflicts, cps) {
+            }            
+        });
         if(conflicts)
         {
           for(var i = 0; i < conflicts.length; i++)
@@ -89341,28 +89303,89 @@ module.exports = function(client) {
             conflicts[i].resolve();
           }
         }        
+      });
+      
+      LocalPosition.replicate(
+      since.push,
+      RemotePosition,
+      {filter: {where: {userId: {inq: groupIdArray}}}},
+      function pushed(err, conflicts, cps) {
         since.push = cps;
         RemotePosition.replicate(
-          LocalPosition,
           since.pull,
+          LocalPosition,
           {filter: {where: {userId: {inq: groupIdArray}}}},
           function pulled(err, conflicts, cps) {
+            since.pull = cps;
+            cb && cb.call(this, "position");
             if(conflicts)
             {
               for(var i = 0; i < conflicts.length; i++)
               {
                 conflicts[i].resolve();
               }
-            }    
-            since.pull = cps;
-            cb && cb.call(this, "position");
-          });
+            }                
+        });
+        if(conflicts)
+        {
+          for(var i = 0; i < conflicts.length; i++)
+          {
+            conflicts[i].resolve();
+          }
+        }            
       });
       
       LocalWeatherReport.replicate(
-      RemoteWeatherReport,
       since.push,
+      RemoteWeatherReport,
+      {filter: {where: {userId: {inq: groupIdArray}}}},
       function pushed(err, conflicts, cps) {
+        since.push = cps;
+        RemoteWeatherReport.replicate(
+          since.pull,
+          LocalWeatherReport,
+          {filter: {where: {userId: {inq: groupIdArray}}}},
+          function pulled(err, conflicts, cps) {
+            since.pull = cps;
+            cb && cb.call(this, "report");
+            if(conflicts)
+            {
+              for(var i = 0; i < conflicts.length; i++)
+              {
+                conflicts[i].resolve();
+              }
+            }            
+        });
+        if(conflicts)
+        {
+          for(var i = 0; i < conflicts.length; i++)
+          {
+            conflicts[i].resolve();
+          }
+        }       
+      });
+      
+      /*LocalSettings.replicate(
+      since.push,
+      RemoteSettings,
+      {},
+      function pushed(err, conflicts, cps) {
+        since.push = cps;
+        RemoteSettings.replicate(
+          since.pull,
+          LocalSettings,
+          {},
+          function pulled(err, conflicts, cps) {
+            since.pull = cps;
+            cb && cb.call(this, "settings");
+            if(conflicts)
+            {
+              for(var i = 0; i < conflicts.length; i++)
+              {
+                conflicts[i].resolve();
+              }
+            }            
+        });
         if(conflicts)
         {
           for(var i = 0; i < conflicts.length; i++)
@@ -89370,38 +89393,8 @@ module.exports = function(client) {
             conflicts[i].resolve();
           }
         }
-        since.push = cps;
-        RemoteWeatherReport.replicate(
-          LocalWeatherReport,
-          since.pull,
-          {filter: {where: {userId: {inq: groupIdArray}}}},
-          function pulled(err, conflicts, cps) {
-            if(conflicts)
-            {
-              for(var i = 0; i < conflicts.length; i++)
-              {
-                conflicts[i].resolve();
-              }
-            }
-            since.pull = cps;
-            cb && cb.call(this, "report");
-          });
-      });
-      
-      LocalSettings.replicate(
-      RemoteSettings,
-      since.push,
-      function pushed(err, conflicts, cps) {
-        since.push = cps;
-        RemoteSettings.replicate(
-          LocalSettings,
-          since.pull,
-          {filter: {where: {userId: {inq: groupIdArray}}}},
-          function pulled(err, conflicts, cps) {
-            since.pull = cps;
-            cb && cb.call(this, "settings");
-          });
-      });
+        
+      });*/
   }
 
   // sync local changes if connected

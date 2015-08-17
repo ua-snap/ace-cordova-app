@@ -132,15 +132,58 @@ if(self.importScripts !== undefined)
 	
 }
 
-self.importScripts("../../lib/pouchdb/dist/pouchdb.js");
-self.importScripts("../../lib/pouchdb-upsert/dist/pouchdb.upsert.js");
 self.importScripts("../../js/sync/browser.bundle.js");
 self.importScripts("../../js/sync/lbclient.js");
 
+// Function to save data (pass it to the save/load thread)
+
+
 self.onmessage = function(message) {
+	// Check if we are currently loading
+	if(window.loading)
+	{
+		// Add request to queue
+		if(!window.requestQueue)
+		{
+			window.requestQueue = [];
+		}		
+		window.requestQueue.unshift(message);
+		return;
+	}
+	
+	// Check queue and execute next call
+	if(window.requestQueue && window.requestQueue.length > 0)
+	{
+		var temp = window.requestQueue.pop();
+		self.onmessage(temp);
+		return;
+	}
 	var msg = message.data;
 	
-	if(msg.req === "login") {
+	if(msg === "msgChannelPort")
+	{
+		// Save port for channel communication with save thread
+		window.saveWorkerPort = message.ports[0];
+		
+		// Load the appropriate data
+		window.saveWorkerPort.postMessage({req: "load"});
+		window.loading = true;
+		window.saveWorkerPort.onmessage = function(msg) {
+			/*window.client.dataSources.local.cache = msg.data.models || {};
+			window.client.dataSources.local.ids = msg.data.ids || {};
+			window.client.dataSources.Local.cache = msg.data.models || {};
+			window.client.dataSources.Local.ids = msg.data.ids || {};*/
+			var memory = window.client.models.LocalMobileUser.getConnector()
+			memory.cache = msg.data.models;
+			memory.ids = msg.data.ids;
+			// Return to normal operation
+			window.loading = false;
+			var tempMsg = window.requestQueue.pop();
+			self.onmessage(tempMsg);
+			return;
+		};
+	}
+	else if(msg.req === "login") {
 		(function(id) {
 			window.client.models.RemoteMobileUser.login(msg.params, msg.filter, function(err, res) {
 				
@@ -148,6 +191,13 @@ self.onmessage = function(message) {
 					// Save access token id
 					window.localStorage.setItem("access_token", res.id);
 				}
+				
+				// Save current user object
+				if(res.user)
+				{
+					window.localStorage.setItem("currentUser", res.user);
+				}
+				
 				else if(err) {
 					// Make err.stack a simple primitive to allow passing as a message
 					var errCpy = {
@@ -169,9 +219,84 @@ self.onmessage = function(message) {
 			});
 		})(msg.cbId);
 	}
+	else if(msg.req === "login-offline") {
+		(function(id) {
+			window.client.models.LocalMobileUser.login(msg.params, msg.filter, function(err, res) {
+				
+				if(res) {
+					// Save access token id
+					window.localStorage.setItem("access_token", res.id);
+				}
+				
+				// Save current user object
+				if(res.user)
+				{
+					window.localStorage.setItem("currentUser", res.user);
+				}
+				
+				else if(err) {
+					// Make err.stack a simple primitive to allow passing as a message
+					var errCpy = {
+						message: err.message,
+						stack: err.stack.toString()
+					}
+				}
+				
+				// Formulate and send response message
+				var args = [errCpy, res];
+				
+				var returnMsg = {
+					cbId: id,
+					args: args
+				};
+				self.postMessage(returnMsg);
+				
+				
+			});
+			
+		})(msg.cbId);
+	}
 	else if(msg.req === "remotegroup.findone") {
 		(function(id) {
 			window.client.models.RemoteGroup.findOne(msg.filter, function(err, res) {
+				if(res.id === window.localStorage.getItem("currentUser", {}).groupId)
+				{
+					// Save group id's if they are present and are the current group
+					var groupUsersIdArray = [];
+	                var groupUsers = res.__unknownProperties.MobileUsers;
+	                for(var i = 0; i < groupUsers.length; i++)
+	                {
+	                    groupUsersIdArray.push(groupUsers[i].id);
+	                }
+	                window.localStorage.setItem("groupUserIds", groupUsersIdArray);
+				}
+				
+			   
+				var args = [err, res];
+				var returnMsg = {
+					cbId: id,
+					args: args
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "localgroup.findone") {
+		(function(id) {
+			window.client.models.LocalGroup.findOne(msg.filter, function(err, res) {
+				if(res.id === window.localStorage.getItem("currentUser", {}).groupId && res.__unknownProperties && res.__unknownProperties["MobileUsers"])
+				{
+					// Save group id's if they are present and are the current group
+					var groupUsersIdArray = [];
+	                var groupUsers = res.__unknownProperties.MobileUsers;
+	                for(var i = 0; i < groupUsers.length; i++)
+	                {
+	                    groupUsersIdArray.push(groupUsers[i].id);
+	                }
+	                window.localStorage.setItem("groupUserIds", groupUsersIdArray);
+				}
+				
+			   
 				var args = [err, res];
 				var returnMsg = {
 					cbId: id,

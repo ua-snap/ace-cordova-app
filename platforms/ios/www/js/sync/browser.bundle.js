@@ -33772,7 +33772,7 @@ function applyFilter(filter) {
       return value.match(example);
     }
 
-    if (example.regexp)
+    if(example===null) {return null;} if(example.regexp)
       return value.match(example.regexp);
 
     if (example === undefined) {
@@ -66023,7 +66023,7 @@ RestAdapter.prototype.invoke = function(method, ctorArgs, args, callback) {
       ctx.res = invocation.getResponse();
       remotes.execHooks('after', restMethod, scope, ctx, function(err) {
         if (err) { return callback(err); }
-        callback.apply(invocation, args);
+        if(callback) { callback.apply(invocation, args); }
       });
     });
   });
@@ -89204,7 +89204,36 @@ var decode = exports.decode = function decode(str) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":17}],"lbclient":[function(require,module,exports){
+},{"buffer":17}],429:[function(require,module,exports){
+(function (__dirname){
+var loopback = require('loopback');
+var boot = require('loopback-boot');
+
+var app = module.exports = loopback();
+
+app.start = function() {
+  // start the web server
+  return app.listen(function() {
+    app.emit('started');
+    console.log('Web server listening at: %s', app.get('url'));
+  });
+};
+
+// Bootstrap the application, configure models, datasources and middleware.
+// Sub-apps like REST API are mounted via boot scripts.
+boot(app, __dirname, function(err) {
+  if (err) throw err;
+
+  // start the server if `$ node server.js`
+  if (require.main === module)
+    app.start();
+});
+
+// Add authorization headers
+
+
+}).call(this,"/../../server")
+},{"loopback":274,"loopback-boot":205}],"lbclient":[function(require,module,exports){
 var loopback = require('loopback');
 var boot = require('loopback-boot');
 
@@ -89232,6 +89261,8 @@ module.exports = function(client) {
   var RemotePosition = client.models.RemotePosition;
   var LocalWeatherReport = client.models.LocalWeatherReport;
   var RemoteWeatherReport = client.models.RemoteWeatherReport;
+  var LocalSettings = client.models.LocalSettings;
+  var RemoteSettings = client.models.RemoteSettings;
     
 
   client.network = {
@@ -89250,19 +89281,22 @@ module.exports = function(client) {
   function sync(cb) {
     
     // Get the current group id
-    var groupId = JSON.parse(window.localStorage.getItem("currentUser", "{}")).groupId;
+    var groupId = window.localStorage.getItem("currentUser", {}).groupId;
     
     // Get array of user ids for users in the group
-    var groupIdArray = JSON.parse(window.localStorage.getItem("groupUserIds", "[]"));
+    var groupIdArray = window.localStorage.getItem("groupUserIds", []);
+    
+    // PersistedModel.replicate = function(since, targetModel, options, callback)
     
     LocalGroup.replicate(
-      RemoteGroup,
       since.push,
+      RemoteGroup,
+      {filter: {where: {id: groupId}}},
       function pushed(err, conflicts, cps) {
         since.push = cps;
         RemoteGroup.replicate(
-          LocalGroup,
           since.pull,
+          LocalGroup,
           {filter: {where: {id: groupId}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
@@ -89271,24 +89305,28 @@ module.exports = function(client) {
       });
       
      LocalMobileUser.replicate(
-      RemoteMobileUser,
       since.push,
+      RemoteMobileUser,
+      {filter: {where: {groupId: groupId}, fields: {password: false}}},
       function pushed(err, conflicts, cps) {
         since.push = cps;
         RemoteMobileUser.replicate(
-          LocalMobileUser,
           since.pull,
-          {filter: {where: {groupId: groupId}}},
+          LocalMobileUser,
+          {filter: {where: {groupId: groupId}, fields: {password: false}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
+            // Submit request to execute callbacks before firing off conflict resolutions
             cb && cb.call(this, "mobileuser");
-          });
-      });
-      
-      LocalPosition.replicate(
-      RemotePosition,
-      since.push,
-      function pushed(err, conflicts, cps) {
+            
+            if(conflicts)
+            {
+              for(var i = 0; i < conflicts.length; i++)
+              {
+                conflicts[i].resolve();
+              }
+            }            
+        });
         if(conflicts)
         {
           for(var i = 0; i < conflicts.length; i++)
@@ -89296,37 +89334,97 @@ module.exports = function(client) {
             conflicts[i].resolve();
           }
         }        
+      });
+      
+      LocalPosition.replicate(
+      since.push,
+      RemotePosition,
+      {filter: {where: {userId: {inq: groupIdArray}}}},
+      function pushed(err, conflicts, cps) {
         since.push = cps;
         RemotePosition.replicate(
-          LocalPosition,
           since.pull,
+          LocalPosition,
           {filter: {where: {userId: {inq: groupIdArray}}}},
           function pulled(err, conflicts, cps) {
+            since.pull = cps;
+            cb && cb.call(this, "position");
             if(conflicts)
             {
               for(var i = 0; i < conflicts.length; i++)
               {
                 conflicts[i].resolve();
               }
-            }    
-            since.pull = cps;
-            cb && cb.call(this, "position");
-          });
+            }                
+        });
+        if(conflicts)
+        {
+          for(var i = 0; i < conflicts.length; i++)
+          {
+            conflicts[i].resolve();
+          }
+        }            
       });
       
       LocalWeatherReport.replicate(
-      RemoteWeatherReport,
       since.push,
+      RemoteWeatherReport,
+      {filter: {where: {userId: {inq: groupIdArray}}}},
       function pushed(err, conflicts, cps) {
         since.push = cps;
         RemoteWeatherReport.replicate(
-          LocalWeatherReport,
           since.pull,
+          LocalWeatherReport,
           {filter: {where: {userId: {inq: groupIdArray}}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
             cb && cb.call(this, "report");
-          });
+            if(conflicts)
+            {
+              for(var i = 0; i < conflicts.length; i++)
+              {
+                conflicts[i].resolve();
+              }
+            }            
+        });
+        if(conflicts)
+        {
+          for(var i = 0; i < conflicts.length; i++)
+          {
+            conflicts[i].resolve();
+          }
+        }       
+      });
+      
+      LocalSettings.replicate(
+      since.push,
+      RemoteSettings,
+      {},
+      function pushed(err, conflicts, cps) {
+        since.push = cps;
+        RemoteSettings.replicate(
+          since.pull,
+          LocalSettings,
+          {},
+          function pulled(err, conflicts, cps) {
+            since.pull = cps;
+            cb && cb.call(this, "settings");
+            if(conflicts)
+            {
+              for(var i = 0; i < conflicts.length; i++)
+              {
+                conflicts[i].resolve();
+              }
+            }            
+        });
+        if(conflicts)
+        {
+          for(var i = 0; i < conflicts.length; i++)
+          {
+            conflicts[i].resolve();
+          }
+        }
+        
       });
   }
 
@@ -89547,8 +89645,6 @@ module.exports={
           },
           "userId": {
             "type": "string",
-            "id": true,
-            "defaultFn": "guid",
             "required": true
           },
           "latlng": {
@@ -89668,14 +89764,10 @@ module.exports={
           },
           "userId": {
             "type": "string",
-            "id": true,
-            "defaultFn": "guid",
             "required": true
           },
           "positionId": {
             "type": "string",
-            "id": true,
-            "defaultFn": "guid",
             "required": true
           },
           "cloudCover": {
@@ -89781,6 +89873,65 @@ module.exports={
       }
     },
     {
+      "name": "settings",
+      "definition": {
+        "name": "settings",
+        "plural": "Settings",
+        "base": "PersistedModel",
+        "strict": "validate",
+        "idInjection": true,
+        "options": {
+          "validateUpsert": true
+        },
+        "trackChanges": true,
+        "persistUndefinedAsNull": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "id": true,
+            "defaultFn": "guid"
+          },
+          "gps": {
+            "type": "Object"
+          },
+          "general": {
+            "type": "Object"
+          },
+          "language": {
+            "type": "string"
+          }
+        },
+        "validations": [],
+        "relations": {},
+        "acls": [],
+        "methods": []
+      },
+      "sourceFile": "loopback-boot#models#settings.js"
+    },
+    {
+      "name": "LocalSettings",
+      "config": {
+        "dataSource": "local"
+      },
+      "definition": {
+        "name": "LocalSettings",
+        "base": "settings"
+      }
+    },
+    {
+      "name": "RemoteSettings",
+      "config": {
+        "dataSource": "remote"
+      },
+      "definition": {
+        "name": "RemoteSettings",
+        "base": "settings",
+        "plural": "Settings",
+        "trackChanges": false,
+        "enableRemoteReplication": true
+      }
+    },
+    {
       "name": "mobile_user",
       "definition": {
         "name": "mobile_user",
@@ -89800,9 +89951,10 @@ module.exports={
             "defaultFn": "guid"
           },
           "groupId": {
-            "type": "string",
-            "id": true,
-            "defaultFn": "guid"
+            "type": "string"
+          },
+          "settings": {
+            "type": "settings"
           }
         },
         "validations": [],
@@ -89892,7 +90044,7 @@ module.exports={
           {
             "accessType": "READ",
             "principalType": "ROLE",
-            "principalId": "$owner",
+            "principalId": "$authenticated",
             "permission": "ALLOW",
             "property": "findById"
           },
@@ -89904,11 +90056,32 @@ module.exports={
             "property": "find"
           },
           {
+            "accessType": "READ",
+            "principalType": "ROLE",
+            "principalId": "$authenticated",
+            "permission": "ALLOW",
+            "property": "findLastChange"
+          },
+          {
+            "accessType": "WRITE",
+            "principalType": "ROLE",
+            "principalId": "$authenticated",
+            "permission": "ALLOW",
+            "property": "updateLastChange"
+          },
+          {
             "accessType": "EXECUTE",
             "principalType": "ROLE",
             "principalId": "$authenticated",
             "permission": "ALLOW",
             "property": "bulkUpdate"
+          },
+          {
+            "accessType": "EXECUTE",
+            "principalType": "ROLE",
+            "principalId": "$authenticated",
+            "permission": "ALLOW",
+            "property": "updateAll"
           }
         ],
         "methods": []
@@ -89948,13 +90121,26 @@ module.exports={
   }
 }
 },{}],"loopback-boot#models#group.js":[function(require,module,exports){
+var app = require('../../server/server');
+
 module.exports = function(Group) {
 	Group.handleChangeError = function(err) {
 		console.warn('Cannot update change records for Group: ', err);
 	};
+	
+	// Create a matching storage container with each new group instance
+	Group.observe('before save', function(ctx, next) {
+		if(ctx.isNewInstance)
+		{
+			var group = ctx.instance.toJSON();
+			app.models.storage.createContainer({name: group.name}, function(err, container) {
+			});
+		}
+		next();	
+	});
 };
 
-},{}],"loopback-boot#models#mobile-user.js":[function(require,module,exports){
+},{"../../server/server":429}],"loopback-boot#models#mobile-user.js":[function(require,module,exports){
 module.exports = function(MobileUser) {
 	// Hide internal "position" relationship API endpoints
 	MobileUser.disableRemoteMethod('__count__position', false);
@@ -89984,6 +90170,11 @@ module.exports = function(Position) {
 	Position.handleChangeError = function(err) {
 		console.warn("Cannot update change records for Position: ", err);
 	};
+};
+
+},{}],"loopback-boot#models#settings.js":[function(require,module,exports){
+module.exports = function(Settings) {
+
 };
 
 },{}],"loopback-boot#models#weather-report.js":[function(require,module,exports){

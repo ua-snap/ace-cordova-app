@@ -72,6 +72,9 @@ angular.module('ace.controllers', [])
         window.clearInterval(window.thread_messenger.syncTimer);
         window.thread_messenger = undefined;
         
+        // Remove access token id
+        LocalStorageService.setItem("access_token", "", window);
+        
         // Remove any notifications
         window.plugin.notification.local.cancel(230476843);
       

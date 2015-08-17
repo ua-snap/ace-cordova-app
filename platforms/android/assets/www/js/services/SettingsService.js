@@ -29,10 +29,20 @@ angular.module('ace.services')
 				currentUser.settings = settings;
 				LocalStorageService.setItem("currentUser", currentUser, window);
 								
-				// Update the local mobile user (in data store)
-				DataService.remoteMobileUser_updateAll({id: currentUser.id}, currentUser, function(err, res) {
-					var i = 0;
-				});
+				// if online, update the remote user
+				if(window.navigator.connection.type !== "none")
+				{
+					DataService.remoteMobileUser_updateAll({id: currentUser.id}, currentUser, function(err, res) {
+						var i = 0;
+					});
+				}
+				else
+				{
+					DataService.localMobileUser_updateAll({id: currentUser.id}, currentUser, function(err, res) {
+						var i = 0;
+					});
+				}
+				
 			}
 			return settings;
 		},
@@ -53,9 +63,20 @@ angular.module('ace.services')
 			LocalStorageService.setItem("currentUser", currentUser, window);
 			
 			// Update the local mobile user (in data store)
-			DataService.remoteMobileUser_updateAll({id: currentUser.id}, currentUser, function(err, res) {
-				var i = 0;
-			});
+			if(window.navigator.connection.type !== "none")
+			{
+				DataService.remoteMobileUser_updateAll({id: currentUser.id}, currentUser, function(err, res) {
+					var i = 0;
+				});
+			}
+			else
+			{
+				DataService.remoteMobileUser_updateAll({id: currentUser.id}, currentUser, function(err, res) {
+					var i = 0;
+				});
+			}
+			
+			
 		}
 	};
 });
