@@ -56147,25 +56147,7 @@ module.exports = function(User) {
             debug('An error is reported from User.hasPassword: %j', err);
             fn(defaultError);
           } else if (isMatch) {
-            /*if (self.settings.emailVerificationRequired && !user.emailVerified) {
-              // Fail to log in if email verification is not done yet
-              debug('User email has not been verified');
-              err = new Error('login failed as the email has not been verified');
-              err.statusCode = 401;
-              err.code = 'LOGIN_FAILED_EMAIL_NOT_VERIFIED';
-              return fn(err);
-            } else {
-              if (user.createAccessToken.length === 2) {
-                user.createAccessToken(credentials.ttl, tokenHandler);
-              } else {
-                user.createAccessToken(credentials.ttl, credentials, tokenHandler);
-              }
-            }*/
-            var value = {
-                user: user.toJSON(),
-                id: null
-            }
-            fn(null, value);
+            var value = {user: user.toJSON(), id: null}; fn(null, value);
           } else {
             debug('The password is invalid for user %s', query.email || query.username);
             fn(defaultError);
@@ -60295,24 +60277,29 @@ module.exports = function(registry) {
       updates.forEach(function(update) {
         var id = update.change.modelId;
         var current = currentMap[id];
-        switch (update.type) {
-          case Change.UPDATE:
-            tasks.push(function(cb) {
-              applyUpdate(Model, id, current, update.data, update.change, conflicts, cb);
-            });
-            break;
-
-          case Change.CREATE:
-            tasks.push(function(cb) {
-              applyCreate(Model, id, current, update.data, update.change, conflicts, cb);
-            });
-            break;
-          case Change.DELETE:
-            tasks.push(function(cb) {
-              applyDelete(Model, id, current, update.change, conflicts, cb);
-            });
-            break;
-        }
+        
+        // Check for equality before updating
+        if(!current || !(_.isEqual(JSON.stringify(current.__data), JSON.stringify(update.data))))
+        {
+            switch (update.type) {
+            case Change.UPDATE:
+                tasks.push(function(cb) {
+                applyUpdate(Model, id, current, update.data, update.change, conflicts, cb);
+                });
+                break;
+    
+            case Change.CREATE:
+                tasks.push(function(cb) {
+                applyCreate(Model, id, current, update.data, update.change, conflicts, cb);
+                });
+                break;
+            case Change.DELETE:
+                tasks.push(function(cb) {
+                applyDelete(Model, id, current, update.change, conflicts, cb);
+                });
+                break;
+            }
+        }        
       });
 
       async.parallel(tasks, function(err) {
@@ -89257,18 +89244,22 @@ module.exports = function(client) {
     
     // PersistedModel.replicate = function(since, targetModel, options, callback)
     
+    console.log("sync starting");
+    
     LocalGroup.replicate(
       since.push,
       RemoteGroup,
       {filter: {where: {id: groupId}}},
       function pushed(err, conflicts, cps) {
         since.push = cps;
+        console.log("LocalGroup pushed");
         RemoteGroup.replicate(
           since.pull,
           LocalGroup,
           {filter: {where: {id: groupId}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
+            console.log("LocalGroup pulled");
             cb && cb.call(this, "group");
           });
       });
@@ -89279,6 +89270,7 @@ module.exports = function(client) {
       {filter: {where: {groupId: groupId}, fields: {password: false}}},
       function pushed(err, conflicts, cps) {
         since.push = cps;
+        console.log("LocalMobileUser pushed");
         RemoteMobileUser.replicate(
           since.pull,
           LocalMobileUser,
@@ -89286,6 +89278,7 @@ module.exports = function(client) {
           function pulled(err, conflicts, cps) {
             since.pull = cps;
             // Submit request to execute callbacks before firing off conflict resolutions
+            console.log("LocalMobileUser pulled");
             cb && cb.call(this, "mobileuser");
             
             if(conflicts)
@@ -89311,12 +89304,14 @@ module.exports = function(client) {
       {filter: {where: {userId: {inq: groupIdArray}}}},
       function pushed(err, conflicts, cps) {
         since.push = cps;
+        console.log("LocalPosition pushed");
         RemotePosition.replicate(
           since.pull,
           LocalPosition,
           {filter: {where: {userId: {inq: groupIdArray}}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
+            console.log("LocalPosition pulled");
             cb && cb.call(this, "position");
             if(conflicts)
             {
@@ -89341,12 +89336,14 @@ module.exports = function(client) {
       {filter: {where: {userId: {inq: groupIdArray}}}},
       function pushed(err, conflicts, cps) {
         since.push = cps;
+        console.log("LocalWeatherReport pushed");
         RemoteWeatherReport.replicate(
           since.pull,
           LocalWeatherReport,
           {filter: {where: {userId: {inq: groupIdArray}}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
+            console.log("LocalWeatherReport pulled");
             cb && cb.call(this, "report");
             if(conflicts)
             {

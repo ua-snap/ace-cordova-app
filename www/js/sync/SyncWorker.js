@@ -134,6 +134,7 @@ if(self.importScripts !== undefined)
 
 self.importScripts("../../js/sync/browser.bundle.js");
 self.importScripts("../../js/sync/lbclient.js");
+self.importScripts("../../lib/underscore/underscore.js");
 
 // Function to save data (pass it to the save/load thread)
 
