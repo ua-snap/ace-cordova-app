@@ -429,14 +429,15 @@ angular.module('ace.controllers')
     
     // Draws a line on the map where the user has traveled
     $scope.drawHistoryLine = function() {
-        // Grab last position entries
+        // Grab last position entries from current user
         var settings = SettingsService.getSettings(window);
         var filter = {
             order: 'timestamp DESC',
             where: {
                 and: [
                     {timestamp: {gt: $scope.settings.displayHistory.startDate}},
-                    {timestamp: {lt: $scope.settings.displayHistory.endDate}}
+                    {timestamp: {lt: $scope.settings.displayHistory.endDate}},
+                    {userId: LocalStorageService.getItem("currentUser", {}, window).id}
                 ]
             }
         };

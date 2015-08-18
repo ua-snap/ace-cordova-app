@@ -127,20 +127,26 @@ ModalHandler.prototype.setPreviousSelection = function(htmlDoc, id) {
  */
 ModalHandler.prototype.openModal = function(htmlDoc, modal)
 {
+    // Actually display the modal (to create the html elements if they are not already created)
+    modal.show();
+    
     // If anything was previously selected...
     if(modal.selection)
     {
-        // Set it as selected currently
+        // Reset all backgrounds
+        this.resetSelectableBackgrounds(htmlDoc);
+        
+        // Set the selected value background
         this.setPreviousSelection(htmlDoc, modal.selection);
+        
+        // Set as new temp selection
+        modal.temp = modal.selection;
     }
     else
     {
         // Otherwise, clear all backgrounds to the unselected color (takes care of any un-recycled view elements)
         this.resetSelectableBackgrounds(htmlDoc);
-    }
-    
-    // Actually display the modal
-    modal.show();
+    }   
 };
 
 // Performs "Save" functionality for the specified modal.  

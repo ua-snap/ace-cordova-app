@@ -34,9 +34,10 @@ angular.module('ace.controllers')
   // Check if sent here from template view
   $scope.$on('$ionicView.beforeEnter', function() {
     var template =  DataShareService.getItem("template", null);
-    if(template)
+    if(template && template !== null)
     {
-      $scope.importReport(template);
+        $scope.importReport(template);
+        DataShareService.setItem("template", null);
     }
     
     // Turn tracking back on (if necessary)
@@ -352,21 +353,107 @@ angular.module('ace.controllers')
     if(report.temperatureValue && report.temperatureValue !== "")
     {
       document.getElementById("temp_sum").innerText = report.temperatureValue + " " + report.temperatureUnits;
+      
+      $scope.surfaceTempModal.input = report.temperatureValue;
+      $scope.surfaceTempModal.inputTemp = report.temperatureValue;
+      
+      if(report.temperatureUnits.indexOf("F") !== -1)
+      {
+          $scope.surfaceTempModal.select = "F";
+          $scope.surfaceTempModal.selectTemp = "F";
+      }
+      else
+      {
+          $scope.surfaceTempModal.select = "C";
+          $scope.surfaceTempModal.selectTemp = "C";
+      }
+      
     }
     
     if(report.windValue && report.windValue != "")
     {
-      document.getElementById("wind_sum").innerText = report.windValue + " " + report.windUnits + " " + report.windDirection;
+        document.getElementById("wind_sum").innerText = report.windValue + " " + report.windUnits + " " + report.windDirection;
+        
+        $scope.windModal.inputTemp = report.windValue;
+        $scope.windModal.input = report.windValue;
+        if(report.windUnits.indexOf("Knots") !== -1)
+        {
+            $scope.windModal.select1Temp = "k";
+            $scope.windModal.select1 = "k";
+        }
+        else
+        {
+            $scope.windModal.select1Temp = "m";
+            $scope.windModal.select1 = "m";
+        }
+        
+        switch(report.windDirection)
+        {
+            case "":
+                $scope.windModal.select2 = "blank";
+                $scope.windModal.select2Temp = "blank";
+                break;
+            case "North": 
+                $scope.windModal.select2 = "north";
+                $scope.windModal.select2Temp = "north";
+                break;
+            case "Northeast":
+                $scope.windModal.select2 = "northeast";
+                $scope.windModal.select2Temp = "northeast";
+                break;
+            case "East":
+                $scope.windModal.select2 = "east";
+                $scope.windModal.select2Temp = "east";
+                break;
+            case "Southeast":
+                $scope.windModal.select2 = "southeast";
+                $scope.windModal.select2Temp = "southeast";
+                break;
+            case "South":
+                $scope.windModal.select2 = "south";
+                $scope.windModal.select2Temp = "south";
+                break;
+            case "Southwest":
+                $scope.windModal.select2 = "southwest";
+                $scope.windModal.select2Temp = "southwest";
+                break;
+            case "West":
+                $scope.windModal.select2 = "west";
+                $scope.windModal.select2Temp = "west";
+                break;
+            case "Northwest":
+                $scope.windModal.select2 = "northwest";
+                $scope.windModal.select2Temp = "northwest";
+                break;
+            default:
+                $scope.windModal.select2 = "";
+                $scope.windModal.select2Temp = "";
+                break;
+        }     
     }
     
     if(report.notes && report.notes != "")
     {
-      document.getElementById("notes_sum").innerText = report.notes;
+        document.getElementById("notes_sum").innerText = report.notes;
+        $scope.notesModal.input = report.notes;
+        $scope.notesModal.inputTemp = report.notes;
+    }
+    
+    if(report.attachment && report.attachment != "")
+    {
+        // Update the summary field
+        var summary = document.getElementById("camera_sum");
+        var fileName = $scope.report.attachment.replace(/^.*[\\\/]/, '');
+        summary.innerText = fileName;
+        
+        $scope.cameraModal.tempAttachment = $scope.report.attachment;
     }
     
     if(report.other && report.other != "")
     {
-      document.getElementById("other_sum").innerText = report.other;
+        document.getElementById("other_sum").innerText = report.other;
+        $scope.otherModal.selection = report.other;
+        $scope.otherModal.temp = report.other;
     }    
   };
   
@@ -1035,11 +1122,11 @@ angular.module('ace.controllers')
       $scope.report.temperatureValue = $scope.surfaceTempModal.input;
       if($scope.surfaceTempModal.select === "C")
       {
-          $scope.report.temperatureUnits = " ÂºC ";
+          $scope.report.temperatureUnits = " ºC ";
       }
       else if($scope.surfaceTempModal.select === "F")
       {
-          $scope.report.temperatureUnits = " ÂºF ";
+          $scope.report.temperatureUnits = " ºF ";
       }
       
       // Update the summary on the tab-report.html page

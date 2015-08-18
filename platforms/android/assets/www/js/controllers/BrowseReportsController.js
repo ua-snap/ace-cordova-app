@@ -99,6 +99,22 @@ angular.module('ace.controllers')
 		$state.go("browse-reports-view");
  	};
 	 
+	 // Edit option button clicked
+	 $scope.editClicked = function(report)
+	 {
+		 // Close the opened option button
+		 $ionicListDelegate.closeOptionButtons();
+		 
+		 // Copy the report, removing date, positionId, and id fields
+		 var reportCpy = JSON.parse(JSON.stringify(report));
+		 delete reportCpy.date;
+		 delete reportCpy.positionId;
+		 delete reportCpy.id;
+		 DataShareService.setItem("template", reportCpy);
+		 $state.go("tab.report");
+	 }
+	 
+	 // Report resend button clicked
 	 $scope.resendClicked = function(report) {
 		// Close the opened option button
 		$ionicListDelegate.closeOptionButtons();

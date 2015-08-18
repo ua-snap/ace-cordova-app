@@ -60277,8 +60277,6 @@ module.exports = function(registry) {
       updates.forEach(function(update) {
         var id = update.change.modelId;
         var current = currentMap[id];
-        
-        // Check for equality before updating
         if(!current || !(_.isEqual(JSON.stringify(current.__data), JSON.stringify(update.data))))
         {
             switch (update.type) {
@@ -60299,7 +60297,7 @@ module.exports = function(registry) {
                 });
                 break;
             }
-        }        
+        }
       });
 
       async.parallel(tasks, function(err) {
