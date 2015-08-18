@@ -110,7 +110,8 @@ angular.module('ace.services')
                         // Save current user (including user settings)
                         LocalStorageService.setItem("currentUser", res.user, window);
                         
-                        // No access token to save
+                        // No access token to save, clear any old ones
+                        LocalStorageService.setItem("access_token", null, window);
                         
                         // Retrieve an array of the id's for users in the current group
                         var filter = {where: {id: res.user.groupId}};

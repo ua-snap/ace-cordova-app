@@ -174,8 +174,8 @@ self.onmessage = function(message) {
 			window.client.dataSources.Local.cache = msg.data.models || {};
 			window.client.dataSources.Local.ids = msg.data.ids || {};*/
 			var memory = window.client.models.LocalMobileUser.getConnector()
-			memory.cache = msg.data.models;
-			memory.ids = msg.data.ids;
+			memory.cache = msg.data.models || {};
+			memory.ids = msg.data.ids || {};
 			// Return to normal operation
 			window.loading = false;
 			var tempMsg = window.requestQueue.pop();

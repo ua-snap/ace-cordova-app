@@ -110,7 +110,8 @@ angular.module('ace.services')
                         // Save current user (including user settings)
                         LocalStorageService.setItem("currentUser", res.user, window);
                         
-                        // No access token to save
+                        // No access token to save, clear any old ones
+                        LocalStorageService.setItem("access_token", null, window);
                         
                         // Retrieve an array of the id's for users in the current group
                         var filter = {where: {id: res.user.groupId}};
@@ -118,11 +119,11 @@ angular.module('ace.services')
                             // Save group name (to be used when uploading to group containers)
                             LocalStorageService.setItem("groupName", result.__data.name, window);
                             // Get the users in the group
-                            DataService.localMobileUser_find({where: {groupId: result.id}}, function(err, result) {
+                            DataService.localMobileUser_find({where: {groupId: result.__data.id}}, function(err, result) {
                                 if(result)
                                 {
                                     var groupUsersIdArray = [];
-                                    var groupUsers = result.__unknownProperties.MobileUsers;
+                                    var groupUsers = result;
                                     for(var i = 0; i < groupUsers.length; i++)
                                     {
                                         groupUsersIdArray.push(groupUsers[i].id);

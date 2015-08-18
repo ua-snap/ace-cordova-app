@@ -15,7 +15,7 @@ angular.module('ace.controllers')
  * @description Controller for the Report view.  This controller contains all the
  * UI functionality for entering and saving reports.
  */
-.controller('ReportController', function($scope, $state, $translate, DataService, LocalStorageService, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicModal, UploadService, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
+.controller('ReportController', function(AuthService, $scope, $state, $ionicPopup, $translate, DataService, LocalStorageService, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicModal, UploadService, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
   
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
@@ -65,10 +65,40 @@ angular.module('ace.controllers')
         }
     });
     
-    // Setup to sync whenever you come online from being offline
+    // Setup to to perform when going online from being offline
     document.addEventListener("online", function() {
-        var settings = SettingsService.getSettings(window);
-        DataService.sync(null, settings.general.notifications);
+        if(window.onlineTriggered === undefined || window.onlineTriggered === false)
+        {
+            window.onlineTriggered = true;
+            // Check if we were previously logged in
+            if(LocalStorageService.getItem("access_token", "", window) === null)
+            {
+                // The user never logged in to the server
+                
+                // Request password
+                $ionicPopup.prompt({
+                    title: "Internet connectivity detected.  Enter password to log in to server",
+                    inputType: 'password'
+                }).then(function(password) {
+                    // Log in to the server
+                    AuthService.loginUser(LocalStorageService.getItem("currentUser", {}, window).username, password, function(err) {
+                        alert(err);
+                    }, function(result) {
+                        // Sync
+                        var settings = SettingsService.getSettings(window);
+                        DataService.sync(null, settings.general.notifications);
+                        window.onlineTriggered = false;
+                    });
+                });
+            }
+            else
+            {
+                // The user was previously logged in, so just sync immediately
+                var settings = SettingsService.getSettings(window);
+                DataService.sync(null, settings.general.notifications);
+                window.onlineTriggered = false;
+            }
+        }       
     }, false)
     
   });
