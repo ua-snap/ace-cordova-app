@@ -135,9 +135,7 @@ if(self.importScripts !== undefined)
 self.importScripts("../../js/sync/browser.bundle.js");
 self.importScripts("../../js/sync/lbclient.js");
 self.importScripts("../../lib/underscore/underscore.js");
-
-// Function to save data (pass it to the save/load thread)
-
+self.importScripts("../../lib/async/dist/async.js");
 
 self.onmessage = function(message) {
 	// Check if we are currently loading
@@ -152,13 +150,6 @@ self.onmessage = function(message) {
 		return;
 	}
 	
-	// Check queue and execute next call
-	if(window.requestQueue && window.requestQueue.length > 0)
-	{
-		var temp = window.requestQueue.pop();
-		self.onmessage(temp);
-		return;
-	}
 	var msg = message.data;
 	
 	if(msg === "msgChannelPort")
@@ -170,18 +161,15 @@ self.onmessage = function(message) {
 		window.saveWorkerPort.postMessage({req: "load"});
 		window.loading = true;
 		window.saveWorkerPort.onmessage = function(msg) {
-			/*window.client.dataSources.local.cache = msg.data.models || {};
-			window.client.dataSources.local.ids = msg.data.ids || {};
-			window.client.dataSources.Local.cache = msg.data.models || {};
-			window.client.dataSources.Local.ids = msg.data.ids || {};*/
-			var memory = window.client.models.LocalMobileUser.getConnector()
-			memory.cache = msg.data.models || {};
-			memory.ids = msg.data.ids || {};
-			// Return to normal operation
-			window.loading = false;
-			var tempMsg = window.requestQueue.pop();
-			self.onmessage(tempMsg);
-			return;
+			// Call the load function, which expects the data at window.localStorage.getItem("")
+			var memory = window.client.models.LocalMobileUser.getConnector();
+			window.localStorage.setItem("ace-db", msg.data);
+			memory.loadFromFile(function() {
+				// Return to normal operation
+				window.loading = false;
+				var tempMsg = window.requestQueue.pop();
+				self.onmessage(tempMsg);
+			});			
 		};
 	}
 	else if(msg.req === "login") {
@@ -581,4 +569,12 @@ self.onmessage = function(message) {
 			});
 		})(msg.cbId);
 	}	
+	
+	// Check queue and execute next call
+	if(window.requestQueue && window.requestQueue.length > 0)
+	{
+		var temp = window.requestQueue.pop();
+		self.onmessage(temp);
+		return;
+	}
 }
