@@ -232,6 +232,10 @@ angular.module('ace.services')
 						window.thread_messenger.syncCounter = 0;
 						window.thread_messenger.syncing = false;
 						
+						// Fire off a "sync_complete" event
+						var event = new Event('sync_complete');						
+						document.dispatchEvent(event);
+						
 						window.plugin.notification.local.isPresent(230476843, function(present) {
 							if(present)
 							{

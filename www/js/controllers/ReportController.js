@@ -1076,7 +1076,7 @@ angular.module('ace.controllers')
       
       // Check settings and select units appropriately
       var settings = SettingsService.getSettings(window);
-      if(settings.general.units === "English")
+      if(settings.general.units === "Imperial")
       {
           $scope.surfaceTempModal.selectTemp = "F";
       }
@@ -1199,7 +1199,7 @@ angular.module('ace.controllers')
     {
         // Check units settings and select units appropriately
         var settings = SettingsService.getSettings(window);
-        if(settings.general.units === "English")
+        if(settings.general.units === "Imperial")
         {
             $scope.windModal.select1Temp = "m";
         }

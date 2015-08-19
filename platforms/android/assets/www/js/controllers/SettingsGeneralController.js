@@ -57,10 +57,10 @@ angular.module('ace.controllers')
 		notifications: {
 			checked: true
 		},
-		units: "English"
+		units: "Imperial"
 	};
 	
-	$scope.unitsArray = ["English", "Metric"];
+	$scope.unitsArray = ["Imperial", "Metric"];
 	
 	$scope.notificationsChanged = function() {
 		var settings = SettingsService.getSettings(window);

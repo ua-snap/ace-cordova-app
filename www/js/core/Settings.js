@@ -16,7 +16,7 @@ var Settings = function() {
 	};
 	this.general = {
 		notifications: true,
-		units: "English"
+		units: "Imperial"
 	};
 	this.language = "en";
 };
