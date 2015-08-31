@@ -10,7 +10,7 @@
 // but in reality, you're just getting the delta between now() calls, so it's not terribly important where it's placed
 
 // Only override ios version
-if(window.cordova.platformId === "ios")
+if(window.cordova && window.cordova.platformId && window.cordova.platformId === "ios")
 {
 	(function(){
 	

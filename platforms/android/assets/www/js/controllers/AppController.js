@@ -13,7 +13,7 @@ angular.module('ace.controllers', [])
 /**
  * @class AppController
  */
-.controller('AppController', function($scope, DataService, DownloadService, UploadService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, DbService, GeoService) {
+.controller('AppController', function($scope, DataService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, GeoService) {
   
   // Function toggles sliding the left side-menu out and back in
   /**
@@ -58,12 +58,6 @@ angular.module('ace.controllers', [])
         // Stop watching position
         GeoService.disableWatchPosition(navigator.geolocation);
         
-        // Stop auto-upload
-        UploadService.disableAutoUpload();
-        
-        // Kill the upload worker thread (if necessary)
-        UploadService.killUploadWorkerThread();
-        
         // Kick the user back out to the login screen
         $state.go('login');
         
@@ -96,149 +90,7 @@ angular.module('ace.controllers', [])
     worker.postMessage({req: "sync"});
   };
   
-  // Function provides test access
-  $scope.test = function() {
-    // Try out getting geolocation
-    /*navigator.geolocation.getCurrentPosition(function(position) {
-      alert('Latitude: '          + position.coords.latitude          + '\n' +
-          'Longitude: '         + position.coords.longitude         + '\n' +
-          'Altitude: '          + position.coords.altitude          + '\n' +
-          'Accuracy: '          + position.coords.accuracy          + '\n' +
-          'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-          'Heading: '           + position.coords.heading           + '\n' +
-          'Speed: '             + position.coords.speed             + '\n' +
-          'Timestamp: '         + position.timestamp                + '\n');
-    }, function(error) {
-      alert('code: '    + error.code    + '\n' +
-          'message: ' + error.message + '\n');
-    }, {timeout: 10000, enableHighAccuracy: true});*/
-    /*GeoService.getCurrentPosition(navigator.geolocation, function(position) {
-      alert('Latitude: '          + position.coords.latitude          + '\n' +
-          'Longitude: '         + position.coords.longitude         + '\n' +
-          'Altitude: '          + position.coords.altitude          + '\n' +
-          'Accuracy: '          + position.coords.accuracy          + '\n' +
-          'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-          'Heading: '           + position.coords.heading           + '\n' +
-          'Speed: '             + position.coords.speed             + '\n' +
-          'Timestamp: '         + position.timestamp                + '\n');
-    }, function(error) {
-      alert('code: '    + error.code    + '\n' +
-          'message: ' + error.message + '\n');
-    });*/
-    
-    DownloadService.downloadUsers(1);
-    
-    
-  };
-  
-  // Testing HTTPS capabilities
-  $scope.test2 = function() {
-    /*$http.get('https://www.google.com').then(function(resp) {
-      alert('success: ' + resp);
-    }, function(err) {
-        alert('error: ' + err);
-    });*/
-    
-    DbService.getAllUsers(window, function(res) {
-        var a = 0; 
-        a++;
-    });
-    
-  };
-  
-  $scope.testSQLite = function() {
-    DbService.openDatabase(window);
-    
-    /*navigator.geolocation.getCurrentPosition(function(pos) {
-      DbService.insertPosition(pos, window);
-      
-      DbService.getAllPositionLogs(window, function(res) {
-        alert(res.rows.length);
-      });
-      
-      DbService.getRecentPositionLogs(window, 3, function(res) {
-        alert(res.rows.length);
-        var i = 0;
-        i++;
-      });
-    });*/
-    
-    /*GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
-      DbService.insertPosition(pos, window);
-      
-      DbService.getAllPositionLogs(window, function(res) {
-        alert(res.rows.length);
-      });
-      
-      DbService.getRecentPositionLogs(window, 3, function(res) {
-        alert(res.rows.length);
-        var i = 0;
-        i++;
-      });
-    }); */
-    DbService.getAllPositionLogs(window, function(res) {
-        var num = res.rows.length;
-        alert(num);
-    }); 
-  };
-  
-  $scope.testReportPosition = function() {
-    DbService.getReportsAndPositions(window, function(reports) {
-      var i = 0;
-      i++;
-      i++;
-    });
-  };
-  
-  $scope.test3 = function() {
-      /*var user = LocalStorageService.getItem("currentUser", null, window);
-      
-      Group.groupId({id: user.groupId}, function(value, responseHeaders) {
-          var i = 0;
-          i++;
-      }, function(httpResponse) {
-          var i = 0; i++;
-      });*/
-      /*DbService.getAllUsers(window, function(res) {
-         var i = 0;
-         i = res; 
-         i = null;
-      });*/
-      UploadService.uploadAll();
-      
-  };
-  
   $scope.lastPos = null;
-  
-  $scope.test4 = function() {
-      GeoService.getCurrentPosition(navigator.geolocation, function(position) {			
-			var insert = false;
-			if(position !== null)
-			{
-				// Automatically insert if no other entries have been inserted
-				if($scope.lastPos === null)
-				{
-					insert = true
-				}
-				else if((position.coords.latitude !== $scope.lastPos.coords.latitude) 
-					|| (position.coords.longitude !== $scope.lastPos.coords.longitude) 
-					|| (position.coords.altitude != $scope.lastPos.coords.altitude) 
-					|| (position.coords.accuracy != $scope.lastPos.coords.accuracy) 
-					|| (position.coords.altitudeAccuracy != $scope.lastPos.coords.altitudeAccuracy))
-				{
-					insert = true;
-				}				
-			}
-			
-			// Insert if necessary
-			if(insert)
-			{
-				DbService.insertPosition(position, window);	
-			}	
-            
-            $scope.lastPos = position;					
-		});			     
-  };
   
   /**
    * Function opens the settings view
@@ -256,12 +108,6 @@ angular.module('ace.controllers', [])
     
     // Perform the navigation using the $state object
     $state.go('settings');
-  };
-  
-  $scope.testDownload = function() {
-      DownloadService.downloadUsers(LocalStorageService.getItem("currentUser", null, window).groupId);
-      
-      //DownloadService.downloadPositions();
   };
   
   $scope.testSync = function() {

@@ -130,12 +130,12 @@ if(self.importScripts !== undefined)
 	    };
 	})(this);
 	
-}
+	self.importScripts("../../js/sync/browser.bundle.js");
+	self.importScripts("../../js/sync/lbclient.js");
+	self.importScripts("../../lib/underscore/underscore.js");
+	self.importScripts("../../lib/async/dist/async.js");
 
-self.importScripts("../../js/sync/browser.bundle.js");
-self.importScripts("../../js/sync/lbclient.js");
-self.importScripts("../../lib/underscore/underscore.js");
-self.importScripts("../../lib/async/dist/async.js");
+}
 
 self.onmessage = function(message) {
 	// Check if we are currently loading

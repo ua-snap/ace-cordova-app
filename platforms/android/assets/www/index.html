@@ -26,9 +26,6 @@
 
     <!-- your app's js -->
     <script src="js/app.js"></script>
-    
-    <script src="lib/pouchdb/dist/pouchdb.js"></script>
-    <script src="lib/pouchdb-upsert/dist/pouchdb.upsert.js"></script>
     <script src="js/sync/browser.bundle.js"></script>
 
     <!-- Controller js files (AppController.js must be listed first since it contains the module init function) -->
@@ -38,7 +35,6 @@
     <script src="js/controllers/LoginController.js"></script>
     <script src="js/controllers/ReportController.js"></script>
     <script src="js/controllers/SettingsController.js"></script>
-    <script src="js/controllers/SettingsDbController.js"></script>
     <script src="js/controllers/SettingsGpsController.js"></script>
     <script src="js/controllers/BrowseReportsController.js"></script>
     <script src="js/controllers/ViewReportController.js"></script>
@@ -48,29 +44,15 @@
     <!-- Service js files (LoginService.js first - init function) -->
     <script src="js/services/WebApiService.js"></script>
     <script src="js/services/GeoService.js"></script>
-    <script src="js/services/DbService.js"></script>
     <script src="js/services/SettingsService.js"></script>
     <script src="js/services/DataShareService.js"></script>
     <script src="js/services/AuthService.js"></script>
     <script src="js/services/LocalStorageService.js"></script>
-    <script src="js/services/lb-services.js"></script>
-    <script src="js/services/UploadService.js"></script>
-    <script src="js/services/DownloadService.js"></script>
-    
-    <!-- Worker js files -->
-    <script src="js/workers/UploadWorker.js"></script>
-    <script src="js/workers/UploadWorker-app.js"></script>
-    <script src="js/workers/UploadWorkerService.js"></script>
-    <script src="lib/angular/angular.js"></script>
-    <script src="js/workers/DownloadWorker.js"></script>
-    <script src="js/workers/DownloadWorker-app.js"></script>
-    <script src="js/workers/DownloadWorkerService.js"></script>
     
     <!-- Core ACE API js files -->
     <script src="js/core/LocalStorageUtil.js"></script>
     <script src="js/core/JSONValidator.js"></script>
     <script src="js/core/Position.js"></script>
-    <script src="js/core/DbHandler.js"></script>
     <script src="js/core/Settings.js"></script>
     <script src="js/core/EmailValidator.js"></script>
     
@@ -91,6 +73,9 @@
     
     <!-- Polyfill files -->
     <script src="js/polyfill/PerfNowPolyfill.js"></script>   
+    
+    <!-- Pinch Zoom utility -->
+    <script src="js/utilities/img-touch-canvas.js"></script>
 
   </head>
   <body ng-app="ace" class="platform-android platform-cordova platform-webview">
@@ -120,7 +105,7 @@
           <ion-item ng-click="logout()">
             {{&apos;LOGOUT&apos; | translate}}
           </ion-item>
-          <ion-item ng-click="test()">
+          <!--<ion-item ng-click="test()">
             Test Download
           </ion-item>
           <ion-item ng-click="test2()">
@@ -134,7 +119,7 @@
           </ion-item>
           <ion-item ng-click="testLogin()">
             Test Login
-          </ion-item>
+          </ion-item>-->
           <ion-item ng-click="openSettings()">
             {{&apos;SETTINGS&apos; | translate}}
           </ion-item>

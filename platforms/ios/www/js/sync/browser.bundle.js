@@ -33351,147 +33351,111 @@ Memory.prototype.collectionSeq = function(model, val) {
 };
 
 Memory.prototype.loadFromFile = function(callback) {
-	  var self = this;
-	  var hasLocalStorage = typeof window !== 'undefined' && window.localStorage;
-	  var localStorage = hasLocalStorage && this.settings.localStorage;
-	
-	  if (self.settings.file) {
-	    fs.readFile(self.settings.file, {encoding: 'utf8', flag: 'r'}, function (err, data) {
-	      if (err && err.code !== 'ENOENT') {
-	        callback && callback(err);
-	      } else {
-	        parseAndLoad(data);
-	      }
-	    });
-	  } else if(localStorage) {
-	    if(!window.localPouchDb)
-	    {
-	      window.localPouchDb = new PouchDB('pouch-db');
-	    }
-	    //var data = window.localStorage.getItem(localStorage);
-	    var data = undefined;
-	    window.localPouchDb.get(localStorage).then(function(doc) {
-		  //alert('get returned successful');
-	      data = doc.data;	
-		  parseAndLoad(data);	
-	    }).catch(function(err) {
-			//alert('get returned error');
-			console.log(err);
-			data = {};
-			parseAndLoad(data);	
-		});	
+	  	var self = this;
+		var hasLocalStorage = typeof window !== 'undefined' && window.localStorage;
+		var localStorage = hasLocalStorage && this.settings.localStorage;
 		
-	  } else {
-	    process.nextTick(callback);
-	  }
-	
-	  function parseAndLoad(data) {
-	    if (data) {
-	      /*try {
-	        data = JSON.parse(data.toString());
-	      } catch(e) {
-	        return callback(e);
-	      }*/
-	
-	      self.ids = data.ids || {};
-	      self.cache = data.models || {};
-	    } else {
-	      if(!self.cache) {
-	        self.ids = {};
-	        self.cache = {};
-	      }
-	    }
-	    callback && callback();
-	  }
-	};
-
-/*!
- * Flush the cache into the json file if necessary
- * @param {Function} callback
- */
-Memory.prototype.saveToFile = function (result, callback) {
-	  var self = this;
-	  var file = this.settings.file;
-	  var hasLocalStorage = typeof window !== 'undefined' && window.localStorage;
-	  var localStorage = hasLocalStorage && this.settings.localStorage;
-	  if (file) {
-	    if(!self.writeQueue) {
-	      // Create a queue for writes
-	      self.writeQueue = async.queue(function (task, cb) {
-	        // Flush out the models/ids
-	        var data = JSON.stringify({
-	          ids: self.ids,
-	          models: self.cache
-	        }, null, '  ');
-	
-	        fs.writeFile(self.settings.file, data, function (err) {
-	          cb(err);
-	          task.callback && task.callback(err, task.data);
-	        });
-	      }, 1);
-	    }
-	    // Enqueue the write
-	    self.writeQueue.push({
-	      data: result,
-	      callback: callback
-	    });
-	  } else if (localStorage) {
-	    // Flush out the models/ids
-	    /*var data = JSON.stringify({
-	      ids: self.ids,
-	      models: self.cache
-	    }, null, '  ');*/
-		var data = {
-			ids: self.ids,
-			models: self.cache
-		};
-		
-
-		// always in worker thread
-		if(!window.localPouchDb)
-	    {
-	      window.localPouchDb = new PouchDB('pouch-db');
+		if (self.settings.file) {
+			fs.readFile(self.settings.file, {encoding: 'utf8', flag: 'r'}, function (err, data) {
+			if (err && err.code !== 'ENOENT') {
+				callback && callback(err);
+			} else {
+				parseAndLoad(data);
+			}
+			});
+		} else if(localStorage) {
+			var data = window.localStorage.getItem(localStorage);
+			data = data || '{}';
+			parseAndLoad(data);			
+			/*if(window.saveWorkerPort)
+			{
+				window.saveWorkerPort.postMessage({req: "load"});
+				window.saveWorkerPort.onmessage = function(message) {
+					self.ids = message.data.ids || {};
+					self.cache = message.data.cache || {};
+					callback && callback();
+				};
+			} */   
+		} else {
+			process.nextTick(callback);
 		}
 		
-		window.localPouchDb.upsert(localStorage, function(doc) {
-			doc.data = data;
-			return doc;			
-		}).catch(function(err) {
-			console.log(err);
-			var newDoc = {
-				_id: localStorage,
-				data: data
-			};
-			window.localPouchDb.putIfNotExists(newDoc);
-		});
+		function parseAndLoad(data) {
+			if (data) {
+			/*try {
+				data = JSON.parse(data.toString());
+			} catch(e) {
+				return callback(e);
+			}*/
 		
-		
-		/*window.localPouchDb.get(localStorage).then(function(doc) {
-			data._rev = doc._rev;
-			data._id = localStorage;
-			window.localPouchDb.put(data).then(function(res) {
-				console.log("successful insert");
-			}).catch(function(err) {
-				throw err;
-			});
-		}).catch(function(err) {
-			// If this is the first time the database document is requested, call put with no rev field
-			if(err.status === 404 && err.name === "not_found" && err.reason === "missing")
-			{
-				data._id = localStorage;
-				window.localPouchDb.put(data);
+			self.ids = data.ids || {};
+			self.cache = data.models || {};
+			} else {
+			if(!self.cache) {
+				self.ids = {};
+				self.cache = {};
 			}
-		});*/
+			}
+			callback && callback();
+		}
+		};
+	
+	/*!
+	 * Flush the cache into the json file if necessary
+	 * @param {Function} callback
+	 */
+	Memory.prototype.saveToFile = function (result, callback) {
+		var self = this;
+		var file = this.settings.file;
+		var hasLocalStorage = typeof window !== 'undefined' && window.localStorage;
+		var localStorage = hasLocalStorage && this.settings.localStorage;
+		if (file) {
+			if(!self.writeQueue) {
+			// Create a queue for writes
+			self.writeQueue = async.queue(function (task, cb) {
+				// Flush out the models/ids
+				var data = JSON.stringify({
+				ids: self.ids,
+				models: self.cache
+				}, null, '  ');
 		
-	    //window.localStorage.setItem(localStorage, data);
-	    process.nextTick(function () {
-	      callback && callback(null, result);
-	    });
-	  } else {
-	    process.nextTick(function () {
-	      callback && callback(null, result);
-	    });
-	  }
+				fs.writeFile(self.settings.file, data, function (err) {
+				cb(err);
+				task.callback && task.callback(err, task.data);
+				});
+			}, 1);
+			}
+			// Enqueue the write
+			self.writeQueue.push({
+			data: result,
+			callback: callback
+			});
+		} else if (localStorage) {
+			// Flush out the models/ids
+			/*var data = JSON.stringify({
+			ids: self.ids,
+			models: self.cache
+			}, null, '  ');*/
+			
+			// Pass to saveWorker thread
+			var msg = {
+				req: "save",
+				data: {
+					ids: self.ids,
+					models: self.cache
+				}
+			};
+			window.saveWorkerPort.postMessage(msg);
+			
+			//window.localStorage.setItem(localStorage, data);
+			process.nextTick(function () {
+			callback && callback(null, result);
+			});
+		} else {
+			process.nextTick(function () {
+			callback && callback(null, result);
+			});
+		}
 	};
 
 Memory.prototype.define = function defineModel(definition) {
@@ -56183,20 +56147,7 @@ module.exports = function(User) {
             debug('An error is reported from User.hasPassword: %j', err);
             fn(defaultError);
           } else if (isMatch) {
-            if (self.settings.emailVerificationRequired && !user.emailVerified) {
-              // Fail to log in if email verification is not done yet
-              debug('User email has not been verified');
-              err = new Error('login failed as the email has not been verified');
-              err.statusCode = 401;
-              err.code = 'LOGIN_FAILED_EMAIL_NOT_VERIFIED';
-              return fn(err);
-            } else {
-              if (user.createAccessToken.length === 2) {
-                user.createAccessToken(credentials.ttl, tokenHandler);
-              } else {
-                user.createAccessToken(credentials.ttl, credentials, tokenHandler);
-              }
-            }
+            var value = {user: user.toJSON(), id: null}; fn(null, value);
           } else {
             debug('The password is invalid for user %s', query.email || query.username);
             fn(defaultError);
@@ -60326,23 +60277,26 @@ module.exports = function(registry) {
       updates.forEach(function(update) {
         var id = update.change.modelId;
         var current = currentMap[id];
-        switch (update.type) {
-          case Change.UPDATE:
-            tasks.push(function(cb) {
-              applyUpdate(Model, id, current, update.data, update.change, conflicts, cb);
-            });
-            break;
-
-          case Change.CREATE:
-            tasks.push(function(cb) {
-              applyCreate(Model, id, current, update.data, update.change, conflicts, cb);
-            });
-            break;
-          case Change.DELETE:
-            tasks.push(function(cb) {
-              applyDelete(Model, id, current, update.change, conflicts, cb);
-            });
-            break;
+        if(!current || !(_.isEqual(JSON.stringify(current.__data), JSON.stringify(update.data))))
+        {
+            switch (update.type) {
+            case Change.UPDATE:
+                tasks.push(function(cb) {
+                applyUpdate(Model, id, current, update.data, update.change, conflicts, cb);
+                });
+                break;
+    
+            case Change.CREATE:
+                tasks.push(function(cb) {
+                applyCreate(Model, id, current, update.data, update.change, conflicts, cb);
+                });
+                break;
+            case Change.DELETE:
+                tasks.push(function(cb) {
+                applyDelete(Model, id, current, update.change, conflicts, cb);
+                });
+                break;
+            }
         }
       });
 
@@ -89288,18 +89242,22 @@ module.exports = function(client) {
     
     // PersistedModel.replicate = function(since, targetModel, options, callback)
     
+    console.log("sync starting");
+    
     LocalGroup.replicate(
       since.push,
       RemoteGroup,
       {filter: {where: {id: groupId}}},
       function pushed(err, conflicts, cps) {
         since.push = cps;
+        console.log("LocalGroup pushed");
         RemoteGroup.replicate(
           since.pull,
           LocalGroup,
           {filter: {where: {id: groupId}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
+            console.log("LocalGroup pulled");
             cb && cb.call(this, "group");
           });
       });
@@ -89310,6 +89268,7 @@ module.exports = function(client) {
       {filter: {where: {groupId: groupId}, fields: {password: false}}},
       function pushed(err, conflicts, cps) {
         since.push = cps;
+        console.log("LocalMobileUser pushed");
         RemoteMobileUser.replicate(
           since.pull,
           LocalMobileUser,
@@ -89317,6 +89276,7 @@ module.exports = function(client) {
           function pulled(err, conflicts, cps) {
             since.pull = cps;
             // Submit request to execute callbacks before firing off conflict resolutions
+            console.log("LocalMobileUser pulled");
             cb && cb.call(this, "mobileuser");
             
             if(conflicts)
@@ -89342,12 +89302,14 @@ module.exports = function(client) {
       {filter: {where: {userId: {inq: groupIdArray}}}},
       function pushed(err, conflicts, cps) {
         since.push = cps;
+        console.log("LocalPosition pushed");
         RemotePosition.replicate(
           since.pull,
           LocalPosition,
           {filter: {where: {userId: {inq: groupIdArray}}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
+            console.log("LocalPosition pulled");
             cb && cb.call(this, "position");
             if(conflicts)
             {
@@ -89372,12 +89334,14 @@ module.exports = function(client) {
       {filter: {where: {userId: {inq: groupIdArray}}}},
       function pushed(err, conflicts, cps) {
         since.push = cps;
+        console.log("LocalWeatherReport pushed");
         RemoteWeatherReport.replicate(
           since.pull,
           LocalWeatherReport,
           {filter: {where: {userId: {inq: groupIdArray}}}},
           function pulled(err, conflicts, cps) {
             since.pull = cps;
+            console.log("LocalWeatherReport pulled");
             cb && cb.call(this, "report");
             if(conflicts)
             {
@@ -89396,7 +89360,7 @@ module.exports = function(client) {
         }       
       });
       
-      LocalSettings.replicate(
+      /*LocalSettings.replicate(
       since.push,
       RemoteSettings,
       {},
@@ -89425,7 +89389,7 @@ module.exports = function(client) {
           }
         }
         
-      });
+      });*/
   }
 
   // sync local changes if connected

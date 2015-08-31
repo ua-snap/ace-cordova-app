@@ -13,7 +13,7 @@ angular.module('ace.controllers')
 /**
  * @class MapController
  */
-.controller('MapController', function($scope, $ionicSideMenuDelegate, DataService, LocalStorageService, $translate, $ionicNavBarDelegate, $ionicPopover, GeoService, DbService, SettingsService) {
+.controller('MapController', function($scope, $state, $ionicSideMenuDelegate, DataService, LocalStorageService, $translate, $ionicNavBarDelegate, $ionicPopover, GeoService, DbService, SettingsService) {
     // Set up menu options popover
     // Create popover from template and save to $scope variable
       $ionicPopover.fromTemplateUrl('templates/popovers/map-options.html', {
@@ -47,7 +47,7 @@ angular.module('ace.controllers')
     
     var timer = null;
     
-    var currentLocationMarker = null;
+    $scope.currentLocationMarker = null;
     var historyLine = null;
     var settings = null;
     
@@ -80,7 +80,8 @@ angular.module('ace.controllers')
         typeStr: "",
         displayHistory: false,
         displayReports: false,
-        displayMarker: true
+        displayMarker: true,
+        followPos: false
     };
     
     // Adding enter event listener.  This function will be called just before every view load,
@@ -115,6 +116,7 @@ angular.module('ace.controllers')
         $scope.mapState.typeStr = $scope.map.getMapTypeId();
         $scope.mapState.displayHistory = $scope.settings.displayHistory.checked;
         $scope.mapState.displayReports = $scope.settings.displayReports.checked;
+        $scope.mapState.followPos = $scope.settings.followPos;
         
         // Save center to local storage
         var position = new Position();
@@ -125,9 +127,20 @@ angular.module('ace.controllers')
         });
     };
     
+    // Regester an event handler for syncing
+    document.addEventListener('sync_complete', function(e) {
+        if($state.current.name === "tab.map")
+        {
+            // Refresh the map view
+            $scope.displayHistoryChanged();
+            $scope.displayReportsChanged();
+            $scope.displayOtherUsersChanged();
+        }        
+    }, false); 
+    
     var initialize = function()
     {
-        currentLocationMarker = null;
+        $scope.currentLocationMarker = null;
         
         // Check for last saved map settings
         var mapOptions;
@@ -166,7 +179,7 @@ angular.module('ace.controllers')
                 scaleControl: true,
                 panControl: false
             };
-        }      
+        }    
     
         // Create and save map
         var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
@@ -192,29 +205,50 @@ angular.module('ace.controllers')
         
         // Always display marker
         $scope.settings.displayPos.checked = true;
-    };
-    
-    var updateMarker = function(pos, follow) {        
-        if(currentLocationMarker)
+        
+        // Set follow position appropriately
+        $scope.settings.followPos = $scope.mapState.followPos;
+        
+        // toggle setting
+        if($scope.settings.followPos)
         {
-            currentLocationMarker.setPosition(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-            if(follow)
-            {
-                var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-                $scope.map.setCenter(latlng);
-            }
+            document.getElementById("followBtn").style.color = "#66cc33";            
         }
         else 
         {
-            var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-            
-            currentLocationMarker = new google.maps.Marker({
-                    position: latlng,
-                    map: $scope.map,
-                    title: "current_pos",
-            });
-            $scope.map.setCenter(latlng);
+            document.getElementById("followBtn").style.color = "";
         }
+        // set in service
+        GeoService.setFollowPosition($scope.settings.followPos);
+        
+    };
+    
+    var updateMarker = function(posArg, followArg) {
+        (function(pos, follow) {
+            // Execute the callback with a 3 millisecond delay (try to let the main ui thread catch up)
+            window.setTimeout(function() {
+                if($scope.currentLocationMarker)
+                {
+                    var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                    $scope.currentLocationMarker.setPosition(latlng);
+                    if(follow)
+                    {
+                        $scope.map.setCenter(latlng);
+                    }
+                }
+                else 
+                {
+                    var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                    
+                    $scope.currentLocationMarker = new google.maps.Marker({
+                            position: latlng,
+                            map: $scope.map,
+                            title: "current_pos",
+                    });
+                    $scope.map.setCenter(latlng);
+                }
+            }, 3);
+        })(posArg, followArg);
     };
     
     $scope.displayPosChanged = function() {
@@ -226,8 +260,8 @@ angular.module('ace.controllers')
       else 
       {
           // Remove the current location marker and clear the reference
-          currentLocationMarker.setMap(null);
-          currentLocationMarker = null;
+          $scope.currentLocationMarker.setMap(null);
+          $scope.currentLocationMarker = null;
           
           // Clear the callback function (that updates the marker)
           GeoService.setWatchCallback(null);
@@ -429,14 +463,15 @@ angular.module('ace.controllers')
     
     // Draws a line on the map where the user has traveled
     $scope.drawHistoryLine = function() {
-        // Grab last position entries
+        // Grab last position entries from current user
         var settings = SettingsService.getSettings(window);
         var filter = {
             order: 'timestamp DESC',
             where: {
                 and: [
                     {timestamp: {gt: $scope.settings.displayHistory.startDate}},
-                    {timestamp: {lt: $scope.settings.displayHistory.endDate}}
+                    {timestamp: {lt: $scope.settings.displayHistory.endDate}},
+                    {userId: LocalStorageService.getItem("currentUser", {}, window).id}
                 ]
             }
         };

@@ -19,11 +19,16 @@ angular.module('ace.controllers')
 	// regardless of controller and state caching.
 	$scope.$on('$ionicView.enter', function() {
 		// Enable dragging of the side menu
-		$ionicSideMenuDelegate.canDragContent(true);
+		$ionicSideMenuDelegate.canDragContent(false);
 		
 		// Re-translate the title (to ensure that it is correctly translated)
         $translate(['WORKSPACE']).then(function(translations) {
            $ionicNavBarDelegate.title(translations.WEATHER); 
+        });
+		
+		var gesturableImg = new ImgTouchCanvas({
+            canvas: document.getElementById('workspaceCanvas'),
+            path: "img/workspace1.png"
         });
 	});
 });

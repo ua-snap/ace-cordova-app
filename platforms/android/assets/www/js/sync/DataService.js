@@ -1,6 +1,6 @@
 angular.module('ace.services')
 
-.service('DataService', function($http, DbService, LocalStorageService, WebApiService) {    
+.service('DataService', function($http, LocalStorageService, WebApiService) {    
 	return {
 		// All callbacks should take the following args (err, res)
 		

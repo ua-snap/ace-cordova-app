@@ -13,7 +13,7 @@ angular.module('ace.services')
  * @class AuthService
  * @constructor
  */
-.service('AuthService', function($http, DataService, DbService, LocalStorageService, WebApiService, SettingsService) {    
+.service('AuthService', function($http, DataService, LocalStorageService, WebApiService, SettingsService) {    
 	return {
         /**
          * Function logs in the user with the credentials passed in the "name" and "pw" variables.  Note that 

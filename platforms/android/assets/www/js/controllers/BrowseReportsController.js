@@ -13,7 +13,7 @@
   */
 angular.module('ace.controllers')
 
-.controller('BrowseReportsController', function($scope, $ionicListDelegate, $ionicLoading, SettingsService, $ionicSideMenuDelegate, GeoService, $ionicHistory, $state, DataService, LocalStorageService, DbService, DataShareService) {
+.controller('BrowseReportsController', function($scope, $ionicListDelegate, $ionicLoading, SettingsService, $ionicSideMenuDelegate, GeoService, $ionicHistory, $state, DataService, LocalStorageService, DataShareService) {
   
   // Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.

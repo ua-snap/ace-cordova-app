@@ -13,7 +13,7 @@ angular.module('ace.controllers')
 /**
  * @class MapController
  */
-.controller('MapController', function($scope, $ionicSideMenuDelegate, DataService, LocalStorageService, $translate, $ionicNavBarDelegate, $ionicPopover, GeoService, DbService, SettingsService) {
+.controller('MapController', function($scope, $state, $ionicSideMenuDelegate, DataService, LocalStorageService, $translate, $ionicNavBarDelegate, $ionicPopover, GeoService, SettingsService) {
     // Set up menu options popover
     // Create popover from template and save to $scope variable
       $ionicPopover.fromTemplateUrl('templates/popovers/map-options.html', {
@@ -127,6 +127,17 @@ angular.module('ace.controllers')
         });
     };
     
+    // Regester an event handler for syncing
+    document.addEventListener('sync_complete', function(e) {
+        if($state.current.name === "tab.map")
+        {
+            // Refresh the map view
+            $scope.displayHistoryChanged();
+            $scope.displayReportsChanged();
+            $scope.displayOtherUsersChanged();
+        }        
+    }, false); 
+    
     var initialize = function()
     {
         $scope.currentLocationMarker = null;
@@ -168,15 +179,7 @@ angular.module('ace.controllers')
                 scaleControl: true,
                 panControl: false
             };
-        }
-        
-        // Regester an event handler for syncing
-        document.addEventListener('sync_complete', function(e) {
-            // Refresh the map view
-            $scope.displayHistoryChanged();
-            $scope.displayReportsChanged();
-            $scope.displayOtherUsersChanged();
-        }, false);     
+        }    
     
         // Create and save map
         var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
@@ -220,10 +223,10 @@ angular.module('ace.controllers')
         
     };
     
-    var updateMarker = function(pos, follow) {
-        /*(function(pos, follow) {
+    var updateMarker = function(posArg, followArg) {
+        (function(pos, follow) {
             // Execute the callback with a 3 millisecond delay (try to let the main ui thread catch up)
-            window.setTimeout(function() {*/
+            window.setTimeout(function() {
                 if($scope.currentLocationMarker)
                 {
                     var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
@@ -244,8 +247,8 @@ angular.module('ace.controllers')
                     });
                     $scope.map.setCenter(latlng);
                 }
-            /*}, 3);
-        })(posArg, followArg)*/    
+            }, 3);
+        })(posArg, followArg);
     };
     
     $scope.displayPosChanged = function() {

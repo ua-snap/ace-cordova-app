@@ -27,7 +27,10 @@ angular.module('ace.services')
 				window.thread_messenger = {
 					callbackMap: {}
 				};
-			}
+			}			
+			
+			// Set up persistent file quota (for save thread) 50 mb
+			navigator.webkitPersistentStorage.requestQuota(50 * 1024 * 1024);
 			
 			// Set up worker thread
 			if(window.thread_messenger.worker === undefined)
@@ -37,6 +40,17 @@ angular.module('ace.services')
 				// Set up recieve message handler
 				window.thread_messenger.worker.onmessage = this.recieveMessage;
 			}
+			
+			// Set up save-load thread
+			if(window.thread_messenger.saveWorker === undefined)
+			{
+				window.thread_messenger.saveWorker = new Worker("js/sync/SaveWorker.js");
+			}
+			
+			// Set up message channel between worker threads
+			window.thread_messenger.msgChannel = new MessageChannel();
+			window.thread_messenger.worker.postMessage("msgChannelPort", [window.thread_messenger.msgChannel.port1]);
+			window.thread_messenger.saveWorker.postMessage("msgChannelPort", [window.thread_messenger.msgChannel.port2])
 			
 			// Reset sync counter and indicator
 			window.thread_messenger.syncCounter = 0;
@@ -146,9 +160,19 @@ angular.module('ace.services')
 			this.sendMessage("login", credentials, filter, cb);
 		},
 		
+		// Offline login function
+		localMobileUser_login: function(credentials, filter, cb) {
+			this.sendMessage("login-offline", credentials, filter, cb);
+		},
+		
 		// RemoteGroup.findOne
 		remoteGroup_findOne: function(filter, cb) {
 			this.sendMessage("remotegroup.findone", null, filter, cb);	
+		},
+		
+		// LocalGroup.findOne
+		localGroup_findOne: function(filter, cb) {
+			this.sendMessage("localgroup.findone", null, filter, cb);	
 		},
 		
 		localWeatherReport_updateAll: function(filter, data, cb) {
@@ -199,14 +223,18 @@ angular.module('ace.services')
 					});
 				}		
 				
-				// Clear sync notification on return (after 5 success messages)
+				// Clear sync notification on return (after 4 success messages)
 				var callbackWrapper = function() {
 					window.thread_messenger.syncCounter++;
-					if(window.thread_messenger.syncCounter === 5)
+					if(window.thread_messenger.syncCounter === 4)
 					{
 						// Reset counter and indicator and clear notification
 						window.thread_messenger.syncCounter = 0;
 						window.thread_messenger.syncing = false;
+						
+						// Fire off a "sync_complete" event
+						var event = new Event('sync_complete');						
+						document.dispatchEvent(event);
 						
 						window.plugin.notification.local.isPresent(230476843, function(present) {
 							if(present)

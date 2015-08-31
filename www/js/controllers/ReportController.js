@@ -15,7 +15,7 @@ angular.module('ace.controllers')
  * @description Controller for the Report view.  This controller contains all the
  * UI functionality for entering and saving reports.
  */
-.controller('ReportController', function(AuthService, $scope, $state, $ionicPopup, $translate, DataService, LocalStorageService, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicModal, UploadService, SettingsService, $ionicPopover, $ionicLoading, DataShareService, DbService, GeoService) {
+.controller('ReportController', function(AuthService, $scope, $state, $ionicPopup, $translate, DataService, LocalStorageService, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicModal, SettingsService, $ionicPopover, $ionicLoading, DataShareService, GeoService) {
   
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
@@ -201,10 +201,6 @@ angular.module('ace.controllers')
     // Save report to database and upload
     var tempReport = $scope.report;
     GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
-        /*DbService.insertReportAndPosition(tempReport, pos, window, function(res) {
-            // Manually upload report (an anything else)
-            UploadService.uploadAll();
-        });*/
         
         var localPos = {
             userId: LocalStorageService.getItem("currentUser", {}, window).id,
@@ -462,18 +458,7 @@ angular.module('ace.controllers')
   document.addEventListener("deviceready", onDeviceReady, false);
   
   function onDeviceReady() {
-    // Open Db and create tables if necessary
-    //DbService.openDatabase(window);
-    //DbService.createTables(window);
     
-    // Grab and set settings
-    /*var localHandler = new LocalStorageUtil(window);
-    var settings = localHandler.get("settings", null);
-    if(settings === null)
-    {
-      settings = new Settings();
-      localHandler.set("settings", settings);
-    }*/
   };
   
   // Additional Options

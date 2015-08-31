@@ -13,7 +13,7 @@
   */
 angular.module('ace.controllers')
 
-.controller('SettingsGpsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, GeoService, DbService, SettingsService) {
+.controller('SettingsGpsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, GeoService, SettingsService) {
   	
 	// Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.

@@ -76,13 +76,6 @@ angular.module('ace', ['ionic', 'ace.controllers', 'ace.services', 'pascalprecht
     controller: 'SettingsController'
   })
   
-  // Database settings state
-  .state('settings-db', {
-    url: '/settings_db',
-    templateUrl: 'templates/settings_db.html',
-    controller: 'SettingsDbController'
-  })
-  
   // GPS settings state
   .state('settings-gps', {
     url: '/settings_gps',
