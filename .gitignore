@@ -6,3 +6,6 @@ node_modules/
 #plugins/
 
 platforms/android/.gradle
+
+# Ignore generated documentation
+docs/

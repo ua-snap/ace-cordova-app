@@ -60,36 +60,13 @@ gulp.task('test-debug', function(done) {
   });
 });
 
-gulp.task('gen-docco-app', function(done) {
-  gulp.src(["./www/js/*.js", "./www/js/controllers/*.js", "./www/js/services/*.js", "./www/js/workers/*.js"])
+gulp.task('gen-docco-all', function(done) {
+    gulp.src(["./www/js/*.js", "./www/js/controllers/*.js", "./www/js/services/*.js", "./www/js/workers/*.js",
+        "./www/js/workers/*.js", "./www/js/polyfill/*.js", "./www/js/core/*.js"])
   .pipe(docco())
-  .pipe(gulp.dest('./docs/app/inline'));
+  .pipe(gulp.dest('./docs/docco/'));
   done();
 });
-
-gulp.task('gen-docco-api', function(done) {
-  gulp.src("./www/js/core/*.js")
-  .pipe(docco())
-  .pipe(gulp.dest('./docs/api/inline'));
-  done();
-});
-
-gulp.task('gen-yuidoc-api', function(done) {
-  gulp.src("./www/js/core/*.js")
-  .pipe(yuidoc())
-  .pipe(gulp.dest("./docs/api/interface"));
-  done();
-});
-
-gulp.task('gen-yuidoc-app', function(done) {
-  gulp.src(["./www/js/*.js", "./www/js/controllers/*.js", "./www/js/services/*.js", "./www/js/workers/*.js"])
-  .pipe(yuidoc())
-  .pipe(gulp.dest("./docs/app/interface"));
-  done();
-});
-
-gulp.task('gen-docs', ['gen-docco-api', 'gen-docco-app', 'gen-yuidoc-api', 'gen-yuidoc-app']);
-
 
 gulp.task('git-check', function(done) {
   if (!sh.which('git')) {

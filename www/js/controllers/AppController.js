@@ -6,7 +6,7 @@ angular.module('ace.controllers', [])
 // AppController
 //--------------------------------------------------------------
 
-// App controller is the main AngularJS controller responsible for the "base page" (no tabs).  It is mainly used
+// AppController is the main AngularJS controller responsible for the "base page" (no tabs).  It is mainly used
 // for handling the left-side-menu
 
 // Create the AppController controller
