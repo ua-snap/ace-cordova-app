@@ -1,21 +1,25 @@
-// SettingsDbController.js
-
-/**
- * @module ace.controllers
- */
+// BrowseReportsController.js
  
- // SettingsDbController.js
- //-----------------------------------------------------------------------------------------------
- 
- // Controller for the settings view
- /**
-  * @class SettingsDbController
-  */
+ // Add controller to the ace.controllers module
 angular.module('ace.controllers')
 
+// BrowseReportsController.js
+//-----------------------------------------------------------------------------------------------
+ 
+// AngularJS Controller for the settings view
+// This view displays a list of all reports that have been submitted by the current user
 .controller('BrowseReportsController', function($scope, $ionicListDelegate, $ionicLoading, SettingsService, $ionicSideMenuDelegate, GeoService, $ionicHistory, $state, DataService, LocalStorageService, DataShareService) {
-  
-  // Adding beforeEnter event listener.  This function will be called just before every view load,
+	// Array to hold all reports (and to be accessed from the view via Angular)
+	$scope.reports = [];
+	  
+	// Ensure that the reports info is correct when the view is FIRST displayed.
+	$scope.$on('$ionicView.beforeEnter', function() {
+		// Set up reports item
+		$scope.refresh();
+
+	});
+
+	// Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
 	$scope.$on('$ionicView.enter', function() {
 		// Enable dragging of the side menu
@@ -24,11 +28,14 @@ angular.module('ace.controllers')
 	
 	// Function called from pull to refresh
 	$scope.doRefresh = function() {
+		// Refresh the current list from the local storage set
 		$scope.refresh();
 	};
 	
+	// Refresh the currently displayed list from the local storage set
 	$scope.refresh = function() {
-			DataService.localWeatherReport_find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).id}}, function(err, res) {
+		// Request the list of all reports for the current user from the local data storage set
+		DataService.localWeatherReport_find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).id}}, function(err, res) {
 			// Get the associated positions
 			var reportArray = res;
 			var positionIdArray = [];
@@ -36,70 +43,51 @@ angular.module('ace.controllers')
 			{
 			   positionIdArray.push(res[i].positionId);
 			}
+			
+			// Get all locations associated with the reports (to access the timestamp objects contained in them)
 			DataService.localPosition_find({where: {id: {inq: positionIdArray}}}, function(err, res2) {
+				// Store the positions by their id's (for faster retrieval later)
 				var positionMap = {};
 				for(var i = 0; i < res2.length; i++)
 				{
 					positionMap[res2[i].id] = res2[i];
 				} 
+				
+				// Add the timestamp into each report object (to be displayed on the list)
 				for(var i = 0; i < reportArray.length; i++)
 				{
 					reportArray[i].date = positionMap[reportArray[i].positionId].timestamp;
 				}
+				
+				// Update the view
 				$scope.$apply(function() {
 					$scope.reports = reportArray;
+					
+					// Turn off the spinning refresh notification
 					$scope.$broadcast('scroll.refreshComplete');	
 				});		
 			});
 		});
 	};
 	
-	// Ensure that the reports info is correct when the view is FIRST displayed.
-	$scope.$on('$ionicView.beforeEnter', function() {
-		// Set up reports item
-		$scope.refresh();
-
-	});
-	
-	$scope.reports = [];
-	
-	// Function toggles sliding the left side-menu out and back in
-	/**
-	* @method toggleLeft
-	* @description Function toggles sliding the left side-menu out and back in
-	* @return void
-	* @throws none
-	*/
-	$scope.toggleLeft = function() {
-		$ionicSideMenuDelegate.toggleLeft();
-	};
-	
-	// Custom function called when the back navigation button is clicked
-	// Custom, because this is navigation back to a different state (one of the tabs), instead 
-	// of simple back navigation using the nav stack.
+	// Custom back navigation function for this view.  The BrowseReports view will always be displayed from the
+	// tab.report state, so always navigate back to it
 	$scope.goBack = function() {
-		// Get the previous state (saved in the AppController toggleLeft() function)
-		var previousState = LocalStorageService.getItem('previousState', null, window);
-		
-		// If a previous state exists, navigate back to it
-		if(previousState)
-		{
-			$state.go(previousState);
-		}
-		else
-		{
-			// Default to the report tab
-			$state.go('tab.report');
-		}
+		// ALWAYS go back to the report tab
+		$state.go('tab.report');
 	};
 	
+	// Click handler for selecting a report to view the details of.  Pass the selected report to the DataShareService
+	// (which will make it available to the "view report" view in ViewReportController.js)
 	$scope.elementClicked = function(report) {
-		//alert(report.date);
+		// Save item to be accessed in next view
 		DataShareService.setItem("selectedReport", report);
+		
+		// Go to the browse-reports-view state
 		$state.go("browse-reports-view");
  	};
 	 
-	 // Edit option button clicked
+	 // Edit option button clicked (accessed via sliding the report to the left)
 	 $scope.editClicked = function(report)
 	 {
 		 // Close the opened option button
@@ -110,11 +98,15 @@ angular.module('ace.controllers')
 		 delete reportCpy.date;
 		 delete reportCpy.positionId;
 		 delete reportCpy.id;
+		 
+		 // Save the report to be accessed by the report view
 		 DataShareService.setItem("template", reportCpy);
+		 
+		 // Navigate to the tab.report state
 		 $state.go("tab.report");
 	 }
 	 
-	 // Report resend button clicked
+	 // Report resend button clicked (accessed via sliding the report to the left)
 	 $scope.resendClicked = function(report) {
 		// Close the opened option button
 		$ionicListDelegate.closeOptionButtons();
