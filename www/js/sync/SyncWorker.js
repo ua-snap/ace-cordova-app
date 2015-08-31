@@ -1,4 +1,5 @@
-if(self.importScripts !== undefined)
+// Only load in web worker context
+if(typeof DedicatedWorkerGlobalScope != "undefined" && this instanceof DedicatedWorkerGlobalScope)
 {
 	// Local storage shim
 	var localStorage = {};

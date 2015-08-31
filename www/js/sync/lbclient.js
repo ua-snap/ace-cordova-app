@@ -1,5 +1,5 @@
 'use strict';
-if(self.importScripts !== undefined)
+if(typeof DedicatedWorkerGlobalScope != "undefined" && this instanceof DedicatedWorkerGlobalScope)
 {
 	var client = (function() {
 		return require('lbclient');
