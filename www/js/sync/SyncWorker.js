@@ -28,6 +28,7 @@ if(typeof DedicatedWorkerGlobalScope != "undefined" && this instanceof Dedicated
 	// Window shim
 	this.window = this;
 	window.localStorage = localStorage;
+	
 	// Remove partial fetch support (doesn't work anyway).  Force to use XMLHttpRequest
 	window.fetch = undefined;
 	

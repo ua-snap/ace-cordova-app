@@ -29,8 +29,12 @@ angular.module('ace.services')
 				};
 			}			
 			
-			// Set up persistent file quota (for save thread) 50 mb
-			navigator.webkitPersistentStorage.requestQuota(50 * 1024 * 1024);
+			// Only pre-initialize memory quote on Android
+			if(window.cordova.platformId === "android")
+			{
+				// Set up persistent file quota (for save thread) 50 mb
+				navigator.webkitPersistentStorage.requestQuota(50 * 1024 * 1024);
+			}
 			
 			// Set up worker thread
 			if(window.thread_messenger.worker === undefined)
@@ -66,6 +70,7 @@ angular.module('ace.services')
 			if(window.thread_messenger && window.thread_messenger.worker)
 			{
 				window.thread_messenger.worker.terminate();
+				window.thread_messenger.saveWorker.terminate();
 			}	
 		},
 		
