@@ -1,6 +1,6 @@
 {
-  "name": "ace",
-  "version": "1.0.0",
+  "name": "ace-cordova-app",
+  "version": "0.1.0",
   "description": "ACE: An Ionic project",
   "dependencies": {
     "gulp": "^3.5.6",

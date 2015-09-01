@@ -12,3 +12,6 @@ docs/
 
 # Ignore bower library location (vcs handled by bower)
 www/lib/
+
+# Visual Studio Code settings files
+.settings/
