@@ -9,3 +9,6 @@ platforms/android/.gradle
 
 # Ignore generated documentation
 docs/
+
+# Ignore bower library location (vcs handled by bower)
+www/lib/

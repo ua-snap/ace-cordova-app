@@ -1,7 +1,36 @@
 {
-  "name": "HelloIonic",
-  "private": "true",
+  "name": "ace-cordova-app",
   "devDependencies": {
     "ionic": "driftyco/ionic-bower#1.0.0"
+  },
+  "version": "0.0.1",
+  "homepage": "https://github.com/ua-snap/ace-cordova-app",
+  "authors": [
+    "jamessentell"
+  ],
+  "description": "Mobile application for ACE project",
+  "moduleType": [
+    "amd",
+    "es6",
+    "globals",
+    "node",
+    "yui"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "www/lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-file-upload": "~1.1.5",
+    "angular-mocks": "~1.4.0",
+    "angular-resource": "~1.4.1",
+    "angular-translate": "~2.7.2",
+    "async": "~1.4.2",
+    "underscore": "~1.8.3"
   }
 }
