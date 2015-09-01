@@ -1,15 +1,15 @@
 // WeatherReport.js
 
-// WeatherReport
-//-------------------------------------------------------------------------
-
-// This class serves as a data container for all the information pertaining to Weather reports.
-
 /**
  * @class WeatherReport
  * @description This class serves as a data container for all the information pertaining to Weather reports.
  * @constructor Initializes all values to "".
  */
+
+// WeatherReport
+//-------------------------------------------------------------------------
+
+// This class serves as a data container for all the information pertaining to Weather reports.
 var WeatherReport = function() {
 	/**
 	 * Stores the user selection for cloud cover
@@ -18,6 +18,8 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
+	
+	// Stores the user selection for cloud cover
 	this.cloudCover = "";
 	
 	/**
@@ -27,6 +29,8 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
+	
+	// Precipitation variable
 	this.precipitation = "";
 	
 	/**
@@ -36,6 +40,8 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
+	
+	// Visibility
 	this.visibility = "";
 	
 	/**
@@ -45,6 +51,8 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
+	
+	// Pressure Tendency (Upward, No Change, or Downward)
 	this.pressureTendency = "";
 	
 	/**
@@ -54,6 +62,8 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
+	
+	// Pressure Value (restricted to hPa units)
 	this.pressureValue = "";
 	
 	/**
@@ -63,14 +73,19 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
+	
+	// Temperature value
 	this.temperatureValue = "";
 	
 	/**
 	 * Temperature units (deg C or deg F)
+	 * 
 	 * @property temperatureUnits
 	 * @type string
 	 * @default ""
 	 */
+	
+	// Temperature units (deg C or deg F)
 	this.temperatureUnits = "";
 	
 	/**
@@ -80,6 +95,8 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
+	
+	// Wind value
 	this.windValue = "";
 	
 	/**
@@ -89,6 +106,8 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
+	
+	// Wind units
 	this.windUnits = "";
 	
 	/**
@@ -98,6 +117,8 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
+	
+	// Wind direction
 	this.windDirection = "";
 	
 	/**
@@ -106,6 +127,8 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
+	
+	// Notes
 	this.notes = "";
 	
 	/**
@@ -115,6 +138,8 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
+	
+	// Field for camera
 	this.attachment = "";
 	
 	/**
@@ -123,21 +148,7 @@ var WeatherReport = function() {
 	 * @type string
 	 * @default ""
 	 */
+	
+	// Other (Aurora Borealis or Tornado)
 	this.other = "";
-};
-
-WeatherReport.prototype.importSqlRow = function(sqlRow) {
-	this.cloudCover = sqlRow.cloudCover;
-	this.precipitation = sqlRow.precipitation;
-	this.visibility = sqlRow.visibility;
-	this.pressureTendency = sqlRow.pressureTendency;
-	this.pressureValue = sqlRow.pressureValue;
-	this.temperatureValue = sqlRow.temperatureValue;
-	this.temperatureUnits = sqlRow.temperatureUnits;
-	this.windValue = sqlRow.windValue;
-	this.windUnits = sqlRow.windUnits;
-	this.windDirection = sqlRow.windDirection;
-	this.notes = sqlRow.notes;
-	this.attachment = sqlRow.camera;
-	this.other = sqlRow.other;	
 };

@@ -1,3 +1,4 @@
+// Do not modify.  From ace-api repo
 'use strict';
 if(typeof DedicatedWorkerGlobalScope != "undefined" && this instanceof DedicatedWorkerGlobalScope)
 {

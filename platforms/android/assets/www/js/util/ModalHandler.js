@@ -1,15 +1,15 @@
 // ModalHandler.js
 
-// ModalHandler
-//-----------------------------------------------------------------------------------
-
-// Class handles functionality related to modals in the reporting section
-
-// Empty constructor
 /**
  * @class ModalHandler
  * @constructor
  */
+
+// ModalHandler
+//-----------------------------------------------------------------------------------
+
+// Class handles functionality related to modals in the reporting section
+// Empty constructor
 var ModalHandler = function() {};
 
 /**
@@ -19,6 +19,8 @@ var ModalHandler = function() {};
  * @type string
  * @default "transparent"
  */
+
+// Static unselected color value
 ModalHandler.prototype.unselectedColor = "transparent";
 
 /**
@@ -28,25 +30,25 @@ ModalHandler.prototype.unselectedColor = "transparent";
  * @type string
  * @default "rgb(149, 206, 226)"
  */
+
+// Static selected color value
 ModalHandler.prototype.selectedColor = "rgb(149, 206, 226)";
 
-
-// Returns all "selectable" items in the current modal
 /**
  * @method getSelectable
- * @description Returns all "selectable" items in the current modal
+ * @description Returns all "selectable" items in the current modal, determined by class
  * @param {HTML Document} htmlDoc The "document" variable from the current scope
  * @return {array} An array of all the elements in the current ui that are members
  *          of the "selectable" class.  This should be used for situations when the
  *          user selects from multiple pre-defined options listed as a grid of icons.
  * @throws none
  */
+
+// Returns all "selectable" items in the current modal, determined by class
 ModalHandler.prototype.getSelectable = function(htmlDoc) {
 	return htmlDoc.getElementsByClassName("selectable");
 };
 
-// Resets (changes to the unselected color) all the backgrounds of elements that are members of the
-// "selectable class"
 /**
  * @method resetSelectableBackgrounds
  * @description
@@ -54,6 +56,9 @@ ModalHandler.prototype.getSelectable = function(htmlDoc) {
  * @return void
  * @throws none
  */
+
+// Resets (changes to the unselected color) all the backgrounds of elements that are members of the
+// "selectable class"
 ModalHandler.prototype.resetSelectableBackgrounds = function(htmlDoc) {
 	var divArray = this.getSelectable(htmlDoc);
 	for(var i = 0; i < divArray.length; i++)
@@ -62,7 +67,6 @@ ModalHandler.prototype.resetSelectableBackgrounds = function(htmlDoc) {
 	}
 };
 
-// Sets a new temporary (unsaved) selection on a modal.  Handles background recoloring.
 /**
  * @method setNewTempSelection
  * @description
@@ -70,6 +74,8 @@ ModalHandler.prototype.resetSelectableBackgrounds = function(htmlDoc) {
  * @param {ionicModal} modal The app modal that the selection was performed on
  * @param {string} id The id of the element that was selected.
  */
+
+// Sets a new temporary (unsaved) selection on a modal.  Handles background recoloring.
 ModalHandler.prototype.setNewTempSelection = function(htmlDoc, modal, id) {
     // Grab the selected element
 	var selectedElement = htmlDoc.getElementById(id);
@@ -97,8 +103,6 @@ ModalHandler.prototype.setNewTempSelection = function(htmlDoc, modal, id) {
 	}
 };
 
-// Sets up any previsouly selected items from a modal (sets the background of the element indicated by "id" to
-// the selected color).
 /**
  * @method setPreviousSelection
  * @description
@@ -107,6 +111,9 @@ ModalHandler.prototype.setNewTempSelection = function(htmlDoc, modal, id) {
  * @return void
  * @throws none
  */
+
+// Sets up any previsouly selected items from a modal (sets the background of the element indicated by "id" to
+// the selected color).
 ModalHandler.prototype.setPreviousSelection = function(htmlDoc, id) {
     // If the id is valid...
     if(id !== "")
@@ -116,7 +123,6 @@ ModalHandler.prototype.setPreviousSelection = function(htmlDoc, id) {
     }
 };
 
-// Opens a modal and handles setting up any selectable items
 /**
  * @method openModal
  * @description
@@ -125,6 +131,8 @@ ModalHandler.prototype.setPreviousSelection = function(htmlDoc, id) {
  * @return void
  * @throws none
  */
+
+// Opens a modal and handles setting up any selectable items
 ModalHandler.prototype.openModal = function(htmlDoc, modal)
 {
     // Actually display the modal (to create the html elements if they are not already created)
@@ -148,8 +156,7 @@ ModalHandler.prototype.openModal = function(htmlDoc, modal)
         this.resetSelectableBackgrounds(htmlDoc);
     }   
 };
-
-// Performs "Save" functionality for the specified modal.  
+  
 /**
  * @method saveModal
  * @param {HTML Document} htmlDoc The "document" variable from the current scope.
@@ -161,6 +168,8 @@ ModalHandler.prototype.openModal = function(htmlDoc, modal)
  * @param {boolean} summaryDifferent OPTIONAL parameter that indicates whether the summary field should be different from
  *          what was saved into the report.
  */
+
+// Performs "Save" functionality for the specified modal.
 ModalHandler.prototype.saveModal = function(htmlDoc, modal, summaryElementId, convertFunction, formatSummaryText, summaryDifferent) {
     // Save the selection to the modal permanent variable
     modal.selection = modal.temp;

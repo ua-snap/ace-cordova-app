@@ -3,7 +3,6 @@ angular.module('ace.services')
 .service('DataService', function($http, LocalStorageService) {    
 	return {
 		// All callbacks should take the following args (err, res)
-		
 		/*
 			Sent Message format:
 			{

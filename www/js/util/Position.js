@@ -1,9 +1,16 @@
+// Position.js
+
 /**
  * Object class used to store the contents of an HTML5 Geolocation position object.  Structured to mirror that object.
  * 
  * @class Position
  * @constructor
  */
+
+// JSONValidator
+//------------------------------------------------------------------------------
+
+// Object class used to store the contents of an HTML5 Geolocation position object.  Structured to mirror that object.
 var Position = function() {
 	// Initialize all to ""
 	this.timestamp = "";	
@@ -25,6 +32,8 @@ var Position = function() {
  * @return void
  * @throws none
  */
+
+// Function imports a HTML5 Geolocation position object
 Position.prototype.importNavigatorPosition = function(navPos)
 {
 	this.timestamp = navPos.timestamp;
@@ -35,23 +44,4 @@ Position.prototype.importNavigatorPosition = function(navPos)
 	this.coords.latitude = navPos.coords.latitude;
 	this.coords.longitude = navPos.coords.longitude;
 	this.coords.speed = navPos.coords.speed;
-};
-
-/**
- * Function imports a SQL row from the ace.db "positions" table.
- * 
- * @method importSqlRow
- * @param {Object} sqlRow The row to import
- * @return void
- * @throws none
- */
-Position.prototype.importSqlRow = function(sqlRow) {
-	this.timestamp = sqlRow.timestamp;
-	this.coords.accuracy = sqlRow.accuracy;
-	this.coords.altitude = sqlRow.altitude;
-	this.coords.altitudeAccuracy = sqlRow.altitudeAccuracy;
-	this.coords.heading = sqlRow.heading;
-	this.coords.latitude = sqlRow.latitude;
-	this.coords.longitude = sqlRow.longitude;
-	this.coords.speed = sqlRow.speed;
 };

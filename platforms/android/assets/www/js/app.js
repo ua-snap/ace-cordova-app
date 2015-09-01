@@ -1,8 +1,6 @@
-// Ionic Starter App
+// app.js
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
+// Contains definitions and initialization for the ace mobile app
 angular.module('ace', ['ionic', 'ace.controllers', 'ace.services', 'pascalprecht.translate'])
 
 .run(function($ionicPlatform) {
@@ -47,7 +45,7 @@ angular.module('ace', ['ionic', 'ace.controllers', 'ace.services', 'pascalprecht
     }
   })
 
-  // State for the map view
+  // Contains the mapping view
   .state('tab.map', {
       url: '/map',
       views: {
@@ -58,7 +56,7 @@ angular.module('ace', ['ionic', 'ace.controllers', 'ace.services', 'pascalprecht
       }
     })
 
-  // State for the workspace view
+  // Contains the workspace view
   .state('tab.workspace', {
     url: '/workspace',
     views: {
@@ -69,42 +67,42 @@ angular.module('ace', ['ionic', 'ace.controllers', 'ace.services', 'pascalprecht
     }
   })
   
-  // Settings state
+  // Settings state - not a tab
   .state('settings', {
     url: '/settings',
     templateUrl: 'templates/settings.html',
     controller: 'SettingsController'
   })
   
-  // GPS settings state
+  // GPS settings state (only accessed from Settings state)
   .state('settings-gps', {
     url: '/settings_gps',
     templateUrl: 'templates/settings_gps.html',
     controller: 'SettingsGpsController'
   })
   
-  // Translations/Language settings state
+  // Translations/Language settings state (only accessed from Settings state)
   .state('settings-language', {
       url: '/settings_language',
       templateUrl: 'templates/settings_language.html',
       controller: 'SettingsLangController'
   })
   
-  // General settings state
+  // General settings state (only accessed from Settings state)
   .state('settings-general', {
     url: '/settings_general',
     templateUrl: 'templates/settings_general.html',
     controller: 'SettingsGeneralController'
   })
   
-  // Report Browser State
+  // Report Browser State (only accessed from the tab.report state)
   .state('browse-reports', {
     url: '/report_browser',
     templateUrl: 'templates/browse_reports.html',
     controller: 'BrowseReportsController'
   })
   
-  // View Report (From report browser)
+  // View Report (From report browser state)
   .state('browse-reports-view', {
     url: '/report_browser_view',
     templateUrl: 'templates/browse_reports_view.html',
@@ -119,7 +117,7 @@ angular.module('ace', ['ionic', 'ace.controllers', 'ace.services', 'pascalprecht
   });
 
 
-  // if none of the above states are matched, use this as the fallback
+  // if none of the above states are matched, use this as the fallback (default to login state)
   $urlRouterProvider.otherwise('/login');
   
   // Translations here
@@ -318,12 +316,15 @@ angular.module('ace', ['ionic', 'ace.controllers', 'ace.services', 'pascalprecht
       USE_AS_TEMPLATE: 'utiliser comme modèle'
   });
   
+  // If no settings exist, initialize to defaults to allow the app to function
   var localHandler = new LocalStorageUtil(window);
   var settings = localHandler.get("settings", null);
   if(settings === null)
   {
 	  settings = new Settings();
   }
+  
+  // Set the preffered language to the current setting (default English)
   $translateProvider.preferredLanguage(settings.language);
 });
 

@@ -1,25 +1,24 @@
 // LocalStorageUtil.js
 
-// LocalStorageUtil
-//------------------------------------------------------------------
-
-// Constructor assigns Cordova window variable
 /**
  * @class LocalStorageUtil
  * @constructor
  */
+
+// LocalStorageUtil
+//------------------------------------------------------------------
+
+// Constructor assigns Cordova window variable
 var LocalStorageUtil = function(window) {
 	/**
 	 * @property _window
 	 * @type window
-	 * @description Private variable to store the Cordova window to access window.localStorage
+	 * @description Private variable to store the html window to access window.localStorage
 	 * @default The window passed into the constructor
 	 */
 	this._window = window;
 };
 
-// Function returns the value mapped to the specified key in local storage, if it exists.
-// If the value mapped to key does not exist, the function returns defaultValue
 /**
  * @method get 
  * @description Function returns the value mapped to the specified key, if it exists.
@@ -33,6 +32,9 @@ var LocalStorageUtil = function(window) {
  * 
  * @throws none
  */
+
+// Function returns the value mapped to the specified key in local storage, if it exists.
+// If the value mapped to key does not exist, the function returns defaultValue
 LocalStorageUtil.prototype.get = function(key, defaultValue) {
 	// instantiate new JSONValidator object
 	var validator = new JSONValidator();
@@ -63,8 +65,6 @@ LocalStorageUtil.prototype.get = function(key, defaultValue) {
 };
 
 
-// Function saves the value param in local storage.  value is associated with
-// the provided key param.
 /**
  * @method set
  * @description Function saves the value param in local storage.  value is associated with
@@ -75,6 +75,9 @@ LocalStorageUtil.prototype.get = function(key, defaultValue) {
  * @return void
  * @throws none
  */
+
+// Function saves the value param in local storage.  value is associated with
+// the provided key param.
 LocalStorageUtil.prototype.set = function(key, value) {
 	if(typeof value == "string" || value instanceof String)
 	{

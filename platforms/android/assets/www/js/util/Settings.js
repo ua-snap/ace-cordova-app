@@ -1,3 +1,5 @@
+// Settings.js
+
 /**
  * Class contains application-level settings.  Intended to be stored in LocalStorage and accessed from there via the
  * SettingsService.
@@ -5,6 +7,13 @@
  * @class Settings
  * @constructor
  */
+
+// Settings
+//------------------------------------------------------------------------------
+
+// Class contains application-level settings.  Intended to be stored in LocalStorage and accessed from there via the
+// SettingsService.
+// Note: this class contains the default settings for the ACE mobile app
 var Settings = function() {
 	// GPS settings
 	this.gps = {
@@ -14,9 +23,13 @@ var Settings = function() {
 		trackingInterval: 1,
 		displayedHistoryPoints: 100
 	};
+	
+	// General settings
 	this.general = {
 		notifications: true,
 		units: "Imperial"
 	};
+	
+	// Language settings
 	this.language = "en";
 };
