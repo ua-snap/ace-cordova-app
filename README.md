@@ -29,5 +29,14 @@ full version of the Crosswalk webview is only available on the Android platform.
 This project is not complete.  The vast majority of the functionality is provided here, but several bugs and additional
 features remain to be implemented.  All todo's and bugs are documented in the Issues section of this repo.
 
+## Code Structure Overview
+### JavaScript
+All JavaScript code written for the project is contained in the [www/js/](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js)
+directory.  Additional code from outside libraries is included in the [www/lib/](https://github.com/ua-snap/ace-cordova-app/tree/master/www/lib)
+directory.
 
+### HTML/CSS
+All HTML views for the application are contained in the [www/templates/](https://github.com/ua-snap/ace-cordova-app/tree/master/www/templates)
+directory.  Custom CSS can be found in [www/css/style.css](https://github.com/ua-snap/ace-cordova-app/blob/master/www/css/style.css), 
+though the majority of the CSS for the application was contained in the Ionic framework.
 
