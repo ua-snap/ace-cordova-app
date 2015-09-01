@@ -21,9 +21,9 @@ re-established.
 
 ## Disclaimer
 ###### Platform Support
-Currently, only the Android platform is supported.  iOS platforms will not be capable of running the application.  This
-is due to the lack of a permanent storage api in web worker threads in a Safari mobile webkit browser.  Additionally, a
-full version of the Crosswalk webview is only available on the Android platform.
+Currently, only the Android platform is supported.  iOS platforms will not be capable of running the application.  This 
+is due to lack of support for the HTML5 File API in web worker threads in the Safari Mobile WebKit browser.  Additionally,
+a full version of the Crosswalk webview is only available on the Android platform.
 
 ###### Remaining work
 This project is not complete.  The vast majority of the functionality is provided here, but several bugs and additional
@@ -34,6 +34,13 @@ features remain to be implemented.  All todo's and bugs are documented in the Is
 All JavaScript code written for the project is contained in the [www/js/](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js)
 directory.  Additional code from outside libraries is included in the [www/lib/](https://github.com/ua-snap/ace-cordova-app/tree/master/www/lib)
 directory.
+
+The code in the [www/js/](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js) directory is divided into 5
+additional directories by function. [www/js/controllers](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js/controllers)
+contains all the Angular controller code utilized by the application.  In order to customize the project to another 
+reporting application, individuals should re-write the [tab-report.html](https://github.com/ua-snap/ace-cordova-app/tree/master/www/templates/tab-report.html) 
+view and its corresponding controller ([ReportController.js](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js/controllers/ReportController.js)
+to suit their application.  Additional customization of other view's will also be required.
 
 ### HTML/CSS
 All HTML views for the application are contained in the [www/templates/](https://github.com/ua-snap/ace-cordova-app/tree/master/www/templates)
