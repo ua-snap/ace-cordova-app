@@ -20,21 +20,21 @@ var Position = function() {
 /**
  * Function imports a HTML5 Geolocation position object
  * 
- * @method importGoogleGeoLoc
- * @param {Object} googleGeo The HTML5 Geolocation position object to import
+ * @method importNavigatorPosition
+ * @param {Object} navPos The HTML5 Geolocation position object to import
  * @return void
  * @throws none
  */
-Position.prototype.importGoogleGeoLoc = function(googleGeo)
+Position.prototype.importNavigatorPosition = function(navPos)
 {
-	this.timestamp = googleGeo.timestamp;
-	this.coords.accuracy = googleGeo.coords.accuracy;
-	this.coords.altitude = googleGeo.coords.altitude;
-	this.coords.altitudeAccuracy = googleGeo.coords.altitude;
-	this.coords.heading = googleGeo.coords.heading;
-	this.coords.latitude = googleGeo.coords.latitude;
-	this.coords.longitude = googleGeo.coords.longitude;
-	this.coords.speed = googleGeo.coords.speed;
+	this.timestamp = navPos.timestamp;
+	this.coords.accuracy = navPos.coords.accuracy;
+	this.coords.altitude = navPos.coords.altitude;
+	this.coords.altitudeAccuracy = navPos.coords.altitude;
+	this.coords.heading = navPos.coords.heading;
+	this.coords.latitude = navPos.coords.latitude;
+	this.coords.longitude = navPos.coords.longitude;
+	this.coords.speed = navPos.coords.speed;
 };
 
 /**

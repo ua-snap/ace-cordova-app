@@ -1,24 +1,19 @@
 // LoginController.js
 
-// LoginController
-//--------------------------------------------------------------
-
-// Grab the ace.controllers angular module (so we can add to it)
-/**
- * @module ace.controllers
- */
+// Grab the ace.controllers angular module (so we can add the login view controller to it)
 angular.module('ace.controllers')
 
+// LoginController
+//--------------------------------------------------------------
 // Create the LoginController controller
-/**
- * @class LoginController
- * @constructor
- */
 .controller('LoginController', function($scope, LocalStorageService, AuthService, $ionicPopup, $state, $ionicSideMenuDelegate) {
 
-    // This function will be called every time that the login view
-    // is displayed, so check for auser already logged in
-    var oldUsername = "";//LocalStorageService.getItem("currentUser", "", window).username;
+    // Data variable to hold username and password
+    $scope.data = {};
+    
+    // Remove the ability of users to remain "logged in" after exiting app
+    //LocalStorageService.getItem("currentUser", "", window).username;
+    var oldUsername = "";
     
     // If a user was logged in, skip the login screen and take them 
     // directly to the default view (report view)
@@ -30,19 +25,14 @@ angular.module('ace.controllers')
         $state.go('tab.report');
     }
     
-    // Data variable to hold username and password
-    $scope.data = {};
-    
-    /**
-     * Function controls the app's behavior when the form is submitted.  Added to allow for keyboard navigation
-     * from the username field to the password field when pressing the keyboard go button.
-     * 
-     * @method formSubmitted
-     * @return void
-     * @throws none
-     */
+
+    // Function controls the app's behavior when the form is submitted.  Added to allow for keyboard navigation
+    // from the username field to the password field when pressing the keyboard "go" button.
     $scope.formSubmitted = function() {
+        // Determine the active text entry field when the "go" button was pressed
         var focusedElement = document.activeElement;
+        
+        // If anything other than the username field was focused, attempt to login with the provided credentials
         if(focusedElement.id !== "usernameInput")
         {
             $scope.login();
@@ -50,6 +40,8 @@ angular.module('ace.controllers')
         }
         else
         {
+            // If the user was focused on the usernameInput text field, switch focus to the passwordInput field and 
+            // cancel the login
             document.getElementById("passwordInput").focus();
             return false;
         }
@@ -59,15 +51,8 @@ angular.module('ace.controllers')
     // if the credentials are valid.  If invalid, notifies the user
     // and rejects the login attempt.  Utilizes AuthService to check 
     // credentials
-    /**
-     * @method login
-     * @description Checks the provided username and password and logs the user in
-     * if the credentials are valid.  If invalid, notifies the user
-     * and rejects the login attempt
-     * @return void
-     * @throws none
-     */
     $scope.login = function() {
+        // Attempt to authorize the current user with the provided credentials
         AuthService.loginUser($scope.data.username, $scope.data.password, function(user) {
             // Clear out username and password
             $scope.data.username = "";

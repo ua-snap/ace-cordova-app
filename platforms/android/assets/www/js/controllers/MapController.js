@@ -1,64 +1,59 @@
 // MapController.js
- 
-/**
- * @module ace.controllers
- */
+
+// Add to ace.controllers module
 angular.module('ace.controllers')
  
 // MapController
 //--------------------------------------------------------------
  
  
-// MapController (controller for the Map tab)
-/**
- * @class MapController
- */
+// MapController is the controller for the map tab.  It handles all view-related tasks for the map view.
 .controller('MapController', function($scope, $state, $ionicSideMenuDelegate, DataService, LocalStorageService, $translate, $ionicNavBarDelegate, $ionicPopover, GeoService, SettingsService) {
     // Set up menu options popover
     // Create popover from template and save to $scope variable
-      $ionicPopover.fromTemplateUrl('templates/popovers/map-options.html', {
+    $ionicPopover.fromTemplateUrl('templates/popovers/map-options.html', {
         scope: $scope
-      }).then(function(popover) {
+    }).then(function(popover) {
         $scope.optionsPopover = popover;
-      });
-      
-      $scope.openOptionsMenu = function($event) {
-          $scope.optionsPopover.show($event);
-      };
+    });
     
-    // Controller-wide variables
+    // Click handler to open the map options popover
+    $scope.openOptionsMenu = function($event) {
+        $scope.optionsPopover.show($event);
+    };
+    
+    // Controller-wide map variable
     $scope.map = null;
     
-    // Stores the last 100 location pings
-    $scope.locationHistory = [];
-    
     // Last known position will be persisted in LocalStorage
-    var localHandler = new LocalStorageUtil(window);
+
     
     // If set to true, next watchPosition execution will center the map on the current location.
     // If false, watchPosition will not modify the map center
     $scope.centerMap = true;
     
+    // Array maintains a reference to all report markers displayed on the map (to allow for deletion)
     $scope.reportMarkers = [];
     
-    $scope.userMarkers = [];
-    
+    // Array maintains references to all user markers (for later deletion)
     $scope.otherUserMarkers = [];
     
-    var timer = null;
-    
+    // Maintains a reference to the current location marker on the map
     $scope.currentLocationMarker = null;
+    
+    // Reference to the google maps polyline that displays a users recent positions
     var historyLine = null;
-    var settings = null;
     
-    $scope.curPos = null;
-    
+    // Get a date-time representing the last midnight time that occured (to be used in retrieving positions for the
+    // history line)
     var lastMidnight = new Date();
     lastMidnight.setHours(0, 0, 0, 0);
     
+    // Get the next midnight for the same reason (as lastMidnight above)
     var nextMidnight = new Date();
     nextMidnight.setHours(24, 0, 0, 0);
     
+    // Initial settings defined here
     $scope.settings = {
       displayPos: {
           checked: true
@@ -74,6 +69,7 @@ angular.module('ace.controllers')
       }
     };
     
+    // Variable maintains some information about the state of the user-controls on and around the map
     $scope.mapState = {
         center: null,
         zoom: null,
@@ -100,15 +96,13 @@ angular.module('ace.controllers')
         initialize();
 	});    
     
+    // Lifecycle event handler, saves the map state on exit
     $scope.$on('$ionicView.leave', function() {
         // Save the state of the map
         $scope.saveMapState();
-        
-        // Disable watching position
-        //GeoService.disableWatchPosition(navigator.geolocation);
-        //GeoService.setWatchCallback(null);
     });
     
+    // Save the state of the map (usually prior to view exit)
     $scope.saveMapState = function() {
         // Save map options
         $scope.mapState.center = $scope.map.getCenter();
@@ -122,12 +116,16 @@ angular.module('ace.controllers')
         var position = new Position();
         
         GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
-            position.importGoogleGeoLoc(pos);
+            // Convert navigator returned geolocation to a Position object
+            position.importNavigatorPosition(pos);
+            
+            // Update the lastPosition variable
+            var localHandler = new LocalStorageUtil(window);
             localHandler.set("lastPosition", position);
         });
     };
     
-    // Regester an event handler for syncing
+    // Regester an event handler for syncing (map will need to update other user's positions after a sync)
     document.addEventListener('sync_complete', function(e) {
         if($state.current.name === "tab.map")
         {
@@ -138,8 +136,10 @@ angular.module('ace.controllers')
         }        
     }, false); 
     
+    // Function handles initialization tasks
     var initialize = function()
     {
+        // Clear out any persisting currentLocationMarker
         $scope.currentLocationMarker = null;
         
         // Check for last saved map settings
@@ -186,7 +186,6 @@ angular.module('ace.controllers')
         $scope.map = map;
         
         // Start watching position
-        //GeoService.enableWatchPosition(navigator.geolocation, updateMarker);
         GeoService.setWatchCallback(updateMarker);
         
         // Check if history was displayed
@@ -223,10 +222,12 @@ angular.module('ace.controllers')
         
     };
     
+    // Update the current location marker position
     var updateMarker = function(posArg, followArg) {
         (function(pos, follow) {
             // Execute the callback with a 3 millisecond delay (try to let the main ui thread catch up)
             window.setTimeout(function() {
+                // Update the currentLocationMarker if it exists, add it if it does not
                 if($scope.currentLocationMarker)
                 {
                     var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
@@ -251,10 +252,11 @@ angular.module('ace.controllers')
         })(posArg, followArg);
     };
     
+    // Toggle handler for the display position setting
     $scope.displayPosChanged = function() {
-      //alert($scope.settings.displayPos.checked); 
       if($scope.settings.displayPos.checked)
       {
+          // If the setting was changed to "on" or "checked", start displaying and updating a current location marker
           GeoService.setWatchCallback(updateMarker);
       } 
       else 
@@ -274,6 +276,7 @@ angular.module('ace.controllers')
       }
     };
     
+    // Setting toggle handler for the display location history option
     $scope.displayHistoryChanged = function() {
       if($scope.settings.displayHistory.checked)
       {
@@ -310,6 +313,7 @@ angular.module('ace.controllers')
       }
     };
     
+    // Helper function creates an html string to display report contents in an info window popup
     $scope.makeInfoWindowString = function(report) {        
         // Grab the date
         var date = new Date(report.position.timestamp);
@@ -327,7 +331,7 @@ angular.module('ace.controllers')
             'Other: ' + report.other + '<br>' + 
             'Notes: ' + report.notes + '<br>' + '</p></div></div>';
             
-            return htmlString
+        return htmlString
     };
     
     // Called when the display reports option is changed
@@ -344,7 +348,9 @@ angular.module('ace.controllers')
                for(var i = 0; i < res.length; i++)
                {
                    positionIdArray.push(res[i].positionId);
-               }                 
+               }        
+               
+               // Grab associated positions         
                DataService.localPosition_find({where: {id: {inq: positionIdArray}}}, function(err, res2) {
                   var positionMap = {};
                   for(var i = 0; i < res2.length; i++)
@@ -352,6 +358,8 @@ angular.module('ace.controllers')
                       positionMap[res2[i].id] = res2[i];
                   } 
                   var image = 'img/document-text_small_grn.png';
+                  
+                  // Create the markers and associated info windows
                   for(var i = 0; i < reportArray.length; i++)
                   {
                       var pos = new google.maps.LatLng(positionMap[reportArray[i].positionId].latlng.lat, positionMap[reportArray[i].positionId].latlng.lng);
@@ -399,6 +407,7 @@ angular.module('ace.controllers')
         }        
     };
     
+    // Toggle setting handler for the display other users option
     $scope.displayOtherUsersChanged = function() {
         if($scope.settings.displayOtherUsers.checked === true)
         {
@@ -427,7 +436,7 @@ angular.module('ace.controllers')
             // Res contains an array of all users in the current group
             var users = res;
             
-            // Get the latest position from all users
+            // Get the latest position from all users in the current user's group
             for(var i = 0; i < users.length; i++)
             {                
                 var filter = {
@@ -463,7 +472,7 @@ angular.module('ace.controllers')
     
     // Draws a line on the map where the user has traveled
     $scope.drawHistoryLine = function() {
-        // Grab last position entries from current user
+        // Grab last position entries from current user within selected date range
         var settings = SettingsService.getSettings(window);
         var filter = {
             order: 'timestamp DESC',
@@ -476,12 +485,13 @@ angular.module('ace.controllers')
             }
         };
         DataService.localPosition_find(filter, function(err, res) {
-           var latLngArray = [];
-           for(var i = 0; i < res.length; i++)
-           {
-               latLngArray.push(new google.maps.LatLng(res[i].latlng.lat, res[i].latlng.lng));
-           }
-           historyLine = new google.maps.Polyline({
+            // Draw the line
+            var latLngArray = [];
+            for(var i = 0; i < res.length; i++)
+            {
+                latLngArray.push(new google.maps.LatLng(res[i].latlng.lat, res[i].latlng.lng));
+            }
+            historyLine = new google.maps.Polyline({
                 path: latLngArray.reverse(),
                 strokeColor: '#FF0000',
                 strokeOpacity: 1.0,
@@ -491,6 +501,7 @@ angular.module('ace.controllers')
         });
     };
     
+    // Click handler for the target icon button.  Centers the map on the users position
     $scope.centerOnPosition = function() {
         GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
             var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
@@ -498,15 +509,18 @@ angular.module('ace.controllers')
         });        
     };
     
+    // Toggle/check handler for following user position (arrow at top of page)
     $scope.toggleFollowPosition = function() {
         // toggle setting
         if($scope.settings.followPos)
         {
+            // Turn off following position
             $scope.settings.followPos = false;
             document.getElementById("followBtn").style.color = "";
         }
         else 
         {
+            // Turn on following position (and change button to green)
             $scope.settings.followPos = true;
             document.getElementById("followBtn").style.color = "#66cc33";
         }
