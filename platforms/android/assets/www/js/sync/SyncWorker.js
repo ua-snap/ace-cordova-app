@@ -1,10 +1,19 @@
+// SyncWorker.js
+
+// This file is the main file for the sync web worker thread.  All requests for data pass through the message handler
+// function (see below).  See DataService.js for more complete documentation of each method.
+
+// Initialization and shims
+//----------------------------------------------------
+
 // Only load in web worker context
 if(typeof DedicatedWorkerGlobalScope != "undefined" && this instanceof DedicatedWorkerGlobalScope)
 {
-	// Local storage shim
+	// Local storage shim - use a simple dictionary object
 	var localStorage = {};
 	localStorage.data = {};
-
+	
+	// getItem shim
 	localStorage.getItem = function(key, defaultValue) {
 		var temp = localStorage.data[key];
 		if(temp)
@@ -17,15 +26,17 @@ if(typeof DedicatedWorkerGlobalScope != "undefined" && this instanceof Dedicated
 		}
 	};
 
+	// setItem shim
 	localStorage.setItem = function(key, value) {
 		localStorage.data[key] = value;
 	};
 
+	// clear shim
 	localStorage.clear = function() {
 		localStorage.data = {};
 	};
 
-	// Window shim
+	// Window shim - required for loopback in the browser (browser.bundle.js)
 	this.window = this;
 	window.localStorage = localStorage;
 	
@@ -35,13 +46,19 @@ if(typeof DedicatedWorkerGlobalScope != "undefined" && this instanceof Dedicated
 	// FormData shim - Attribution in file
 	self.importScripts("../../js/polyfill/FormDataPolyfill.js")
 	
+	// Set up the loopback in the browser instance
 	self.importScripts("../../js/sync/browser.bundle.js");
 	self.importScripts("../../js/sync/lbclient.js");
+	
+	// Utility libraries
 	self.importScripts("../../lib/underscore/underscore.js");
 	self.importScripts("../../lib/async/dist/async.js");
-
 }
 
+// Message Handler
+//-------------------------------------------
+
+// Message handler for sync web worker thread
 self.onmessage = function(message) {
 	// Check if we are currently loading
 	if(window.loading)
@@ -55,8 +72,12 @@ self.onmessage = function(message) {
 		return;
 	}
 	
+	// Grab the actual message object that was passed
 	var msg = message.data;
 	
+	// Setup message channel
+	//------------------------------------------------
+	// Message port initialization for the Save thread
 	if(msg === "msgChannelPort")
 	{
 		// Save port for channel communication with save thread
@@ -77,6 +98,8 @@ self.onmessage = function(message) {
 			});			
 		};
 	}
+	// MobileUser
+	//-----------------------------------------------
 	else if(msg.req === "login") {
 		(function(id) {
 			window.client.models.RemoteMobileUser.login(msg.params, msg.filter, function(err, res) {
@@ -150,6 +173,96 @@ self.onmessage = function(message) {
 			
 		})(msg.cbId);
 	}
+	else if(msg.req === "localmobileuser.find") {
+		(function(id) {
+			if(msg.filter !== null)
+			{
+				window.client.models.LocalMobileUser.find(msg.filter, function(err, res) {
+					var users = [];
+					for(var i = 0; i < res.length; i++)
+					{
+						users.push(res[i].toJSON());
+					}
+					var args = [err, users];
+					var returnMsg = {
+						cbId: id,
+						args: args	
+					};
+					self.postMessage(returnMsg);
+				});
+			}
+			else
+			{
+				window.client.models.LocalMobileUser.find(function(err, res) {
+					var users = [];
+					for(var i = 0; i < res.length; i++)
+					{
+						users.push(res[i].toJSON());
+					}
+					var args = [err, users];
+					var returnMsg = {
+						cbId: id,
+						args: args	
+					};
+					self.postMessage(returnMsg);
+				});
+			}
+			
+		})(msg.cbId);
+	}
+	else if(msg.req === "localmobileuser.updateall") {
+		(function(id) {
+			window.client.models.LocalMobileUser.updateAll(msg.filter, msg.params, function(err, res) {
+				var returnMsg = {
+					cbId: id,
+					args: [err, res]
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "localmobileuser.upsert") {
+		(function(id) {
+			window.client.models.LocalMobileUser.upsert(msg.params, function(err, res) {
+				var user;
+				if(res)
+				{
+					user = res.toJSON();
+				}
+				var returnMsg = {
+					cbId: id,
+					args: [err, user]
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "remotemobileuser.updateall") {
+		(function(id) {
+			window.client.models.RemoteMobileUser.updateAll(msg.filter, msg.params, function(err, res) {
+				var returnMsg = {
+					cbId: id,
+					args: [err, res]
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "remotemobileuser.logout") {
+		(function(id) {
+			window.client.models.RemoteMobileUser.logout(msg.params, function(err, res) {
+				var args = [err, res];
+				var returnMsg = {
+					cbId: id,
+					args: args
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	
+	// Group
+	//---------------------------------------------
 	else if(msg.req === "remotegroup.findone") {
 		(function(id) {
 			window.client.models.RemoteGroup.findOne(msg.filter, function(err, res) {
@@ -200,8 +313,12 @@ self.onmessage = function(message) {
 			});
 		})(msg.cbId);
 	}
+	
+	// Sync
+	//-------------------------------
 	else if(msg.req === "sync") {
 		(function(id) {
+			// Execute sync, preserving the callback guid
 			window.client.sync(function(arg) {
 				var args = [arg];
 				var returnMsg = {
@@ -212,43 +329,9 @@ self.onmessage = function(message) {
 			});
 		})(msg.cbId);
 	}
-	else if(msg.req === "localmobileuser.find") {
-		(function(id) {
-			if(msg.filter !== null)
-			{
-				window.client.models.LocalMobileUser.find(msg.filter, function(err, res) {
-					var users = [];
-					for(var i = 0; i < res.length; i++)
-					{
-						users.push(res[i].toJSON());
-					}
-					var args = [err, users];
-					var returnMsg = {
-						cbId: id,
-						args: args	
-					};
-					self.postMessage(returnMsg);
-				});
-			}
-			else
-			{
-				window.client.models.LocalMobileUser.find(function(err, res) {
-					var users = [];
-					for(var i = 0; i < res.length; i++)
-					{
-						users.push(res[i].toJSON());
-					}
-					var args = [err, users];
-					var returnMsg = {
-						cbId: id,
-						args: args	
-					};
-					self.postMessage(returnMsg);
-				});
-			}
-			
-		})(msg.cbId);
-	}
+	
+	// LocalPosition
+	//---------------------------------------------
 	else if(msg.req === "localposition.create") {
 		(function(id) {
 			window.client.models.LocalPosition.create(msg.params, function(err, res) {
@@ -271,18 +354,44 @@ self.onmessage = function(message) {
 			});
 		})(msg.cbId);
 	}
-	else if(msg.req === "remotemobileuser.logout") {
+	else if(msg.req === "localposition.find") {
 		(function(id) {
-			window.client.models.RemoteMobileUser.logout(msg.params, function(err, res) {
-				var args = [err, res];
-				var returnMsg = {
-					cbId: id,
-					args: args
-				};
-				self.postMessage(returnMsg);
-			});
+			if(msg.filter !== null) {
+				window.client.models.LocalPosition.find(msg.filter, function(err, res) {
+					var positions = [];
+					for(var i = 0; i < res.length; i++)
+					{
+						positions.push(res[i].toJSON());
+					}
+					var args = [err, positions];
+					var returnMsg = {
+						cbId: id,
+						args: args
+					};
+					self.postMessage(returnMsg);
+				});
+			}
+			else {
+				window.client.models.LocalPosition.find(function(err, res) {
+					var positions = [];
+					for(var i = 0; i < res.length; i++)
+					{
+						positions.push(res[i].toJSON());
+					}
+					var args = [err, positions];
+					var returnMsg = {
+						cbId: id,
+						args: args
+					};
+					self.postMessage(returnMsg);
+				});
+			}
+			
 		})(msg.cbId);
 	}
+	
+	// WeatherReport
+	//------------------------------------------------
 	else if(msg.req === "localweatherreport.create") {
 		(function(id) {
 			window.client.models.LocalWeatherReport.create(msg.params, function(err, res) {
@@ -346,41 +455,6 @@ self.onmessage = function(message) {
 			
 		})(msg.cbId);
 	}
-	else if(msg.req === "localposition.find") {
-		(function(id) {
-			if(msg.filter !== null) {
-				window.client.models.LocalPosition.find(msg.filter, function(err, res) {
-					var positions = [];
-					for(var i = 0; i < res.length; i++)
-					{
-						positions.push(res[i].toJSON());
-					}
-					var args = [err, positions];
-					var returnMsg = {
-						cbId: id,
-						args: args
-					};
-					self.postMessage(returnMsg);
-				});
-			}
-			else {
-				window.client.models.LocalPosition.find(function(err, res) {
-					var positions = [];
-					for(var i = 0; i < res.length; i++)
-					{
-						positions.push(res[i].toJSON());
-					}
-					var args = [err, positions];
-					var returnMsg = {
-						cbId: id,
-						args: args
-					};
-					self.postMessage(returnMsg);
-				});
-			}
-			
-		})(msg.cbId);
-	}
 	else if(msg.req === "localweatherreport.updateall") {
 		(function(id) {
 			window.client.models.LocalWeatherReport.updateAll(msg.filter, msg.params, function(err, res) {
@@ -392,90 +466,8 @@ self.onmessage = function(message) {
 			});
 		})(msg.cbId);
 	}
-	else if(msg.req === "localsettings.find") {
-		(function(id) {
-			window.client.models.LocalSettings.find(msg.filter, function(err, res) {
-				var settingsArray = [];
-				for(var i = 0; i < res.length; i++)
-				{
-					settingsArray.push(res[i].toJSON());
-				}
-				var args = [err, settingsArray];
-				var returnMsg = {
-					cbId: id,
-					args: args
-				};
-				self.postMessage(returnMsg);
-			});			
-		})(msg.cbId);
-	}
-	else if(msg.req === "localsettings.updateall") {
-		(function(id) {
-			window.client.models.LocalSettings.updateAll(msg.filter, msg.params, function(err, res) {
-				var returnMsg = {
-					cbId: id,
-					args: [err, res]
-				};
-				self.postMessage(returnMsg);
-			});
-		})(msg.cbId);
-	}
-	else if(msg.req === "localsettings.upsert") {
-		(function(id) {
-			window.client.models.LocalSettings.upsert(msg.params, function(err, res) {
-				var settings;
-				if(res)
-				{
-					settings = res.toJSON();
-				}
-				var returnMsg = {
-					cbId: id,
-					args: [err, settings]
-				};
-				self.postMessage(returnMsg);
-			});
-		})(msg.cbId);
-	}
-	else if(msg.req === "localmobileuser.updateall") {
-		(function(id) {
-			window.client.models.LocalMobileUser.updateAll(msg.filter, msg.params, function(err, res) {
-				var returnMsg = {
-					cbId: id,
-					args: [err, res]
-				};
-				self.postMessage(returnMsg);
-			});
-		})(msg.cbId);
-	}
-	else if(msg.req === "localmobileuser.upsert") {
-		(function(id) {
-			window.client.models.LocalMobileUser.upsert(msg.params, function(err, res) {
-				var user;
-				if(res)
-				{
-					user = res.toJSON();
-				}
-				var returnMsg = {
-					cbId: id,
-					args: [err, user]
-				};
-				self.postMessage(returnMsg);
-			});
-		})(msg.cbId);
-	}
-	else if(msg.req === "remotemobileuser.updateall") {
-		(function(id) {
-			window.client.models.RemoteMobileUser.updateAll(msg.filter, msg.params, function(err, res) {
-				var returnMsg = {
-					cbId: id,
-					args: [err, res]
-				};
-				self.postMessage(returnMsg);
-			});
-		})(msg.cbId);
-	}	
 	
-	// Check queue and execute next call
+	// Check queue and execute next call (if one is waiting)
 	if(window.requestQueue && window.requestQueue.length > 0)
 	{
 		var temp = window.requestQueue.pop();
