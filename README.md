@@ -47,8 +47,11 @@ All HTML views for the application are contained in the [www/templates/](https:/
 directory.  Custom CSS can be found in [www/css/style.css](https://github.com/ua-snap/ace-cordova-app/blob/master/www/css/style.css), 
 though the majority of the CSS for the application was contained in the Ionic framework.
 
-### Documentation
+## Documentation
 Code documentation for the project was generated using the [Docco](http://jashkenas.github.io/docco/) and [YUIDoc](http://yui.github.io/yuidoc/)
 tools. To view the documentation, clone the project, then run "npm install" and "bower install" to install all dependencies
 Ensure gulp is intalled globally on your machine, and run "gulp gen-docco-all" and "gulp gen-yuidoc-all" to generate all
 documentation in the docs/ folder.
+
+## Licensing
+TBD
