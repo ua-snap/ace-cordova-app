@@ -62,9 +62,17 @@ gulp.task('test-debug', function(done) {
 
 gulp.task('gen-docco-all', function(done) {
     gulp.src(["./www/js/*.js", "./www/js/controllers/*.js", "./www/js/services/*.js", "./www/js/workers/*.js",
-        "./www/js/workers/*.js", "./www/js/polyfill/*.js", "./www/js/core/*.js"])
+        "./www/js/polyfill/*.js", "./www/js/util/*.js"])
   .pipe(docco())
   .pipe(gulp.dest('./docs/docco/'));
+  done();
+});
+
+gulp.task('gen-yuidoc-all', function(done) {
+  gulp.src(["./www/js/*.js", "./www/js/controllers/*.js", "./www/js/services/*.js", "./www/js/workers/*.js",
+        "./www/js/polyfill/*.js", "./www/js/util/*.js"])
+  .pipe(yuidoc())
+  .pipe(gulp.dest("./docs/yuidoc/"));
   done();
 });
 

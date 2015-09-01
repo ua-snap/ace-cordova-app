@@ -1,8 +1,8 @@
 // ReportController.js
 
-/**
- * @module ace.controllers
- */
+// This extremely large controller file handles all UI functionality associated with the report tab.
+// TODO: Refactor this controller.  Possibly split into individial controllers or "handlers" for each modal type
+
 angular.module('ace.controllers')
 
 // ReportController
@@ -10,11 +10,6 @@ angular.module('ace.controllers')
 
 // Controller for the Report view.  This controller contains all the
 // UI functionality for entering and saving reports
-/**
- * @class ReportController
- * @description Controller for the Report view.  This controller contains all the
- * UI functionality for entering and saving reports.
- */
 .controller('ReportController', function(AuthService, $scope, $state, $ionicPopup, $translate, DataService, LocalStorageService, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicModal, SettingsService, $ionicPopover, $ionicLoading, DataShareService, GeoService) {
   
   // Declare and initialize modal handler object
@@ -104,13 +99,7 @@ angular.module('ace.controllers')
     
   });
   
-  /**
-   * Field holds the contents of the current report that is being entered
-   * 
-   * @property report
-   * @type WeatherReport
-   * @default All fields initialized to ""
-   */
+  // Field holds the contents of the current report that is being entered
   $scope.report = new WeatherReport();
 
   // Submit Popover functions
@@ -1615,10 +1604,6 @@ angular.module('ace.controllers')
   };
   
   // onDestroy function for the ReportController.  This implemnetation will remove all modals.
-  /**
-   * @method onDestroy
-   * @description Called when the controller is about to be destroyed.  Used here to release all modal resources.
-   */
   $scope.$on('$destroy', function() {
       // Cleanup all modals
       $scope.cloudCoverModal.remove();
