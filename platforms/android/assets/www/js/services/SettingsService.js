@@ -1,3 +1,8 @@
+// SettingsService.js
+
+/**
+ * @module ace.services
+ */
 angular.module('ace.services')
 
 /**
@@ -6,8 +11,16 @@ angular.module('ace.services')
  * @class SettingsService
  * @constructor
  */
+
+// SettingsService.js
+//-----------------------------------------------------------------------------------------------
+
+// Service class provides access to the settings object model for the application, which is saved in LocalStorage.
 .service('SettingsService', function(DataService, LocalStorageService) {
+	
+	// Local Storage key for the settings object
 	var settingsKey = "settings";
+	
 	return {
 		/**
 		 * Gets the current settings object (or a blank one with default settings if none is found)
@@ -18,6 +31,8 @@ angular.module('ace.services')
 		 * 		not.
 		 * @throws none
 		 */
+		
+		// Gets the current settings object (or a blank one with default settings if none is found)
 		getSettings: function(window) {
 			var settings = LocalStorageService.getItem("currentUser", {}, window).settings;
 			if(settings === null)
@@ -56,6 +71,8 @@ angular.module('ace.services')
 		 * @return void
 		 * @throws none
 		 */
+		
+		// Updates the current settings object with the provided new settings object.
 		updateSettings: function(window, settings)
 		{
 			var currentUser = LocalStorageService.getItem("currentUser", {}, window);
@@ -66,17 +83,15 @@ angular.module('ace.services')
 			if(window.navigator.connection.type !== "none")
 			{
 				DataService.remoteMobileUser_updateAll({id: currentUser.id}, currentUser, function(err, res) {
-					var i = 0;
+					// Do nothing
 				});
 			}
 			else
 			{
 				DataService.remoteMobileUser_updateAll({id: currentUser.id}, currentUser, function(err, res) {
-					var i = 0;
+					// Do nothing
 				});
 			}
-			
-			
 		}
 	};
 });

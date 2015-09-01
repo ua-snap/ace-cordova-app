@@ -1,3 +1,8 @@
+// GeoService.js
+
+/**
+ * @module ace.services
+ */
 angular.module('ace.services')
 
 /**
@@ -6,6 +11,11 @@ angular.module('ace.services')
  * @class GeoService
  * @constructor
  */
+
+// GeoService.js
+//-----------------------------------------------------------------------------------------------
+
+// Service class that handles all Geolocation for the app.
 .service('GeoService', function(SettingsService, LocalStorageService, DataService) {
 	
 	// Member variables for the service
@@ -30,6 +40,10 @@ angular.module('ace.services')
 		 * @return void
 		 * @throws none
 		 */	
+		
+		// Function turns on tracking of device position. Updates member variable mPos with each update from the 
+		// navigator.geolocation object.  Can also be used to execute some callback on every position update through
+		// the optional watchSuccessCallback parameter.
 		enableWatchPosition: function(geolocationObj, watchSuccessCallback) {
 			var self = this;
 			mWatchCallback = watchSuccessCallback;
@@ -54,6 +68,8 @@ angular.module('ace.services')
 		 * @return void
 		 * @throws none
 		 */
+		
+		// Function disables tracking of the device position
 		disableWatchPosition: function(geolocationObj) {
 			if(mWatchId)
 			{
@@ -70,6 +86,8 @@ angular.module('ace.services')
 		 * @return void
 		 * @throws none
 		 */
+		
+		// Function sets the interval at which to record a location to the web server.
 		setTrackingInterval: function(trackingInterval) {
 			mTrackingInterval = trackingInterval;
 		},
@@ -82,6 +100,8 @@ angular.module('ace.services')
 		 * @return void
 		 * @throws none
 		 */
+		 
+		// Sets the callback function for a watchPosition update.
 		setWatchCallback: function(watchCallback) {
 			mWatchCallback = watchCallback;
 		},
@@ -95,6 +115,8 @@ angular.module('ace.services')
 		 * @return {Number} The distance between the two positions in meters.
 		 * @throws none
 		 */
+		
+		// Function uses the Haversine method to return the distance between to GPS positions.
 		getDistanceHaversine: function(position1, position2) {
 			if(position1 && position2)
 			{
@@ -128,6 +150,8 @@ angular.module('ace.services')
 		 * @return {Number} The value of the provided "deg" argument in radians
 		 * @throws none
 		 */
+		
+		// Function converts the provided degrees argument to radians.
 		degreesToRadians: function(deg) {
 			return deg * (Math.PI/180);	
 		},
@@ -144,6 +168,10 @@ angular.module('ace.services')
 		 * @return void
 		 * @throws none
 		 */
+		
+		// Function gets the most current position value and passes it to the successCallback parameter.  If the
+		// position is currently being watched, simply passes the current value of mPos.  If not, function enables 
+		// position watching and executes the successCallback only once.
 		getCurrentPosition: function(geolocationObj, successCallback, errorCallback) {
 			var self = this;
 			// If currently watching position, simply return most recent position value
@@ -177,6 +205,9 @@ angular.module('ace.services')
 		 * @return void
 		 * @throws none
 		 */
+		
+		// Function serves as the common error handler for the Geolocation service and is called wherever errorCallbacks are
+		// not used.  Currently does nothing.
 		gpsErrorHandler: function(error) {
 			// Do nothing right now
 		},
@@ -189,8 +220,8 @@ angular.module('ace.services')
 		 * @return void
 		 * @throws none
 		 */
-		// Sets private variable indicating whether or not to follow the user's position on the map (continually 
-		// recenter on user position)
+		
+		// Function sets an indicator telling the service to follow the user's position (only used when on the Map view)
 		setFollowPosition: function(follow) {
 			mFollowPosition = follow;
 		},
@@ -205,6 +236,9 @@ angular.module('ace.services')
 		 * @return void
 		 * @throws none
 		 */
+		
+		// Function turns on tracking of the device position at the frequency specified by the parameter.  Additionally, 
+		// an optional trackingCallback is provided to execute a function on every tracking interval.
 		enableTracking: function(frequency, trackingCallback) {
 			if(trackingCallback)
 			{
@@ -285,6 +319,8 @@ angular.module('ace.services')
 		 * @return void
 		 * @throws none
 		 */
+		
+		// Function disables tracking a user's location
 		disableTracking: function() {
 			if(mTimerId)
 			{
@@ -300,6 +336,8 @@ angular.module('ace.services')
 		 * @return {Boolean} True if tracking is enabled, false otherwise
 		 * @throws none
 		 */
+		
+		// Function checks whether tracking is currently enabled.  Returns true if it is, false otherwise.
 		isTrackingEnabled: function() {
 			if(mTimerId && mWatchId)
 			{
@@ -319,6 +357,8 @@ angular.module('ace.services')
 		 * @return void
 		 * @throws none
 		 */
+		
+		// Function sets the tracking callback
 		setTrackingCallback: function(trackingCallback) {
 			mTrackingCallback = trackingCallback;
 		}

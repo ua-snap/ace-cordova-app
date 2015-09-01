@@ -4,7 +4,8 @@
  * @module ace.services
  */
 
-angular.module('ace.services')
+// Create ace.services module
+angular.module('ace.services', [])
 
 /**
  * @description Service class handles authorization for the mobile app.  Performs login/logout functionality.  Also handles 
@@ -14,12 +15,12 @@ angular.module('ace.services')
  * @constructor
  */
  
- // AuthService.js
+// AuthService.js
 //-----------------------------------------------------------------------------------------------
 
 // Service class handles authorization for the mobile app.  Performs login/logout functionality.  Also handles 
 // retrieving all users in the current user's Group after login.
-.service('AuthService', function($http, DataService, LocalStorageService, WebApiService, SettingsService) {    
+.service('AuthService', function($http, DataService, LocalStorageService, SettingsService) {    
 	return {
         /**
          * Function logs in the user with the credentials passed in the "name" and "pw" variables.  Note that 

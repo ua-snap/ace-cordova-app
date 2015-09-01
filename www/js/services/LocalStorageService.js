@@ -1,3 +1,8 @@
+// LocalStorageService.js
+
+/**
+ * @module ace.services
+ */
 angular.module('ace.services')
 
 /**
@@ -7,6 +12,12 @@ angular.module('ace.services')
  * @class LocalStorageService
  * @constructor
  */
+
+// LocalStorageService.js
+//-----------------------------------------------------------------------------------------------
+
+// Service class that provides an interface to local storage (SharedPreferences in native Android).  Anything stored
+// with this class will persist in the app memory until all app data is deleted or the app is uninstalled.
 .service('LocalStorageService', function() {
 	return {
 		/**
@@ -20,6 +31,8 @@ angular.module('ace.services')
 		 * @return void
 		 * @throws none
 		 */
+		
+		// Sets an object (or primitive) in Local Storage to be associated with the passed key parameter.
 		setItem: function(key, value, window)
 		{
 			var localHandler = new LocalStorageUtil(window);
@@ -36,6 +49,8 @@ angular.module('ace.services')
 		 * @return {Object} The value associated with the key parameter in local storage
 		 * @throws none
 		 */
+		
+		// Gets an object or primitive from local storage that is associated with the passed key parameter
 		getItem: function(key, defaultValue, window)
 		{
 			var localHandler = new LocalStorageUtil(window);

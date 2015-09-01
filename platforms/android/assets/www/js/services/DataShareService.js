@@ -1,3 +1,8 @@
+// DataShareService.js
+
+/**
+ * @module ace.services
+ */
 angular.module('ace.services')
 
 /**
@@ -7,6 +12,12 @@ angular.module('ace.services')
  * @class DataShareService
  * @constructor
  */
+ 
+// DataShareService.js
+//-----------------------------------------------------------------------------------------------
+
+// Service class that is used primarily to share data between controllers.  One controller can call setItem on the 
+// service to place an item and another can call getItem to retrieve it.
 .service('DataShareService', function() {
 	// Private dictionary variable to contain key, value pairs
 	var dictionary = {};
@@ -21,6 +32,8 @@ angular.module('ace.services')
 		 * @return void
 		 * @throws none
 		 */
+		 
+		// Function sets an item in the dictionary
 		setItem: function(key, value) {
 			if(key !== null)
 			{
@@ -38,6 +51,9 @@ angular.module('ace.services')
 		 * @return {Object} The item associated with the key parameter
 		 * @throws none
 		 */
+		 
+		// Retrieves the item associated with the provided "key" parameter.  Returns defaultValue if there is no object
+		// associated with the key.
 		getItem: function(key, defaultValue) {
 			if(key !== null)
 			{
