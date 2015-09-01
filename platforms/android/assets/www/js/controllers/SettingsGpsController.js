@@ -1,27 +1,32 @@
 // SettingsGpsController.js
 
-/**
- * @module ace.controllers
- */
- 
- // SettingsGpsController.js
- //-----------------------------------------------------------------------------------------------
- 
- // Controller for the settings view
- /**
-  * @class SettingsGpsController
-  */
 angular.module('ace.controllers')
 
+ 
+// SettingsGpsController.js
+//-----------------------------------------------------------------------------------------------
+ 
+// Controller for the settings view
 .controller('SettingsGpsController', function($scope, $ionicSideMenuDelegate, $ionicHistory, $state, GeoService, SettingsService) {
-  	
+	  
 	// Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
 	$scope.$on('$ionicView.enter', function() {
 		// Enable dragging of the side menu
 		$ionicSideMenuDelegate.canDragContent(false);
 	});
-	  
+	
+	// Initialize settings BEFORE entering
+	$scope.$on('$ionicView.beforeEnter', function() {
+		var settings = SettingsService.getSettings(window);
+		$scope.gpsSettings.highAccuracy.checked = settings.gps.highAccuracy;
+		$scope.gpsSettings.timeout = settings.gps.timeout;
+		$scope.gpsSettings.enablePositionTracking.checked= settings.gps.positionTrackingEnabled;
+		$scope.gpsSettings.trackingInterval = settings.gps.trackingInterval;
+		$scope.gpsSettings.historyPointNum = settings.gps.displayedHistoryPoints;
+	});
+	
+	// Initialize gpsSettings to defaults (will be overridden in beforeEnter lifecycle event handler)
 	$scope.gpsSettings = {
 		highAccuracy: {
           checked: true
@@ -34,6 +39,8 @@ angular.module('ace.controllers')
 		historyPointNum: 100
 	};
 	
+	// Toggle handler for Enable High Accuracy setting
+	// This will execute calls to the HTML5 Geolocation API with the enableHighAccuracy option
 	$scope.enableHighAccuracy = function() {		
 		// Update global settings
 		var settings = SettingsService.getSettings(window);
@@ -41,17 +48,21 @@ angular.module('ace.controllers')
 		SettingsService.updateSettings(window, settings);
 	};
 	
+	// Change the gps timeout
 	$scope.timeoutChanged = function() {
 		var settings = SettingsService.getSettings(window);
 		settings.gps.timeout = $scope.gpsSettings.timeout;
 		SettingsService.updateSettings(window, settings);
 	};
 	
+	// Turn on/off recording of user position
 	$scope.enablePosTrackingChanged = function() {
+		// Update settings
 		var settings = SettingsService.getSettings(window);
 		settings.gps.positionTrackingEnabled = $scope.gpsSettings.enablePositionTracking.checked;
 		SettingsService.updateSettings(window, settings);
 		
+		// Turn on tracking immediately, if checked
         if(settings.gps.positionTrackingEnabled)
         {
             GeoService.enableTracking(settings.gps.trackingInterval, null);
@@ -62,6 +73,7 @@ angular.module('ace.controllers')
         }
 	};
 	
+	// Change the frequency at which a user's position is recorded in the tracking functionality
 	$scope.trackingFrequencyChanged = function() {
 		var settings = SettingsService.getSettings(window);
 		settings.gps.trackingInterval = $scope.gpsSettings.trackingInterval;
@@ -73,39 +85,6 @@ angular.module('ace.controllers')
 			GeoService.disableTracking();
 			GeoService.enableTracking(settings.gps.trackingInterval, null);
 		}
-	};
-	
-	$scope.histPointNumChanged = function() {
-		var settings = SettingsService.getSettings(window);
-		settings.gps.displayedHistoryPoints = $scope.gpsSettings.historyPointNum;
-		SettingsService.updateSettings(window, settings);	
-	};
-	
-  	// Adding beforeEnter event listener.  This function will be called just before every view load,
-	// regardless of controller and state caching.
-	$scope.$on('$ionicView.enter', function() {
-		// Enable dragging of the side menu
-		$ionicSideMenuDelegate.canDragContent(true);
-	});
-	
-	$scope.$on('$ionicView.beforeEnter', function() {
-		var settings = SettingsService.getSettings(window);
-		$scope.gpsSettings.highAccuracy.checked = settings.gps.highAccuracy;
-		$scope.gpsSettings.timeout = settings.gps.timeout;
-		$scope.gpsSettings.enablePositionTracking.checked= settings.gps.positionTrackingEnabled;
-		$scope.gpsSettings.trackingInterval = settings.gps.trackingInterval;
-		$scope.gpsSettings.historyPointNum = settings.gps.displayedHistoryPoints;
-	});
-	
-	// Function toggles sliding the left side-menu out and back in
-	/**
-	* @method toggleLeft
-	* @description Function toggles sliding the left side-menu out and back in
-	* @return void
-	* @throws none
-	*/
-	$scope.toggleLeft = function() {
-		$ionicSideMenuDelegate.toggleLeft();
 	};
 	
 	// Custom function called when the back navigation button is clicked

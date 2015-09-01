@@ -1,37 +1,26 @@
 // SettingsGeneralController.js
 
-/**
- * @module ace.controllers
- */
- 
- // SettingsGeneralController.js
- //-----------------------------------------------------------------------------------------------
- 
- // Controller for the settings view
- /**
-  * @class SettingsGeneralController
-  */
 angular.module('ace.controllers')
 
+// SettingsGeneralController.js
+//-----------------------------------------------------------------------------------------------
+ 
+// Controller for the settings view
 .controller('SettingsGeneralController', function($scope, $ionicSideMenuDelegate, SettingsService, $ionicHistory, $state) {
-  
+	// Pull settings from local storage BEFORE displaying view
+	$scope.$on('$ionicView.beforeEnter', function() {
+		var settings = SettingsService.getSettings(window);
+		$scope.generalSettings.notifications.checked = settings.general.notifications;
+		$scope.generalSettings.units = settings.general.units;
+		
+	});
+  	
 	// Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
 	$scope.$on('$ionicView.enter', function() {
 		// Enable dragging of the side menu
 		$ionicSideMenuDelegate.canDragContent(false);
 	});
-	
-	// Function toggles sliding the left side-menu out and back in
-	/**
-	* @method toggleLeft
-	* @description Function toggles sliding the left side-menu out and back in
-	* @return void
-	* @throws none
-	*/
-	$scope.toggleLeft = function() {
-		$ionicSideMenuDelegate.toggleLeft();
-	};
 	
 	// Custom function called when the back navigation button is clicked
 	// Custom, because this is navigation back to a different state (one of the tabs), instead 
@@ -53,6 +42,7 @@ angular.module('ace.controllers')
 		}
 	};
 	
+	// Initial state of all settings
 	$scope.generalSettings = {
 		notifications: {
 			checked: true
@@ -60,24 +50,20 @@ angular.module('ace.controllers')
 		units: "Imperial"
 	};
 	
+	// Array to hold units name options
 	$scope.unitsArray = ["Imperial", "Metric"];
 	
+	// Toggle/Check handler for when the sync notifications setting is changed
 	$scope.notificationsChanged = function() {
 		var settings = SettingsService.getSettings(window);
 		settings.general.notifications = $scope.generalSettings.notifications.checked;
 		SettingsService.updateSettings(window, settings);
 	};
 	
+	// check handler for the units setting
 	$scope.unitsChanged = function() {
 		var settings = SettingsService.getSettings(window);
 		settings.general.units = $scope.generalSettings.units;
 		SettingsService.updateSettings(window, settings);
 	};
-	
-	$scope.$on('$ionicView.beforeEnter', function() {
-		var settings = SettingsService.getSettings(window);
-		$scope.generalSettings.notifications.checked = settings.general.notifications;
-		$scope.generalSettings.units = settings.general.units;
-		
-	});
 });

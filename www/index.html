@@ -50,11 +50,11 @@
     <script src="js/services/LocalStorageService.js"></script>
     
     <!-- Core ACE API js files -->
-    <script src="js/core/LocalStorageUtil.js"></script>
-    <script src="js/core/JSONValidator.js"></script>
-    <script src="js/core/Position.js"></script>
-    <script src="js/core/Settings.js"></script>
-    <script src="js/core/EmailValidator.js"></script>
+    <script src="js/util/LocalStorageUtil.js"></script>
+    <script src="js/util/JSONValidator.js"></script>
+    <script src="js/util/Position.js"></script>
+    <script src="js/util/Settings.js"></script>
+    <script src="js/util/EmailValidator.js"></script>
     
     <script src="js/WeatherReport.js"></script>
     <script src="js/ModalHandler.js"></script>
@@ -75,7 +75,7 @@
     <script src="js/polyfill/PerfNowPolyfill.js"></script>   
     
     <!-- Pinch Zoom utility -->
-    <script src="js/utilities/img-touch-canvas.js"></script>
+    <script src="js/util/img-touch-canvas.js"></script>
 
   </head>
   <body ng-app="ace">
@@ -105,21 +105,6 @@
           <ion-item ng-click="logout()">
             {{&apos;LOGOUT&apos; | translate}}
           </ion-item>
-          <!--<ion-item ng-click="test()">
-            Test Download
-          </ion-item>
-          <ion-item ng-click="test2()">
-            Get All Users
-          </ion-item>
-          <ion-item ng-click="testDownload()">
-            Test Download
-          </ion-item>
-          <ion-item ng-click="testSync()">
-            Test Sync
-          </ion-item>
-          <ion-item ng-click="testLogin()">
-            Test Login
-          </ion-item>-->
           <ion-item ng-click="openSettings()">
             {{&apos;SETTINGS&apos; | translate}}
           </ion-item>

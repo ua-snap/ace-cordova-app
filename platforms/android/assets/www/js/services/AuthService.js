@@ -13,11 +13,20 @@ angular.module('ace.services')
  * @class AuthService
  * @constructor
  */
+ 
+ // AuthService.js
+//-----------------------------------------------------------------------------------------------
+
+// Service class handles authorization for the mobile app.  Performs login/logout functionality.  Also handles 
+// retrieving all users in the current user's Group after login.
 .service('AuthService', function($http, DataService, LocalStorageService, WebApiService, SettingsService) {    
 	return {
         /**
          * Function logs in the user with the credentials passed in the "name" and "pw" variables.  Note that 
-         * "name" can be either a username or a password
+         * "name" can be either a username or a password.
+         * If the device is connected to the internet, the function will attempt to authenticate with the remote server.
+         * If the device is offline, the function will attempt to authenticate with the user set stored from previous
+         * logins.
          * 
          * @method loginUser
          * @param {String} name The username or email address of the person to login
@@ -25,13 +34,16 @@ angular.module('ace.services')
          * @param {function} successCallback Success callback function.
          * @param {function} errorCallback Error callback function.
          */
+         
+        // Function logs in the user with the credentials passed in the "name" and "pw" variables.  Note that 
+        // "name" can be either a username or an email
 		loginUser: function(name, pw, successCallback, errorCallback) {
-            
             // Check if what was passed as username looks like an email address...
             var credentials = {};
             var emailValidator = new EmailValidator();
             if(emailValidator.validate(name))
             {
+                // "name" was probably actally an email
                 credentials = {
                     email: name,
                     password: pw
@@ -39,17 +51,20 @@ angular.module('ace.services')
             }
             else
             {
+                // "name" was in fact a username
                 credentials = {
                     username: name,
                     password: pw
                 }
             }
             
+            // Initialize the DataService (sync/DataService.js)
             DataService.initialize();
             
             // Check offline/online
             if(window.navigator.connection.type !== "none")
             {
+                // Online, so authenticate with the server
                 DataService.remoteMobileUser_login(credentials, ['user'], function(err, res) {
                     if(res)
                     {
@@ -85,7 +100,7 @@ angular.module('ace.services')
                         }
                         
                     });
-                        
+                        // Login was successful, no need to wait on updating the user group data.
                         if(successCallback)
                         {
                             successCallback.call(this, res);
@@ -93,6 +108,7 @@ angular.module('ace.services')
                     }
                     else
                     {
+                        // Error occurred
                         if(errorCallback)
                         {
                             errorCallback.call(this, res);
@@ -137,6 +153,7 @@ angular.module('ace.services')
                             });                       
                         });
                         
+                        // Login was successful, don't need to wait for other data to update
                         if(successCallback)
                         {
                             successCallback.call(this, res);
@@ -151,73 +168,21 @@ angular.module('ace.services')
                     }
                 });
             }
-            
-            
-            
-            /*RemoteMobileUser.login(credentials, ['user'], function(err, res) {
-               if(res)
-               {
-                   // Save access token
-                   LocalStorageService.setItem("access_token", res.id, window);
-                   
-                   // Save currentUser item (which contains the group id)
-                   LocalStorageService.setItem("currentUser", res.user, window);
-                   
-                   // Retrieve an array of the id's for users in the current group
-                   var filter = {where: {id: res.user.groupId}, include: "MobileUsers"};
-                   RemoteGroup.findOne(filter, function(err, result) {
-                       if(result)
-                       {
-                           var groupUsersIdArray = [];
-                           var groupUsers = result.__unknownProperties.MobileUsers;
-                           for(var i = 0; i < groupUsers.length; i++)
-                           {
-                               groupUsersIdArray.push(groupUsers[i].id);
-                           }
-                           LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
-                           // SYNC 
-                           //window.client.sync();
-                       }                       
-                       else if(err)
-                       {
-                           alert(err);
-                       }
-                       
-                   });
-                   
-                   if(successCallback)
-                   {
-                       successCallback.call(this, res);
-                   }
-               } 
-               else if(err)
-               {
-                   alert(err);
-                   if(errorCallback)
-                   {
-                       errorCallback.call(this, err);
-                   }
-               }
-               else 
-               {
-                   alert('Server not found.  Please connect to the internet and retry.');
-                   if(errorCallback)
-                   {
-                       errorCallback.call(this, err);
-                   }
-               }
-            });*/            
         },
 		
         /**
-         * Function logs out the current user, revoking the current access token
+         * Function logs out the current user, revoking the current access token.
+         * Note: currently only works online
          * 
          * @method logoutUser
          * @param {function} successCallback Success callback function.  Executed on a successful logout operation.
          * @param {function} errorCallback Error callback function.  Executed on a failed logout operation. 
          */
+         
+        // Function logs out the current user, revoking the current access token
+        // Note: currently only works online
 		logoutUser: function(successCallback, errorCallback) {
-            
+            // Logout with remote server
             DataService.remoteMobileUser_logout(LocalStorageService.getItem("access_token", "", window), function(err) {
               if(err)
               {
@@ -229,6 +194,7 @@ angular.module('ace.services')
               }  
               else
               {
+                  // Logout successful
                   if(successCallback)
                   {
                       successCallback.call(this);
@@ -239,23 +205,6 @@ angular.module('ace.services')
                   LocalStorageService.setItem("currentUser", "", window);
               }
             });           
-            
-            /*WebApiService.deAuthorizeUser(function(value, responseHeaders) {
-                // success
-                // Execute callback
-                if(successCallback)
-                {
-                    successCallback.call(this, value, responseHeaders);
-                }
-            }, function(httpResponse) {
-                // error
-                alert(httpResponse.data);
-                
-                if(errorCallback)
-                {
-                    errorCallback.call(this, httpResponse);
-                }
-            });*/
         }    
 	};   	 
 });

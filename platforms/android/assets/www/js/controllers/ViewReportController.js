@@ -1,31 +1,32 @@
+// ViewReportController.js
+
 angular.module('ace.controllers')
 
+ // ViewReportController.js
+ //-----------------------------------------------------------------------------------------------
+ 
+ // Controller for the View Report view.  (Report Tab -> Browse Reports -> Select Report -> View Report)
 .controller('ViewReportController', function($ionicSideMenuDelegate, $scope, $state, $translate, DataShareService) {
+	// Variable to hold the currently displayed report (with a date attribute tacked on)
 	$scope.report = null;
 	
-	// Adding beforeEnter event listener.  This function will be called just before every view load,
-	// regardless of controller and state caching.
-	$scope.$on('$ionicView.enter', function() {
-		// Enable dragging of the side menu
-		$ionicSideMenuDelegate.canDragContent(false);
-	});
-	
+	// Function will run before the view loads.  Grab the selected report item and populate the view
 	$scope.$on('$ionicView.beforeEnter', function() {
 		$scope.report = DataShareService.getItem("selectedReport", null);
-		
 		
 		// Fill in view
 		$scope.fillFromReport($scope.report);
 	});
 	
-	// Fill in template (Disabled currently)
-	$scope.useTemplateClicked = function() {
-		//DataShareService.setItem("template", $scope.report);
-		$state.go("tab.report");
-		alert("Not yet implemented.");
-	};
+	// Disable dragging the left-side menu
+	$scope.$on('$ionicView.enter', function() {
+		// Enable dragging of the side menu
+		$ionicSideMenuDelegate.canDragContent(false);
+	});
 	
+	// Populate the current view with the selected report item
 	$scope.fillFromReport = function(report) {
+		// Array of identifiers to be translated
 		var translationsArray = [
 	        'CLOUD_COVER',
 	        'PRECIPITATION',

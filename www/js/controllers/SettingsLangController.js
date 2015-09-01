@@ -1,46 +1,39 @@
 // SettingsLangController.js
+  
+angular.module('ace.controllers')
 
-/**
- * @module ace.controllers
- */
- 
  // SettingsLangController.js
  //-----------------------------------------------------------------------------------------------
  
  // Controller for the settings view
- /**
-  * @class SettingsLangController
-  */
-  
-angular.module('ace.controllers')
-
 .controller('SettingsLangController', function($scope, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicHistory, $state, SettingsService, $translate) {
   	
+	  // Load user settings prior to loading the view
+	$scope.$on('$ionicView.beforeEnter', function() {
+		var settings = SettingsService.getSettings(window);
+		$scope.languageSettings.language = settings.language;
+	});
+	  
 	// Adding beforeEnter event listener.  This function will be called just before every view load,
 	// regardless of controller and state caching.
 	$scope.$on('$ionicView.enter', function() {
 		// Enable dragging of the side menu
 		$ionicSideMenuDelegate.canDragContent(false);
 	});
-	  
+	
+	// Array contains all displayed language options
 	$scope.languages = [
 		{name: "English", value: "en"},
 		{name: "Français", value: "fr"}	
 	];
 	
+	// Selected language
 	$scope.languageSettings = {
 		language: ""
 	};
 	
-	$scope.$on('$ionicView.beforeEnter', function() {
-		var settings = SettingsService.getSettings(window);
-		$scope.languageSettings.language = settings.language;
-	});
-	
+	// Event handler for changing the language settings
 	$scope.languageChanged = function() {
-		//alert($scope.languageSettings.language);
-		// Update settings
-		
 		// Actually change language
 		$translate.use($scope.languageSettings.language);
 		
@@ -54,17 +47,6 @@ angular.module('ace.controllers')
 		var settings = SettingsService.getSettings(window);
 		settings.language = $scope.languageSettings.language;
 		SettingsService.updateSettings(window, settings);
-	};
-	
-	// Function toggles sliding the left side-menu out and back in
-	/**
-	* @method toggleLeft
-	* @description Function toggles sliding the left side-menu out and back in
-	* @return void
-	* @throws none
-	*/
-	$scope.toggleLeft = function() {
-		$ionicSideMenuDelegate.toggleLeft();
 	};
 	
 	// Custom function called when the back navigation button is clicked

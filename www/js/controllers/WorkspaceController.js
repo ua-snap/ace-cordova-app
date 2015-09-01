@@ -1,18 +1,11 @@
 // WorkspaceController.js
 
-/**
- * @module ace.controllers
- */
- 
- // WorkspaceController.js
- //-----------------------------------------------------------------------------------------------
- 
- // Controller for the workspace view
- /**
-  * @class WorkspaceController
-  */
 angular.module('ace.controllers')
 
+// WorkspaceController.js
+//-----------------------------------------------------------------------------------------------
+
+// Controller for the workspace view
 .controller('WorkspaceController', function($scope, $translate, $ionicNavBarDelegate, $ionicSideMenuDelegate) {
 	
 	// Adding beforeEnter event listener.  This function will be called just before every view load,
@@ -26,6 +19,7 @@ angular.module('ace.controllers')
            $ionicNavBarDelegate.title(translations.WEATHER); 
         });
 		
+		// Initialize the pinch to zoom utility and fill with just a default image for now
 		var gesturableImg = new ImgTouchCanvas({
             canvas: document.getElementById('workspaceCanvas'),
             path: "img/workspace1.png"

@@ -1,18 +1,11 @@
 // SettingsController.js
-
-/**
- * @module ace.controllers
- */
  
+angular.module('ace.controllers')
+
  // SettingsController.js
  //-----------------------------------------------------------------------------------------------
  
  // Controller for the settings view
- /**
-  * @class SettingsController
-  */
-angular.module('ace.controllers')
-
 .controller('SettingsController', function($scope, $translate, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicHistory, $state) {
 	
 	// Adding beforeEnter event listener.  This function will be called just before every view load,
@@ -27,22 +20,11 @@ angular.module('ace.controllers')
         });
 	});
 	
-	// Function toggles sliding the left side-menu out and back in
-	/**
-	* @method toggleLeft
-	* @description Function toggles sliding the left side-menu out and back in
-	* @return void
-	* @throws none
-	*/
-	$scope.toggleLeft = function() {
-		$ionicSideMenuDelegate.toggleLeft();
-	};
-	
 	// Custom function called when the back navigation button is clicked
 	// Custom, because this is navigation back to a different state (one of the tabs), instead 
 	// of simple back navigation using the nav stack.
 	$scope.goBack = function() {
-		// Get the previous state (saved in the AppController toggleLeft() function)
+		// Get the previous state (saved in the AppController openSettings() function)
 		var localHandler = new LocalStorageUtil(window);
 		var previousState = localHandler.get('previousState', null);
 		
@@ -58,46 +40,22 @@ angular.module('ace.controllers')
 		}
 	};
 	
-	/**
-	 * Function called when the Database Settings item is clicked.  Opens the database settings interface
-	 * 
-	 * @method dbSettingsClicked
-	 * @return void
-	 * @throws none
-	 */
+	// Function called when the Database Settings item is clicked.  Opens the database settings interface
 	$scope.dbSettingsClicked = function() {
 		$state.go('settings-db');	
 	};
 	
-	/**
-	 * Function called when the GPS Settings item is clicked.  Opens the GPS settings interface
-	 * 
-	 * @method gpsSettingsClicked
-	 * @return void
-	 * @throws none
-	 */
+	// Function called when the GPS Settings item is clicked.  Opens the GPS settings interface
 	$scope.gpsSettingsClicked = function() {
 		$state.go('settings-gps');
 	};
 	
-	/**
-	 * Function called when the Language Settings item is clicked.  Opens the Language settings interface
-	 * 
-	 * @method languageSettingsClicked
-	 * @return void
-	 * @throws none
-	 */
+	// Function called when the Language Settings item is clicked.  Opens the Language settings interface
 	$scope.languageSettingsClicked = function() {
 		$state.go('settings-language');
 	}
 	
-	/**
-	 * Function called when the General Settings item is clicked.  Opens the General settings interface
-	 * 
-	 * @method generalSettingsClicked
-	 * @return void
-	 * @throws none
-	 */
+	// Function called when the General Settings item is clicked.  Opens the General settings interface
 	$scope.generalSettingsClicked = function() {
 		$state.go('settings-general');
 	}
