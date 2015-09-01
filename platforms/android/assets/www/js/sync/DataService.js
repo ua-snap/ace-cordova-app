@@ -1,6 +1,54 @@
+// DataService.js
+
+/**
+ * @module ace.services
+ */
 angular.module('ace.services')
 
-.service('DataService', function($http, LocalStorageService) {    
+/**
+ * @description The DataServie Angular service serves as both the "data retriever" and the "data persistor" interface for
+ * the ace application.  All data retrieved from or saved to the remote server goes through this interface.
+ * 
+ * The service relies on a Web Worker thread that runs a generated (and slightly customized) Loopback synchronization 
+ * browser bundle.  The sync library allows the service to save data without accessing the remote server, and then 
+ * push the data to the server upon request.  The library also provides methods to access the server's data directly.  
+ * Any such method starts with the word "remote".  Any method starting with "local" goes through the local data storage 
+ * before being replicated to the server in a sync method.
+ * 
+ * The browser bundle (browser.bundle.js) is generated and customized by the ace-api project.
+ * 
+ * The Loopback synchronization library is still somewhat experimental; not all features (such as relationships) are 
+ * implemented in the local library.
+ * 
+ * See the following for documentation and example applications
+ * Docs: https://docs.strongloop.com/display/public/LB/Synchronization
+ * Example app: https://github.com/strongloop/loopback-example-offline-sync
+ * 
+ * @class AuthService
+ * @constructor
+ */
+ 
+// DataService.js
+//-----------------------------------------------------------------------------------------------
+
+// The DataServie Angular service serves as both the "data retriever" and the "data persistor" interface for
+// the ace application.  All data retrieved from or saved to the remote server goes through this interface.
+
+// The service relies on a Web Worker thread that runs a generated (and slightly customized) Loopback synchronization 
+// browser bundle.  The sync library allows the service to save data without accessing the remote server, and then 
+// push the data to the server upon request.  The library also provides methods to access the server's data directly.  
+// Any such method starts with the word "remote".  Any method starting with "local" goes through the local data storage 
+// before being replicated to the server in a sync method.
+ 
+// The browser bundle (browser.bundle.js) is generated and customized by the ace-api project.
+
+// The Loopback synchronization library is still somewhat experimental; not all features (such as relationships) are 
+// implemented in the local library.
+ 
+// See the following for documentation and example applications
+// Docs: https://docs.strongloop.com/display/public/LB/Synchronization
+// Example app: https://github.com/strongloop/loopback-example-offline-sync
+.service('DataService', function(LocalStorageService) {    
 	return {
 		// All callbacks should take the following args (err, res)
 		/*
@@ -18,7 +66,8 @@ angular.module('ace.services')
 				args: Array, - optional - An array of args to pass to the callback
 			}	
 		*/
-				
+		
+		// Initialize the DataService, including instantiating the web worker threads	
 		initialize: function() {
 			// Set up window callback mapping object
 			if(window.thread_messenger === undefined)
@@ -35,16 +84,19 @@ angular.module('ace.services')
 				navigator.webkitPersistentStorage.requestQuota(50 * 1024 * 1024);
 			}
 			
-			// Set up worker thread
-			if(window.thread_messenger.worker === undefined)
+			// Set up sync worker thread (will contain the loopback in the browser lib)
+			if(window.thread_messenger.syncWorker === undefined)
 			{
-				window.thread_messenger.worker = new Worker("js/sync/SyncWorker.js");
+				window.thread_messenger.syncWorker = new Worker("js/sync/SyncWorker.js");
 				
 				// Set up recieve message handler
-				window.thread_messenger.worker.onmessage = this.recieveMessage;
+				window.thread_messenger.syncWorker.onmessage = this.recieveMessage;
 			}
 			
-			// Set up save-load thread
+			// Set up save-load thread (will be responsible for persisting the data through the HTML5 file api)
+			// Note: Chrome is the only browser that supports the HTML5 synchronous file api that this worker uses
+			// Thus, this portion will only function on Android currently
+			// Options for iOS are limited, due to the lack of access to permanent storage in web worker threads.
 			if(window.thread_messenger.saveWorker === undefined)
 			{
 				window.thread_messenger.saveWorker = new Worker("js/sync/SaveWorker.js");
@@ -52,7 +104,7 @@ angular.module('ace.services')
 			
 			// Set up message channel between worker threads
 			window.thread_messenger.msgChannel = new MessageChannel();
-			window.thread_messenger.worker.postMessage("msgChannelPort", [window.thread_messenger.msgChannel.port1]);
+			window.thread_messenger.syncWorker.postMessage("msgChannelPort", [window.thread_messenger.msgChannel.port1]);
 			window.thread_messenger.saveWorker.postMessage("msgChannelPort", [window.thread_messenger.msgChannel.port2])
 			
 			// Reset sync counter and indicator
@@ -63,12 +115,13 @@ angular.module('ace.services')
 			window.thread_messenger.syncRequestQueue = [];
 		},
 		
+		// Function terminates the sync and save web workers
 		terminate: function() {
-			// Close the worker thread
+			// Close the sync thread and save thread
 			// Note: WILL KILL ALL DATA ACCESS.  Should only be performed on logout
-			if(window.thread_messenger && window.thread_messenger.worker)
+			if(window.thread_messenger && window.thread_messenger.syncWorker)
 			{
-				window.thread_messenger.worker.terminate();
+				window.thread_messenger.syncWorker.terminate();
 				window.thread_messenger.saveWorker.terminate();
 			}	
 		},
@@ -98,7 +151,7 @@ angular.module('ace.services')
 			};
 			
 			// send the message
-			window.thread_messenger.worker.postMessage(message);				
+			window.thread_messenger.syncWorker.postMessage(message);				
 		},
 		
 		// Recieved message handler
@@ -130,6 +183,7 @@ angular.module('ace.services')
 		},
 		
 		// Synchronous function returns a Globally Unique Identifier to associate with a callback
+		// (serves as the callback id in the callback map - window.thread_messenger.callbackMap)
 		createGUID: function() {
 			// Start with date.now
 			var guid = Date.now().toString();
@@ -152,38 +206,316 @@ angular.module('ace.services')
 			return guid;		
 		},
 		
-		// Returns a random integer in a specified range
+		// Helper function returns a random integer in a specified range
 		getRandomInt: function(min, max) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;	
 		},
 				
 		// Start of API functions (that can be called through the interface to the worker)
+		//-------------------------------------------------------------------------------
+		// Note that these methods are designed to reflect the underlying Loopback-in-the-browser methods that are
+		// called in the sync worker thread.  Groups, Positions, and WeatherReports all subclass the loopback 
+		// PersistedModel class.  MobileUsers subclass the "User" class.  See the following for more information:
+		// PersistedModel: https://docs.strongloop.com/display/LB/PersistedModel+class
+		// User: https://docs.strongloop.com/display/LB/User
+		// Filters: https://docs.strongloop.com/display/public/LB/Querying+data#Queryingdata-Filters
 		
-		// Login function
+		// MobileUser
+		//--------------------------------------------------------------------------------------------------
+		
+		/**
+		 * @method remoteMobileUser_login
+		 * 
+		 * @description Remote login function.  Authenticates the provided credentials with the remote server
+		 * 
+		 * @param {Object} credentials An object consisting of either a username/password combo or an email/password
+		 * 		combo.  {username: "testUserName", password: "myPassword"} or {email: "test@test.com", 
+		 * 		password: "myPassword"}
+		 * @param {Object} filter Loopback filter to include in the call.  Set to ["user"] to return the user's info
+		 * 		on successful login
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, res) 
+		 * @return void
+		 * @throws None
+		 */
+		 
+		// Remote login function.  Authenticates the provided credentials with the remote server
 		remoteMobileUser_login: function(credentials, filter, cb) {
 			this.sendMessage("login", credentials, filter, cb);
 		},
 		
-		// Offline login function
+		/**
+		 * @method remoteMobileUser_logout
+		 * 
+		 * @description Logs out the currently authenticated user with the remote server
+		 * 
+		 * @param {String} accessToken The id of the access token for the currently authenticated user
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, res) 
+		 * @return void
+		 * @throws None
+		 */
+		 
+		// Logs out the currently authenticated user with the remote server
+		remoteMobileUser_logout: function(accessToken, cb) {
+			this.sendMessage("remotemobileuser.logout", accessToken, null, cb);
+		},
+		
+		/**
+		 * @method remoteMobileUser_updateAll
+		 * 
+		 * @description Function updates all remote MobileUser objects that match the provided filter with the specified
+		 * data fields and values.
+		 * 
+		 * @param {Object} filter Loopback filter to include in the call. Ex. {where: {id: 123456}}
+		 * @param {Object} data Data to be updated.  Ex. {field: "value"}
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, res) 
+		 * @return void
+		 * @throws None
+		 */
+		 
+		// Function gets all local Positions specified by the included filter and passes them to the provided
+		// callback function.
+		remoteMobileUser_updateAll: function(filter, data, cb) {
+			this.sendMessage("remotemobileuser.updateall", data, filter, cb);
+		},
+		
+		/**
+		 * @method localMobileUser_login
+		 * 
+		 * @description Local login function.  Authenticates the provided credentials with the set of users stored
+		 * 		locally from previous logins.  Will take a substantial amount of time due to encryption/decryption 
+		 * 		time for the password.
+		 * 
+		 * @param {Object} credentials An object consisting of either a username/password combo or an email/password
+		 * 		combo.  {username: "testUserName", password: "myPassword"} or {email: "test@test.com", 
+		 * 		password: "myPassword"}
+		 * @param {Object} filter Loopback filter to include in the call.  Set to ["user"] to return the user's info
+		 * 		on successful login
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, res) 
+		 * @return void
+		 * @throws None
+		 */
+		 
+		// Local login function.  Authenticates the provided credentials with the set of users stored
+		// locally from previous logins.  Will take a substantial amount of time due to encryption/decryption 
+		// time for the password.
 		localMobileUser_login: function(credentials, filter, cb) {
 			this.sendMessage("login-offline", credentials, filter, cb);
 		},
 		
-		// RemoteGroup.findOne
+		/**
+		 * @method localMobileUser_find
+		 * 
+		 * @description Function gets all mobile users specified by the included filter
+		 * 
+		 * @param {Object/function} arg1 This argument can either be a filter object {where: {field: "value"}} or a
+		 * 		callback function. 
+		 * @param {function} If this argument is provided, it must always be a callback function
+		 * @return void
+		 * @throws None
+		 */
+		 
+		// Function gets all mobile users specified by the included filter
+		localMobileUser_find: function(arg1, arg2) {
+			// expecting either...
+			// arg1 = filter, arg2 = callback function
+			// or
+			// arg1 = callback function, arg2 = undefined
+			if(typeof arg1 === "function")
+			{
+				this.sendMessage("localmobileuser.find", null, null, arg1);
+			}
+			else if(typeof arg1 === "object" && typeof arg2 === "function")
+			{
+				this.sendMessage("localmobileuser.find", null, arg1, arg2);
+			}	
+		},
+		
+		/**
+		 * @method localMobileUser_updateAll
+		 * 
+		 * @description Updates all MobileUser objects in the local data store matching the provided filter.
+		 * The fields included in the data object are updated to the specified values
+		 * 
+		 * @param {Object} filter Loopback filter to include in the call. Ex. {where: {id: 123456}}
+		 * @param {Object} data Data to be updated.  Ex. {field: "value"}
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, res) 
+		 * @return void
+		 * @throws None
+		 */
+		
+		// Updates all MobileUser objects in the local data store matching the provided filter.
+		// The fields included in the data object are updated to the specified values
+		localMobileUser_updateAll: function(filter, data, cb) {
+			this.sendMessage("localmobileuser.updateall", data, filter, cb);	
+		},
+		
+		// Group
+		//--------------------------------------------------------------------------------------------------
+		
+		/**
+		 * @method remoteGroup_findOne
+		 * 
+		 * @description Returns one group matching the provided filter.  (See above for filter doc link) 
+		 * Note: This method does support relationships for MobileUsers.  Any related Mobile Users (if included 
+		 * in the filter) will be returned in the res.__unknownProperties.MobileUsers object
+		 * 
+		 * @param {Object} filter Loopback filter to include in the call. Ex. {where: {id: 123456}}
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, res) 
+		 * @return void
+		 * @throws None
+		 */
+		 
+		// Returns one group matching the provided filter.  (See above for filter doc link) 
+		// Note: This method does support relationships for MobileUsers.  Any related Mobile Users (if included 
+		// in the filter) will be returned in the res.__unknownProperties.MobileUsers object
 		remoteGroup_findOne: function(filter, cb) {
 			this.sendMessage("remotegroup.findone", null, filter, cb);	
 		},
 		
-		// LocalGroup.findOne
+		/**
+		 * @method localGroup_findOne
+		 * 
+		 * @description Returns one group matching the provided filter.  (See above for filter doc link) 
+		 * Note: This method does NOT support relationships of any kind (unimplemented in loopback in the browser lib)
+		 * 
+		 * @param {Object} filter Loopback filter to include in the call. Ex. {where: {id: 123456}}
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, res) 
+		 * @return void
+		 * @throws None
+		 */
+		 
+		// Returns one group matching the provided filter.  (See above for filter doc link) 
+		// Note: This method does NOT support relationships of any kind (unimplemented in loopback in the browser lib)
 		localGroup_findOne: function(filter, cb) {
 			this.sendMessage("localgroup.findone", null, filter, cb);	
 		},
 		
+		// WeatherReport
+		//--------------------------------------------------------------------------------------------------
+		
+		/**
+		 * @method localWeatherReport_updateAll
+		 * 
+		 * @description Updates all weather report objects in the local data store matching the provided filter.
+		 * The fields included in the data object are updated to the specified values
+		 * 
+		 * @param {Object} filter Loopback filter to include in the call. Ex. {where: {id: 123456}}
+		 * @param {Object} data Data to be updated.  Ex. {field: "value"}
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, res) 
+		 * @return void
+		 * @throws None
+		 */
+		 
+		// Updates all weather report objects in the local data store matching the provided filter.
+		// The fields included in the data object are updated to the specified values
 		localWeatherReport_updateAll: function(filter, data, cb) {
 			this.sendMessage("localweatherreport.updateall", data, filter, cb);	
 		},
 		
-		// sync
+		/**
+		 * @method localWeatherReport_create
+		 * 
+		 * @description Function creates a new WeatherReport object in the local data store
+		 * 
+		 * @param {Object} report The report object to be created
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, res) 
+		 * @return void
+		 * @throws None
+		 */
+		 
+		// Function creates a new WeatherReport object in the local data store
+		localWeatherReport_create: function(report, cb) {
+			this.sendMessage("localweatherreport.create", report, null, cb);
+		},
+		
+		/**
+		 * @method localWeatherReport_find
+		 * 
+		 * @description Function gets all local WeatherReports specified by the included filter and passes them to the provided
+		 * callback function.
+		 * 
+		 * @param {Object/function} filter Filter object to specify which WeatherReports to return.  Ex. 
+		 * 		{where: {field: "value"}}
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, res) 
+		 * @return void
+		 * @throws None
+		 */
+		 
+		// Function gets all WeatherReports specified by the included filter and passes them to the provided
+		// callback function.
+		localWeatherReport_find: function(filter, cb) {
+			this.sendMessage("localweatherreport.find", null, filter, cb);
+		},
+		
+		// LocalPosition
+		//--------------------------------------------------------------------------------------------------
+		
+		/**
+		 * @method localPosition_create
+		 * 
+		 * @description Function creates a local position object and stores it in the database
+		 * 
+		 * @param {Object} position The position object to create
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, res) 
+		 * @return void
+		 * @throws None
+		 */
+		 
+		// Function gets all mobile users specified by the included filter
+		localPosition_create: function(position, cb) {
+			this.sendMessage("localposition.create", position, null, cb);
+		},
+		
+		/**
+		 * @method localPosition_find
+		 * 
+		 * @description Function gets all local Position specified by the included filter and passes them to the provided
+		 * callback function.
+		 * 
+		 * @param {Object/function} filter Filter object to specify which Positions to return.  Ex. 
+		 * 		{where: {field: "value"}}
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, res) 
+		 * @return void
+		 * @throws None
+		 */
+		 
+		// Function gets all local Positions specified by the included filter and passes them to the provided
+		// callback function.
+		localPosition_find: function(filter, cb) {
+			this.sendMessage("localposition.find", null, filter, cb);
+		},
+		
+		// Sync
+		//--------------------------------------------------------------------------------------------------
+		
+		/**
+		 * @method sync
+		 * 
+		 * @description Performs a sync with the remote data store.  Performs collision detection to ensure that multiple
+		 * sync's do not occur at the same time (which can corrupt the state of the data in the loopback lib)
+		 * 
+		 * @param {function} cb Callback function to be executed after the sync is executed FOR EACH DATA TYPE SYNCED.
+		 * 		Will be passed a string representing the name of the type that just completed syncing. 
+		 * @param {Boolean} notification True if a notification is to be displayed while syncing, False otherwise.
+		 * 		Usually drawn from user settings
+		 * @return void
+		 * @throws None
+		 */
+		
+		// Performs a sync with the remote data store.  Performs collision detection to ensure that multiple
+		// sync's do not occur at the same time (which can corrupt the state of the data in the loopback lib)
 		sync: function(cb, notification) {
 			// Save the service self object
 			var self = this;
@@ -273,79 +605,9 @@ angular.module('ace.services')
 					}
 				}
 				
+				// Tell the sync worker thread to execute a sync
 				this.sendMessage("sync", null, null, callbackWrapper);
 			}			
-		},
-		
-		// Get all local mobile users
-		localMobileUser_find: function(arg1, arg2) {
-			// expecting either...
-			// arg1 = filter, arg2 = callback function
-			// or
-			// arg1 = callback function, arg2 = undefined
-			if(typeof arg1 === "function")
-			{
-				this.sendMessage("localmobileuser.find", null, null, arg1);
-			}
-			else if(typeof arg1 === "object" && typeof arg2 === "function")
-			{
-				this.sendMessage("localmobileuser.find", null, arg1, arg2);
-			}
-				
-		},
-		
-		// Create a position (locally)
-		localPosition_create: function(position, cb) {
-			this.sendMessage("localposition.create", position, null, cb);
-		},
-		
-		localMobileUser_updateAll: function(filter, data, cb) {
-			this.sendMessage("localmobileuser.updateall", data, filter, cb);	
-		},
-		
-		// Logout
-		remoteMobileUser_logout: function(accessToken, cb) {
-			this.sendMessage("remotemobileuser.logout", accessToken, null, cb);
-		},
-		
-		// Create a weather report (locally)
-		localWeatherReport_create: function(report, cb) {
-			this.sendMessage("localweatherreport.create", report, null, cb);
-		},
-		
-		// Find function for local weather reports
-		localWeatherReport_find: function(filter, cb) {
-			this.sendMessage("localweatherreport.find", null, filter, cb);
-		},
-		
-		// Find function for local positions
-		localPosition_find: function(filter, cb) {
-			this.sendMessage("localposition.find", null, filter, cb);
-		},
-		
-		// Find function for local settings
-		localSettings_find: function(filter, cb) {
-			this.sendMessage("localsettings.find", null, filter, cb);
-		},
-		
-		// Update function for local settings
-		localSettings_updateAll: function(filter, data, cb) {
-			this.sendMessage("localsettings.updateall", data, filter, cb);
-		},
-		
-		// Update or create local settings
-		localSettings_upsert: function(data, cb) {
-			this.sendMessage("localsettings.upsert", data, null, cb);
-		},
-		
-		// Update or create local mobile user
-		localMobileUser_upsert: function(data, cb) {
-			this.sendMessage("localmobileuser.upsert", data, null, cb);
-		},
-		
-		// Update remote mobile user instance
-		remoteMobileUser_updateAll: function(filter, data, cb) {
-			this.sendMessage("remotemobileuser.updateall", data, filter, cb);
-		}		
+		}	
 	}
 });
