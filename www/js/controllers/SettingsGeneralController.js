@@ -6,12 +6,17 @@ angular.module('ace.controllers')
 //-----------------------------------------------------------------------------------------------
  
 // Controller for the settings view
-.controller('SettingsGeneralController', function($scope, $ionicSideMenuDelegate, SettingsService, $ionicHistory, $state) {
+.controller('SettingsGeneralController', function($translate, $scope, $ionicSideMenuDelegate, SettingsService, $ionicHistory, $state) {
 	// Pull settings from local storage BEFORE displaying view
 	$scope.$on('$ionicView.beforeEnter', function() {
 		var settings = SettingsService.getSettings(window);
 		$scope.generalSettings.notifications.checked = settings.general.notifications;
 		$scope.generalSettings.units = settings.general.units;
+		
+		// Translate the unit labels
+		$translate(['IMPERIAL', 'METRIC']).then(function(translations) {
+			$scope.unitsArray = [translations.IMPERIAL, translations.METRIC]
+		});
 		
 	});
   	

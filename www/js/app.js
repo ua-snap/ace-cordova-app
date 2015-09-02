@@ -216,7 +216,12 @@ angular.module('ace', ['ionic', 'ace.controllers', 'ace.services', 'pascalprecht
      BROWSE_PREVIOUS_REPORTS: 'Browse Previous Reports',
      PREVIOUS_REPORTS: 'Previous Reports',
      VIEW_REPORT: 'View Report',
-     USE_AS_TEMPLATE: 'Use as Template'
+     USE_AS_TEMPLATE: 'Use as Template',
+     GENERAL_SETTINGS: 'General Settings',
+     SYNC_NOTIFICATIONS: 'Sync Notifications',
+     UNITS: 'Units',
+     IMPERIAL: 'Imperial',
+     METRIC: 'Metric'
   })
   .translations('fr', {
       WEATHER: 'Temps',
@@ -313,7 +318,12 @@ angular.module('ace', ['ionic', 'ace.controllers', 'ace.services', 'pascalprecht
       BROWSE_PREVIOUS_REPORTS: 'parcourir les rapports précédents',
       PREVIOUS_REPORTS: 'les rapports précédents',
       VIEW_REPORT: 'Voir le rapport',
-      USE_AS_TEMPLATE: 'utiliser comme modèle'
+      USE_AS_TEMPLATE: 'utiliser comme modèle',
+      GENERAL_SETTINGS: 'Réglages généraux',
+      SYNC_NOTIFICATIONS: 'Notifications de synchronisation',
+      UNITS: 'unités',
+      IMPERIAL: 'impériale',
+      METRIC: 'Metric'
   });
   
   // If no settings exist, initialize to defaults to allow the app to function

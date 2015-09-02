@@ -1,12 +1,12 @@
-<ion-view view-title="General Settings">
+<ion-view view-title="{{'GENERAL_SETTINGS' | translate}}">
   <ion-nav-buttons side="left">
     <!--<button class="button button-icon ion-android-arrow-back" ng-click="goBack()"></button>-->
   </ion-nav-buttons>
   <ion-content>
     <ion-list>
-      <ion-toggle ng-model="generalSettings.notifications.checked" ng-change="notificationsChanged()">Sync Notifications</ion-toggle>
+      <ion-toggle ng-model="generalSettings.notifications.checked" ng-change="notificationsChanged()">{{'SYNC_NOTIFICATIONS' | translate}}</ion-toggle>
       <div class="item">
-          Units:
+          {{'UNITS' | translate}}:
           <ion-radio ng-repeat="unit in unitsArray" ng-value="unit" ng-model="generalSettings.units" ng-change="unitsChanged()">
               {{unit}}
           </ion-radio>
