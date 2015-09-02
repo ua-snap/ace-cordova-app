@@ -134,7 +134,7 @@ angular.module('ace.controllers')
             $scope.displayReportsChanged();
             $scope.displayOtherUsersChanged();
         }        
-    }, false); 
+    }, false);
     
     // Function handles initialization tasks
     var initialize = function()
@@ -186,7 +186,7 @@ angular.module('ace.controllers')
         $scope.map = map;
         
         // Start watching position
-        GeoService.setWatchCallback(updateMarker);
+        //GeoService.setWatchCallback(updateMarker);
         
         // Check if history was displayed
         if($scope.mapState.displayHistory !== null)
@@ -204,6 +204,7 @@ angular.module('ace.controllers')
         
         // Always display marker
         $scope.settings.displayPos.checked = true;
+        $scope.displayPosChanged();
         
         // Set follow position appropriately
         $scope.settings.followPos = $scope.mapState.followPos;
@@ -223,57 +224,62 @@ angular.module('ace.controllers')
     };
     
     // Update the current location marker position
-    var updateMarker = function(posArg, followArg) {
-        (function(pos, follow) {
-            // Execute the callback with a 3 millisecond delay (try to let the main ui thread catch up)
-            window.setTimeout(function() {
-                // Update the currentLocationMarker if it exists, add it if it does not
-                if($scope.currentLocationMarker)
-                {
-                    var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-                    $scope.currentLocationMarker.setPosition(latlng);
-                    if(follow)
-                    {
-                        $scope.map.setCenter(latlng);
-                    }
-                }
-                else 
-                {
-                    var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-                    
-                    $scope.currentLocationMarker = new google.maps.Marker({
-                            position: latlng,
-                            map: $scope.map,
-                            title: "current_pos",
-                    });
-                    $scope.map.setCenter(latlng);
-                }
-            }, 3);
-        })(posArg, followArg);
+    var updateMarker = function(pos, follow) {
+        if($scope.currentLocationMarker)
+        {
+            var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            $scope.currentLocationMarker.setPosition(latlng);
+            if(follow)
+            {
+                $scope.map.setCenter(latlng);
+            }
+        }
+        else 
+        {
+            var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            
+            $scope.currentLocationMarker = new google.maps.Marker({
+                    position: latlng,
+                    map: $scope.map,
+                    title: "current_pos",
+            });
+            $scope.map.setCenter(latlng);
+        }
     };
     
     // Toggle handler for the display position setting
     $scope.displayPosChanged = function() {
-      if($scope.settings.displayPos.checked)
-      {
-          // If the setting was changed to "on" or "checked", start displaying and updating a current location marker
-          GeoService.setWatchCallback(updateMarker);
-      } 
-      else 
-      {
-          // Remove the current location marker and clear the reference
-          $scope.currentLocationMarker.setMap(null);
-          $scope.currentLocationMarker = null;
-          
-          // Clear the callback function (that updates the marker)
-          GeoService.setWatchCallback(null);
-          
-          // Make sure follow position setting is false
-          if($scope.settings.followPos)
-          {
-              $scope.toggleFollowPosition();
-          }          
-      }
+        if($scope.settings.displayPos.checked)
+        {   
+            // Instead of adding a callback to the GeoService.watchPosition functionality, add a timer that updates 
+            // the marker (will be much less cpu intensive, trying to fix map lockup bug)
+            $scope.positionUpdateInterval = window.setInterval(function() {
+                GeoService.getCurrentPosition(navigator.geolocation, function(position) {
+                    if(position)
+                    {
+                        updateMarker(position, $scope.settings.followPos);
+                    }
+                }, function(error) {
+                    // Do nothing on error
+                });
+            }, 500);
+        } 
+        else 
+        {
+            // Remove the current location marker and clear the reference
+            $scope.currentLocationMarker.setMap(null);
+            $scope.currentLocationMarker = null;
+            
+            // Clear the callback function (that updates the marker)
+            //GeoService.setWatchCallback(null);
+            window.clearInterval($scope.positionUpdateInterval);
+            
+            // Make sure follow position setting is false
+            if($scope.settings.followPos)
+            {
+                $scope.toggleFollowPosition();
+            }          
+        }
     };
     
     // Setting toggle handler for the display location history option

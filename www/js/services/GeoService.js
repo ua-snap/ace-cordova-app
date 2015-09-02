@@ -179,7 +179,7 @@ angular.module('ace.services')
 			{
 				if(successCallback)
 				{
-					successCallback.call(this, mPos);	
+					successCallback.call(null, mPos);	
 				}					
 			}
 			else
@@ -190,7 +190,7 @@ angular.module('ace.services')
 					self.setWatchCallback(null);
 					if(successCallback)
 					{
-						successCallback.call(this, position);
+						successCallback.call(null, position);
 					}
 				});
 			}			
