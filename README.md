@@ -47,6 +47,16 @@ All HTML views for the application are contained in the [www/templates/](https:/
 directory.  Custom CSS can be found in [www/css/style.css](https://github.com/ua-snap/ace-cordova-app/blob/master/www/css/style.css), 
 though the majority of the CSS for the application was contained in the Ionic framework.
 
+## Quick-Start Links
+###### Login code
+[LoginController.js](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js/controllers/LoginController.js), [AuthService.js](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js/services/AuthService.js)
+
+###### Logout code
+[AppController.js](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js/controllers/AppController.js)
+
+###### Data Interface code
+[DataService.js](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js/services/DataService.js)
+
 ## Documentation
 Code documentation for the project was generated using the [Docco](http://jashkenas.github.io/docco/) and [YUIDoc](http://yui.github.io/yuidoc/)
 tools. To view the documentation, clone the project, then run "npm install" and "bower install" to install all dependencies
