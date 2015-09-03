@@ -55,7 +55,7 @@ though the majority of the CSS for the application was contained in the Ionic fr
 [AppController.js](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js/controllers/AppController.js)
 
 ###### Data Interface code
-[DataService.js](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js/services/DataService.js)
+[DataService.js](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js/sync/DataService.js)
 
 ## Documentation
 Code documentation for the project was generated using the [Docco](http://jashkenas.github.io/docco/) and [YUIDoc](http://yui.github.io/yuidoc/)
