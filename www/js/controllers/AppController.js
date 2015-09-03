@@ -47,8 +47,8 @@ angular.module('ace.controllers', [])
             // Stop watching position
             GeoService.disableWatchPosition(navigator.geolocation);
             
-            // Kick the user back out to the login screen
-            $state.go('login');
+            // Remove "online" event listener
+            document.removeEventListener("online", window.thread_messenger.onlineListenerFunction, false);
             
             // Kill the sync thread and stop the sync interval timer
             DataService.terminate();
@@ -60,6 +60,9 @@ angular.module('ace.controllers', [])
             
             // Remove any notifications
             window.plugin.notification.local.cancel(230476843);
+            
+            // Kick the user back out to the login screen
+            $state.go('login');
         
         }, function(err) {
             // Error (already alerted in AuthService)

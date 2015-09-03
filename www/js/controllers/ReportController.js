@@ -61,8 +61,7 @@ angular.module('ace.controllers')
         }
     });
     
-    // Setup to to perform when going online from being offline
-    document.addEventListener("online", function() {
+    window.thread_messenger.onlineListenerFunction = function() {
         if(window.onlineTriggered === undefined || window.onlineTriggered === false)
         {
             window.onlineTriggered = true;
@@ -95,13 +94,16 @@ angular.module('ace.controllers')
                 // Sync only if settings is valid (user is logged in)
                 if(settings)
                 {
-                    DataService.sync(null, settings.general.notifications);
-                    window.onlineTriggered = false;
+                    DataService.sync(null, settings.general.notifications); 
                 }
+                window.onlineTriggered = false;
                 
             }
-        }       
-    }, false)
+        }
+    }
+    
+    // Setup to to perform when going online from being offline
+    document.addEventListener("online", window.thread_messenger.onlineListenerFunction, false)
     
   });
   
