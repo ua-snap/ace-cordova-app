@@ -27,7 +27,7 @@ a full version of the Crosswalk webview is only available on the Android platfor
 
 ###### Remaining work
 This project is not complete.  The vast majority of the functionality is provided here, but several bugs and additional
-features remain to be implemented.  All todo's and bugs are documented in the Issues section of this repo.
+features remain to be implemented.  All todo's, enhancements, and bugs are documented in the Issues section of this repo.
 
 ## Code Structure Overview
 ### JavaScript
