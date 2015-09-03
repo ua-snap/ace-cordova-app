@@ -76,13 +76,17 @@ angular.module('ace.controllers')
                     inputType: 'password'
                 }).then(function(password) {
                     // Log in to the server
-                    AuthService.loginUser(LocalStorageService.getItem("currentUser", {}, window).username, password, function(err) {
-                        alert(err);
-                    }, function(result) {
+                    AuthService.loginUser(LocalStorageService.getItem("currentUser", {}, window).username, password, function(result) {
+                        // Set access token
+                        LocalStorageService.setItem("access_token", result.id, window);
+                        
                         // Sync
                         var settings = SettingsService.getSettings(window);
                         DataService.sync(null, settings.general.notifications);
                         window.onlineTriggered = false;
+                    }, function(err) {
+                        // Error
+                        alert(err);
                     });
                 });
             }
