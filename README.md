@@ -52,7 +52,7 @@ though the majority of the CSS for the application was contained in the Ionic fr
 [LoginController.js](https://github.com/ua-snap/ace-cordova-app/blob/master/www/js/controllers/LoginController.js#L54), [AuthService.js](https://github.com/ua-snap/ace-cordova-app/blob/master/www/js/services/AuthService.js#L41)
 
 ###### Logout code
-[AppController.js](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js/controllers/AppController.js)
+[AppController.js](https://github.com/ua-snap/ace-cordova-app/blob/master/www/js/controllers/AppController.js#L33)
 
 ###### Data Interface code
 [DataService.js](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js/sync/DataService.js)
