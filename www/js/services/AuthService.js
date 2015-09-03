@@ -38,7 +38,7 @@ angular.module('ace.services', [])
          
         // Function logs in the user with the credentials passed in the "name" and "pw" variables.  Note that 
         // "name" can be either a username or an email
-		loginUser: function(name, pw, successCallback, errorCallback) {
+        loginUser: function(name, pw, successCallback, errorCallback) {
             // Check if what was passed as username looks like an email address...
             var credentials = {};
             var emailValidator = new EmailValidator();
