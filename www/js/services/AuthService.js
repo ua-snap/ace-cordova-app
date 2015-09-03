@@ -183,29 +183,45 @@ angular.module('ace.services', [])
         // Function logs out the current user, revoking the current access token
         // Note: currently only works online
 		logoutUser: function(successCallback, errorCallback) {
-            // Logout with remote server
-            DataService.remoteMobileUser_logout(LocalStorageService.getItem("access_token", "", window), function(err) {
-              if(err)
-              {
-                  alert(err);
-                  if(errorCallback)
-                  {
-                      errorCallback.call(this, err);
-                  }
-              }  
-              else
-              {
-                  // Logout successful
-                  if(successCallback)
-                  {
-                      successCallback.call(this);
-                  }
-                  
-                  // Clear out local user storage
-                  LocalStorageService.setItem("access_token", "", window);
-                  LocalStorageService.setItem("currentUser", "", window);
-              }
-            });           
+            // Check offline/online
+            if(window.navigator.connection.type !== "none")
+            {
+                // Logout with remote server
+                DataService.remoteMobileUser_logout(LocalStorageService.getItem("access_token", "", window), function(err) {
+                    if(err)
+                    {
+                        alert(err);
+                        if(errorCallback)
+                        {
+                            errorCallback.call(this, err);
+                        }
+                    }  
+                    else
+                    {
+                        // Logout successful
+                        if(successCallback)
+                        {
+                            successCallback.call(this);
+                        }
+                        
+                        // Clear out local user storage
+                        LocalStorageService.setItem("access_token", "", window);
+                        LocalStorageService.setItem("currentUser", "", window);
+                    }
+                }); 
+            }
+            else
+            {
+                // Clear out local user storage
+                LocalStorageService.setItem("access_token", "", window);
+                LocalStorageService.setItem("currentUser", "", window);
+                
+                if(successCallback)
+                {
+                    successCallback.call(this, null);
+                }
+            }
+                      
         }    
 	};   	 
 });

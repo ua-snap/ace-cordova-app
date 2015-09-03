@@ -91,8 +91,14 @@ angular.module('ace.controllers')
             {
                 // The user was previously logged in, so just sync immediately
                 var settings = SettingsService.getSettings(window);
-                DataService.sync(null, settings.general.notifications);
-                window.onlineTriggered = false;
+                
+                // Sync only if settings is valid (user is logged in)
+                if(settings)
+                {
+                    DataService.sync(null, settings.general.notifications);
+                    window.onlineTriggered = false;
+                }
+                
             }
         }       
     }, false)
