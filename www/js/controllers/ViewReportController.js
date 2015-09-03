@@ -55,7 +55,12 @@ angular.module('ace.controllers')
 	        pressTrend.innerText = translations.PRESSURE_TENDENCY + ": " + report.pressureTendency;
 	        
 	        var pressVal = document.getElementById("sumcat4_2");
-	        pressVal.innerText = translations.SURFACE_PRESSURE + ": " + report.pressureValue + " hPa";
+			var pressUnits = "";
+			if(report.pressureValue && report.pressureValue !== "")
+			{
+				pressUnits = " hPa";
+			}
+	        pressVal.innerText = translations.SURFACE_PRESSURE + ": " + report.pressureValue + pressUnits;
 	        
 	        var temp = document.getElementById("sumcat5");
 	        temp.innerText = translations.TEMPERATURE + ": " + report.temperatureValue + " " + $scope.report.temperatureUnits;

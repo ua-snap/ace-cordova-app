@@ -324,13 +324,20 @@ angular.module('ace.controllers')
         // Grab the date
         var date = new Date(report.position.timestamp);
         
+        // Variable to use in displaying pressureUnits
+        var pressureUnits = "";
+        if(report.pressureValue && report.pressureValue !== "")
+        {
+            pressureUnits = " hPa";
+        }
+        
         var htmlString = '<div id="content"><div id="siteNotice"></div>' + 
             '<h5 id="firstHeading" class="firstHeading">' + date + '</h5>' + '<div id="bodyContent">' + 
             '<p>Cloud Cover: ' + report.cloudCover + '<br>' +
             'Precipitation: ' + report.precipitation + '<br>' +
             'Visibility: ' + report.visibility + '<br>' +
             'Pressure Trend: ' + report.pressureTendency + '<br>' +
-            'Surface Pressure: ' + report.pressureValue + '<br>' +
+            'Surface Pressure: ' + report.pressureValue + " " + pressureUnits + '<br>' +
             'Surface Temperature: ' + report.temperatureValue + " " + report.temperatureUnits + '<br>' +
             'Wind Speed: ' + report.windValue + " " + report.windUnits + '<br>' +
             'Wind Direction: ' + report.windDirection + '<br>' +
