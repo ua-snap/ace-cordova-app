@@ -329,10 +329,10 @@ angular.module('ace.controllers')
             '<p>Cloud Cover: ' + report.cloudCover + '<br>' +
             'Precipitation: ' + report.precipitation + '<br>' +
             'Visibility: ' + report.visibility + '<br>' +
-            'Pressure Trend: ' + report.pressureTrend + '<br>' +
+            'Pressure Trend: ' + report.pressureTendency + '<br>' +
             'Surface Pressure: ' + report.surfacePressure + '<br>' +
-            'Surface Temperature: ' + report.surfaceTemperature + '<br>' + 
-            'Wind Speed: ' + report.windSpeed + '<br>' +
+            'Surface Temperature: ' + report.temperatureValue + '<br>' + 
+            'Wind Speed: ' + report.windValue + '<br>' +
             'Wind Direction: ' + report.windDirection + '<br>' +
             'Other: ' + report.other + '<br>' + 
             'Notes: ' + report.notes + '<br>' + '</p></div></div>';
