@@ -347,7 +347,7 @@ angular.module('ace.controllers')
        {
            // Show reports on the map
            // Get all reports
-           DataService.localWeatherReport_find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).userId}}, function(err, res) {
+           DataService.localWeatherReport_find({where: {userId: LocalStorageService.getItem("currentUser", {}, window).id}}, function(err, res) {
                // Get the associated positions
                var reportArray = res;
                var positionIdArray = [];
