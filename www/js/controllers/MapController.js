@@ -330,9 +330,9 @@ angular.module('ace.controllers')
             'Precipitation: ' + report.precipitation + '<br>' +
             'Visibility: ' + report.visibility + '<br>' +
             'Pressure Trend: ' + report.pressureTendency + '<br>' +
-            'Surface Pressure: ' + report.surfacePressure + '<br>' +
-            'Surface Temperature: ' + report.temperatureValue + '<br>' + 
-            'Wind Speed: ' + report.windValue + '<br>' +
+            'Surface Pressure: ' + report.pressureValue + '<br>' +
+            'Surface Temperature: ' + report.temperatureValue + " " + report.temperatureUnits + '<br>' +
+            'Wind Speed: ' + report.windValue + " " + report.windUnits + '<br>' +
             'Wind Direction: ' + report.windDirection + '<br>' +
             'Other: ' + report.other + '<br>' + 
             'Notes: ' + report.notes + '<br>' + '</p></div></div>';
