@@ -58,10 +58,17 @@ though the majority of the CSS for the application was contained in the Ionic fr
 [DataService.js](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js/sync/DataService.js)
 
 ## Documentation
-Code documentation for the project was generated using the [Docco](http://jashkenas.github.io/docco/) and [YUIDoc](http://yui.github.io/yuidoc/)
-tools. To view the documentation, clone the project, then run "npm install" and "bower install" to install all dependencies
-Ensure gulp is intalled globally on your machine, and run "gulp gen-docco-all" and "gulp gen-yuidoc-all" to generate all
-documentation in the docs/ folder.
+###### Generation
+Code documentation for the project was generated using the [Docco](http://jashkenas.github.io/docco/), [YUIDoc](http://yui.github.io/yuidoc/), and [docco-toc](https://www.npmjs.com/package/docco-toc) 
+tools. To view the documentation, clone the project, then run "npm install" and "bower install" to install all dependencies.
+Ensure gulp is intalled globally on your machine, and run "gulp gen-docco-all", "gulp gen-yuidoc-all", and "gulp gen-docco-
+all-toc" to generate all forms of documentation.  The "gen-docco-all" task runs the standard docco tool on the entire code-base for the mobile app, with the exception of the files included from the ace-api project (browser.bundle.js and lbclient.js).  gen-yuidoc-all runs the YUIDoc tool on the same set of files.  The "gen-docco-all-toc" task runs an enhanced version of the docco tool (docco-toc) that adds some table of contents functionality to the standard docco html.  
+
+###### Focus and Style
+Different sections of the code base were documented in different ways, according to their function.  All Controllers for the 
+project were documented with a more "docco-style" markup to allow for increased readability.  All Utility classes and Angular
+Services were documented with both styles, but with an emphasis on the YUIDoc style; providing developers with an interface 
+definition for classes they might use.
 
 ## Licensing
 TBD
