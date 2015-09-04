@@ -15,3 +15,6 @@ www/lib/
 
 # Visual Studio Code settings files
 .settings/
+
+# Ignore Plato Report
+plato/

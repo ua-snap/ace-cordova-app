@@ -10,6 +10,7 @@ var karma = require('karma').server;
 var docco = require("gulp-docco");
 var yuidoc = require("gulp-yuidoc");
 var shell = require('gulp-shell');
+var plato = require('plato');
 
 var paths = {
   sass: ['./scss/**/*.scss']
@@ -124,4 +125,18 @@ gulp.task('git-check', function(done) {
     process.exit(1);
   }
   done();
+});
+
+gulp.task('gen-plato-report', function(done) {
+   var inputFiles = [ "./www/js/*.js", "./www/js/controllers/*.js", "./www/js/services/*.js", "./www/js/workers/*.js",
+        "./www/js/polyfill/*.js", "./www/js/util/*.js", "./www/js/sync/DataService.js", "./www/js/sync/SaveWorker.js",
+        "./www/js/sync/SyncWorker.js"
+   ];
+   var outputDir = "./plato/";
+   var options = {
+       title: "ACE Cordova App"
+   }
+   plato.inspect(inputFiles, outputDir, options, function(report) {
+       done();
+   })
 });
