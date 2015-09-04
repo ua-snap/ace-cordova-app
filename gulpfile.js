@@ -9,6 +9,7 @@ var sh = require('shelljs');
 var karma = require('karma').server;
 var docco = require("gulp-docco");
 var yuidoc = require("gulp-yuidoc");
+var shell = require('gulp-shell');
 
 var paths = {
   sass: ['./scss/**/*.scss']
@@ -62,7 +63,8 @@ gulp.task('test-debug', function(done) {
 
 gulp.task('gen-docco-all', function(done) {
     gulp.src(["./www/js/*.js", "./www/js/controllers/*.js", "./www/js/services/*.js", "./www/js/workers/*.js",
-        "./www/js/polyfill/*.js", "./www/js/util/*.js"])
+        "./www/js/polyfill/*.js", "./www/js/util/*.js", "./www/js/sync/DataService.js", "./www/js/sync/SaveWorker.js",
+        "./www/js/sync/SyncWorker.js"])
   .pipe(docco())
   .pipe(gulp.dest('./docs/docco/'));
   done();
@@ -70,11 +72,46 @@ gulp.task('gen-docco-all', function(done) {
 
 gulp.task('gen-yuidoc-all', function(done) {
   gulp.src(["./www/js/*.js", "./www/js/controllers/*.js", "./www/js/services/*.js", "./www/js/workers/*.js",
-        "./www/js/polyfill/*.js", "./www/js/util/*.js"])
+        "./www/js/polyfill/*.js", "./www/js/util/*.js", "./www/js/sync/DataService.js", "./www/js/sync/SaveWorker.js",
+        "./www/js/sync/SyncWorker.js"])
   .pipe(yuidoc())
   .pipe(gulp.dest("./docs/yuidoc/"));
   done();
 });
+
+gulp.task('gen-docco-all-toc', shell.task([
+    'docco-toc \
+    ./www/js/controllers/AppController.js \
+    ./www/js/controllers/BrowseReportsController.js \
+    ./www/js/controllers/LoginController.js \
+    ./www/js/controllers/MapController.js \
+    ./www/js/controllers/ReportController.js \
+    ./www/js/controllers/SettingsController.js \
+    ./www/js/controllers/SettingsGeneralController.js \
+    ./www/js/controllers/SettingsGpsController.js \
+    ./www/js/controllers/SettingsLangController.js \
+    ./www/js/controllers/ViewReportController.js \
+    ./www/js/controllers/WorkspaceController.js \
+    ./www/js/polyfill/FormDataPolyfill.js \
+    ./www/js/polyfill/PerfNowPolyfill.js \
+    ./www/js/services/AuthService.js \
+    ./www/js/services/DataShareService.js \
+    ./www/js/services/GeoService.js \
+    ./www/js/services/LocalStorageService.js \
+    ./www/js/services/SettingsService.js \
+    ./www/js/sync/DataService.js \
+    ./www/js/sync/SaveWorker.js \
+    ./www/js/sync/SyncWorker.js \
+    ./www/js/util/EmailValidator.js \
+    ./www/js/util/img-touch-canvas.js \
+    ./www/js/util/JSONValidator.js \
+    ./www/js/util/LocalStorageUtil.js \
+    ./www/js/util/ModalHandler.js \
+    ./www/js/util/Position.js \
+    ./www/js/util/Settings.js \
+    ./www/js/util/WeatherReport.js \
+    -o ./docs/docco-toc'
+]));
 
 gulp.task('git-check', function(done) {
   if (!sh.which('git')) {
