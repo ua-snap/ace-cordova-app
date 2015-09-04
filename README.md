@@ -1,4 +1,4 @@
-# ace-cordova-app
+# ACE Cordova App
 
 ## Into and Overview
 This project contains the source code for the ACE mobile application.  The ACE mobile app is designed to provide a
