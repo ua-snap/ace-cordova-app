@@ -51,16 +51,22 @@ though the majority of the CSS for the application was contained in the Ionic fr
 #### Startup Instructions
 Clone this repository into a directory on your local machine.  Navigate into the newly-created ace-cordova-app directory and run
 the following terminal commands:
+
 1. npm install
 2. bower install
 3. ionic platform add android
 
-Since this project accesses the device GPS sensors through the HTML5 Geolocation API instead of an interface, developers are required to add the following permissions to the AndroidManifext.xml file manually:
+Since this project accesses the device GPS sensors through the HTML5 Geolocation API instead of a cordova plugin, developers
+are required to add the following permissions to the AndroidManifext.xml file manually:
+```xml
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+```
 Additionally, the MANAGE_DOCUMENTS permission is required to allow the app to resolve filenames for file attachment.
+```xml
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+```
 
 The app uses two Android material design icons for sync notifications, which are included in the project in the [/android-icons/](https://github.com/ua-snap/ace-cordova-app/tree/master/android-icons/) directory.  Navigate to the directory, and run the [copy-icons.sh](https://github.com/ua-snap/ace-cordova-app/tree/master/android-icons/copy-icons.sh) script to copy all icons to the newly added Android platform.  Alternatively, the icons can be copied manually to their respective file locations based on screen density.
 
