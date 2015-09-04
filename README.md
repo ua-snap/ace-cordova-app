@@ -30,7 +30,7 @@ This project is not complete.  The vast majority of the functionality is provide
 features remain to be implemented.  All todo's, enhancements, and bugs are documented in the Issues section of this repo.
 
 ## Code Structure Overview
-### JavaScript
+#### JavaScript
 All JavaScript code written for the project is contained in the [www/js/](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js)
 directory.  Additional code from outside libraries is included in the [www/lib/](https://github.com/ua-snap/ace-cordova-app/tree/master/www/lib)
 directory.
@@ -42,12 +42,31 @@ reporting application, individuals should re-write the [tab-report.html](https:/
 view and its corresponding controller ([ReportController.js](https://github.com/ua-snap/ace-cordova-app/tree/master/www/js/controllers/ReportController.js)
 to suit their application.  Additional customization of other views will also be required.
 
-### HTML/CSS
+#### HTML/CSS
 All HTML views for the application are contained in the [www/templates/](https://github.com/ua-snap/ace-cordova-app/tree/master/www/templates)
 directory.  Custom CSS can be found in [www/css/style.css](https://github.com/ua-snap/ace-cordova-app/blob/master/www/css/style.css), 
 though the majority of the CSS for the application was contained in the Ionic framework.
 
-## Quick-Start Links
+## Quick-Start
+#### Startup Instructions
+Clone this repository into a directory on your local machine.  Navigate into the newly-created ace-cordova-app directory and run
+the following terminal commands:
+1. npm install
+2. bower install
+3. ionic platform add android
+
+Since this project accesses the device GPS sensors through the HTML5 Geolocation API instead of an interface, developers are required to add the following permissions to the AndroidManifext.xml file manually:
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+Additionally, the MANAGE_DOCUMENTS permission is required to allow the app to resolve filenames for file attachment.
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+
+The app uses two Android material design icons for sync notifications, which are included in the project in the [/android-icons/](https://github.com/ua-snap/ace-cordova-app/tree/master/android-icons/) directory.  Navigate to the directory, and run the [copy-icons.sh](https://github.com/ua-snap/ace-cordova-app/tree/master/android-icons/copy-icons.sh) script to copy all icons to the newly added Android platform.  Alternatively, the icons can be copied manually to their respective file locations based on screen density.
+
+Now, build and deploy the application using the "ionic run android" command.
+
+#### Links
 ###### Login code
 [LoginController.js](https://github.com/ua-snap/ace-cordova-app/blob/master/www/js/controllers/LoginController.js#L54), [AuthService.js](https://github.com/ua-snap/ace-cordova-app/blob/master/www/js/services/AuthService.js#L41)
 
