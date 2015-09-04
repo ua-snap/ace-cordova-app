@@ -51,6 +51,7 @@ though the majority of the CSS for the application was contained in the Ionic fr
 #### Startup Instructions
 Clone this repository into a directory on your local machine.  Navigate into the newly-created ace-cordova-app directory and run
 the following terminal commands:
+
 1. npm install
 2. bower install
 3. ionic platform add android
