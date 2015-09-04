@@ -95,5 +95,8 @@ project were documented with a more "docco-style" markup to allow for increased 
 Services were documented with both styles, but with an emphasis on the YUIDoc style; providing developers with an interface 
 definition for classes they might use.
 
+###### Plato Code Analysis
+This project uses [Plato](https://github.com/es-analysis/plato) for JavaScript source code analysis.  To generate the plato report, run "gulp gen-plato-report" from the top-level project directory.
+
 ## Licensing
 TBD
