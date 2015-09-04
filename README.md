@@ -56,7 +56,8 @@ the following terminal commands:
 2. bower install
 3. ionic platform add android
 
-Since this project accesses the device GPS sensors through the HTML5 Geolocation API instead of an interface, developers are required to add the following permissions to the AndroidManifext.xml file manually:
+Since this project accesses the device GPS sensors through the HTML5 Geolocation API instead of a cordova plugin, developers
+are required to add the following permissions to the AndroidManifext.xml file manually:
 ```xml
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
