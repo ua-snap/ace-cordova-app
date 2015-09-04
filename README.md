@@ -51,9 +51,9 @@ though the majority of the CSS for the application was contained in the Ionic fr
 #### Startup Instructions
 Clone this repository into a directory on your local machine.  Navigate into the newly-created ace-cordova-app directory and run
 the following terminal commands:
-    1. npm install
-    2. bower install
-    3. ionic platform add android
+1. npm install
+2. bower install
+3. ionic platform add android
 
 Since this project accesses the device GPS sensors through the HTML5 Geolocation API instead of an interface, developers are required to add the following permissions to the AndroidManifext.xml file manually:
 ```xml
