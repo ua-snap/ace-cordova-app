@@ -1,5 +1,5 @@
 // Only load in a web worker context
-if(typeof DedicatedWorkerGlobalScope != "undefined" && this instanceof DedicatedWorkerGlobalScope)
+if(self.importScripts !== undefined)
 {	
 	/*
 	 * FormData for XMLHttpRequest 2  -  Polyfill for Web Worker

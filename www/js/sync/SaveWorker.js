@@ -4,7 +4,7 @@
 // local data store as a JSON file.
 
 // Only load in a web worker context
-if(typeof DedicatedWorkerGlobalScope != "undefined" && this instanceof DedicatedWorkerGlobalScope)
+if((typeof DedicatedWorkerGlobalScope != "undefined" || typeof WorkerGlobalScope != "undefined") && (this instanceof DedicatedWorkerGlobalScope || this instanceof WorkerGlobalScope))
 {
 	// window shim
 	this.window = this;

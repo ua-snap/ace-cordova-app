@@ -93,19 +93,84 @@ angular.module('ace.services')
 				window.thread_messenger.syncWorker.onmessage = this.recieveMessage;
 			}
 			
-			// Set up save-load thread (will be responsible for persisting the data through the HTML5 file api)
-			// Note: Chrome is the only browser that supports the HTML5 synchronous file api that this worker uses
-			// Thus, this portion will only function on Android currently
-			// Options for iOS are limited, due to the lack of access to permanent storage in web worker threads.
-			if(window.thread_messenger.saveWorker === undefined)
-			{
-				window.thread_messenger.saveWorker = new Worker("js/sync/SaveWorker.js");
-			}
-			
 			// Set up message channel between worker threads
 			window.thread_messenger.msgChannel = new MessageChannel();
+			
+			// Set up save-load thread (will be responsible for persisting the data through the HTML5 file api)
+			// Note: Chrome is the only browser that supports the HTML5 synchronous file api that this worker uses
+			// Thus, only start the save worker on the android platform.
+			if(window.cordova.platformId === "android")
+			{
+				if(window.thread_messenger.saveWorker === undefined)
+				{
+					window.thread_messenger.saveWorker = new Worker("js/sync/SaveWorker.js");	
+				}
+			}
+			else
+			{
+				// iOS platform, so register the message event handler for what would be the save worker thread
+				window.thread_messenger.msgChannel.port2.onmessage = function(message) {
+					var msg = message.data;
+					
+					// Save data message
+					if(msg.req == "save")
+					{
+						// Resolve file system
+						window.resolveLocalFileSystemURL(window.cordova.file.dataDirectory, function(fs) {
+							// Resolve fileEntry
+							fs.filesystem.root.getFile("acedb.txt", {create: true}, function(fileEntry) {
+								// Create a fileWriter
+								fileEntry.createWriter(function(writer) {
+									// Update the data file
+									var jsonBlob = new Blob([JSON.stringify(msg.data)], {type: "text/plain"});
+									writer.write(jsonBlob);
+								});
+							});
+						});
+					}
+					else if(msg.req === "load")
+					{
+						// Load data message
+						// Resolve file system
+						window.resolveLocalFileSystemURL(window.cordova.file.dataDirectory, function(fs) {
+							// Resolve fileEntry
+							fs.filesystem.root.getFile("acedb.txt", {create: true}, function(fileEntry) {
+								// Resolve file object
+								fileEntry.file(function(file) {
+									// Create fileReader
+									var reader = new FileReader();
+									reader.onload = function(e) {
+										var contents = e.target.result;
+										var data = {};
+										if(contents && contents.length > 0)
+										{
+											try {
+												// Need to move this to worker thread
+												data = JSON.parse(contents);
+											}
+											catch(error)
+											{
+												data = {};
+											}
+										}
+										window.thread_messenger.msgChannel.port2.postMessage(data);
+									};
+									reader.readAsText(file)
+								});
+							});
+						});
+					}
+				};
+			}
+			
+			// Initialize both threads
 			window.thread_messenger.syncWorker.postMessage("msgChannelPort", [window.thread_messenger.msgChannel.port1]);
-			window.thread_messenger.saveWorker.postMessage("msgChannelPort", [window.thread_messenger.msgChannel.port2])
+			
+			// Only initialize save worker thread on android platform
+			if(window.cordova.platformId === "android")
+			{
+				window.thread_messenger.saveWorker.postMessage("msgChannelPort", [window.thread_messenger.msgChannel.port2]);	
+			}
 			
 			// Reset sync counter and indicator
 			window.thread_messenger.syncCounter = 0;
@@ -122,7 +187,10 @@ angular.module('ace.services')
 			if(window.thread_messenger && window.thread_messenger.syncWorker)
 			{
 				window.thread_messenger.syncWorker.terminate();
-				window.thread_messenger.saveWorker.terminate();
+				if(window.cordova.platformId === "android")
+				{
+					window.thread_messenger.saveWorker.terminate();	
+				}
 			}	
 		},
 		

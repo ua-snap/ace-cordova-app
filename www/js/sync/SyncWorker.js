@@ -7,7 +7,7 @@
 //----------------------------------------------------
 
 // Only load in web worker context
-if(typeof DedicatedWorkerGlobalScope != "undefined" && this instanceof DedicatedWorkerGlobalScope)
+if(self.importScripts !== undefined)
 {
 	// Local storage shim - use a simple dictionary object
 	var localStorage = {};
