@@ -89444,7 +89444,7 @@ module.exports={
   "dataSources": {
     "remote": {
       "connector": "remote",
-      "url": "https://ace-api-dev.herokuapp.com/api"
+      "url": "http://192.168.1.3:3000/api"
     },
     "local": {
       "connector": "memory",

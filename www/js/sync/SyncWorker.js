@@ -43,6 +43,14 @@ if(self.importScripts !== undefined)
 	// Remove partial fetch support (doesn't work anyway).  Force to use XMLHttpRequest
 	window.fetch = undefined;
 	
+	// Add console shim (for ios only)
+	if(window.console === undefined)
+	{
+		window.console = function(str) {
+			// do nothing
+		};
+	}
+	
 	// FormData shim - Attribution in file
 	self.importScripts("../../js/polyfill/FormDataPolyfill.js")
 	
