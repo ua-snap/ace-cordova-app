@@ -121,9 +121,12 @@ angular.module('ace.services')
 							fs.filesystem.root.getFile("acedb.txt", {create: true}, function(fileEntry) {
 								// Create a fileWriter
 								fileEntry.createWriter(function(writer) {
-									// Update the data file
-									var jsonBlob = new Blob([JSON.stringify(msg.data)], {type: "text/plain"});
-									writer.write(jsonBlob);
+									// Update the data file, stringifying asynchronously
+									var jsonAsyncHelper = new JSONAsync();
+									jsonAsyncHelper.stringify(msg.data, function(err, str) {
+										var jsonBlob = new Blob([str], {type: "text/plain"});
+										writer.write(jsonBlob);
+									});
 								});
 							});
 						});
@@ -141,19 +144,28 @@ angular.module('ace.services')
 									var reader = new FileReader();
 									reader.onload = function(e) {
 										var contents = e.target.result;
-										var data = {};
-										if(contents && contents.length > 0)
+										// Only try to parse if file was non-empty
+										if(contents.length > 0)
 										{
-											try {
-												// Need to move this to worker thread
-												data = JSON.parse(contents);
-											}
-											catch(error)
-											{
-												data = {};
-											}
+											// Parse asynchronously
+											var jsonAsyncHelper = new JSONAsync();
+											jsonAsyncHelper.parse(contents, function(err, obj) {
+												var data = {};
+												// ensure no error
+												if(obj !== null)
+												{
+													data = obj;
+												}
+												window.thread_messenger.msgChannel.port2.postMessage(data);
+											});
 										}
-										window.thread_messenger.msgChannel.port2.postMessage(data);
+										else
+										{
+											// File had nothing in it to parse, so return an empty object
+											var data = {};
+											window.thread_messenger.msgChannel.port2.postMessage(data);
+										}
+										
 									};
 									reader.readAsText(file)
 								});
