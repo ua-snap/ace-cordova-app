@@ -31,7 +31,7 @@ angular.module('ace.controllers')
     var screenHeight = window.innerHeight;
     var loginBlockHeight = loginBlock.clientHeight;
     
-    // Calculate padding top (so that the bottom of the login block is 50 px above the bottom of the screen)
+    // Calculate padding top (so that the bottom of the login block is 30 px above the bottom of the screen)
     var paddingTop = screenHeight - loginBlockHeight - 30;
     loginBlock.style.paddingTop = paddingTop.toString() + "px";
     
