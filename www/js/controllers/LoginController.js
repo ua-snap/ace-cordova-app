@@ -28,7 +28,7 @@ angular.module('ace.controllers')
     // Dynamically position the login block (css inconsistent)
     var loginBlock = window.document.getElementById("loginContents");
     
-    var screenHeight = window.screen.height;
+    var screenHeight = window.innerHeight;
     var loginBlockHeight = loginBlock.clientHeight;
     
     // Calculate padding top (so that the bottom of the login block is 50 px above the bottom of the screen)
