@@ -20,11 +20,6 @@ while offline.  That data will be synchronized with the server side data store w
 re-established.
 
 ## Disclaimer
-###### Platform Support
-Currently, only the Android platform is supported.  iOS platforms will not be capable of running the application.  This 
-is due to lack of support for the HTML5 File API in web worker threads in the Safari Mobile WebKit browser.  Additionally,
-a full version of the Crosswalk webview is only available on the Android platform.
-
 ###### Remaining work
 This project is not complete.  The vast majority of the functionality is provided here, but several bugs and additional
 features remain to be implemented.  All todo's, enhancements, and bugs are documented in the Issues section of this repo.
