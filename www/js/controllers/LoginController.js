@@ -24,6 +24,29 @@ angular.module('ace.controllers')
         $ionicSideMenuDelegate.canDragContent(true);
         $state.go('tab.report');
     }
+    
+    // leaving username input field
+    $scope.usernameKeyPress = function(e)
+    {
+        // Check if enter pressed
+        if(e.which === 13)
+        {
+            // Return was pressed, so focus on password
+            window.document.getElementById("passwordInput").focus();
+        }
+    }
+    
+    // Keypress event for password field
+    $scope.passwordKeyPress = function(e)
+    {
+        // Check for enter
+        if(e.which === 13)
+        {
+            // Return was pressed, so login (and close keyboard)
+            $scope.login();
+            window.cordova.plugins.Keyboard.close();
+        }
+    }
 
     // Checks the provided username and password and logs the user in
     // if the credentials are valid.  If invalid, notifies the user

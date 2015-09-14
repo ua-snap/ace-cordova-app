@@ -3,12 +3,12 @@
       fixed; background-size: cover; -webkit-background-size: cover;">
     <div class="list" style="width: 100%; margin: auto; position: absolute; padding-top: 115%">
         <label class="item item-input">
-            <input id="usernameInput" type="text" placeholder="{{'USERNAME' | translate}}" ng-model="data.username" autocapitalize="off" autocorrect="off">
+            <input id="usernameInput" type="text" placeholder="{{'USERNAME' | translate}}" ng-model="data.username" autocapitalize="off" autocorrect="off" ng-keypress="usernameKeyPress($event)">
         </label>
         <label class="item item-input">
-            <input id="passwordInput" type="password" placeholder="{{'PASSWORD' | translate}}" ng-model="data.password">
+            <input id="passwordInput" type="password" placeholder="{{'PASSWORD' | translate}}" ng-model="data.password" ng-keypress="passwordKeyPress($event)">
         </label>
-        <button class="button button-positive button-block" ng-click="login()">
+        <button class="button button-positive button-block" type="submit">
             Login
         </button>
     </div>
