@@ -25,7 +25,7 @@ angular.module('ace.controllers')
         $state.go('tab.report');
     }
     
-    // leaving username input field
+    // Event handler to detect keypresses on the username field
     $scope.usernameKeyPress = function(e)
     {
         // Check if enter pressed
@@ -42,9 +42,29 @@ angular.module('ace.controllers')
         // Check for enter
         if(e.which === 13)
         {
-            // Return was pressed, so login (and close keyboard)
-            $scope.login();
-            window.cordova.plugins.Keyboard.close();
+            // Ensure username and password are both provided
+            if(!$scope.data.username)
+            {
+                // Prompt for a username and focus the username input field
+                var noUsernamePopup = $ionicPopup.alert({
+                    title: 'No username',
+                    template: 'Please provide a username.'
+                });
+            }
+            else if(!$scope.data.password)
+            {
+                // Notify the user of the failed login and do not login
+                var noPassPopup = $ionicPopup.alert({
+                    title: 'No password',
+                    template: 'Please provide a password.'
+                });
+            }
+            else
+            {
+                // Return was pressed, so login (and close keyboard)
+                $scope.login();
+                window.cordova.plugins.Keyboard.close();
+            }
         }
     }
 
