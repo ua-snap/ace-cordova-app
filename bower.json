@@ -30,6 +30,7 @@
     "angular-mocks": "~1.4.0",
     "angular-resource": "~1.4.1",
     "angular-translate": "~2.7.2",
+    "angular-translate-loader-static-files": "~2.7.2",
     "async": "~1.4.2",
     "underscore": "~1.8.3"
   }

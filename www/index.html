@@ -27,6 +27,8 @@
 
     <!-- your app's js -->
     <script src="js/app.js"></script>
+    
+    <!-- Generated browser bundle (for sync worker thread) -->
     <script src="js/sync/browser.bundle.js"></script>
 
     <!-- Controller js files (AppController.js must be listed first since it contains the module init function) -->
@@ -81,6 +83,10 @@
     <!-- Async JSON utility files -->
     <script src="js/util/JSONAsync.js"></script>
     <script src="js/util/JSONAsync.worker.js"></script>
+    
+    <!-- Translation json files -->
+    <script type="application/json" src="translations/en.json"></script>
+    <script type="application/json" src="translations/fr.json"></script>
 
   </head>
   <body ng-app="ace">

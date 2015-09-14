@@ -6,7 +6,7 @@ angular.module('ace.controllers')
 // LoginController
 //--------------------------------------------------------------
 // Create the LoginController controller
-.controller('LoginController', function($scope, LocalStorageService, AuthService, $ionicPopup, $state, $ionicSideMenuDelegate) {
+.controller('LoginController', function($scope, LocalStorageService, AuthService, $ionicPopup, $state, $ionicSideMenuDelegate, $ionicLoading) {
 
     // Data variable to hold username and password
     $scope.data = {};
@@ -83,11 +83,18 @@ angular.module('ace.controllers')
     // and rejects the login attempt.  Utilizes AuthService to check 
     // credentials
     $scope.login = function() {
+        // Start loading overlay
+        $ionicLoading.show({
+            template: '<p style=\"margin=auto\">Logging in...</p><ion-spinner></ion-spinner>'
+        });
         // Attempt to authorize the current user with the provided credentials
         AuthService.loginUser($scope.data.username, $scope.data.password, function(user) {
             // Clear out username and password
             $scope.data.username = "";
             $scope.data.password = "";
+            
+            // Close the loading overlay
+            $ionicLoading.hide();
             
             // Move the user to the default view (tab.report)
             $state.go('tab.report');
@@ -96,6 +103,8 @@ angular.module('ace.controllers')
             // previous logouts)
             $ionicSideMenuDelegate.canDragContent(true);
         }, function(data, status, headers, config) {
+            // Remove the loading overlay
+            $ionicLoading.hide();
             
             // Clear out password (but leave username)
             $scope.data.password = "";
