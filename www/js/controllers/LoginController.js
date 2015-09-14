@@ -24,28 +24,6 @@ angular.module('ace.controllers')
         $ionicSideMenuDelegate.canDragContent(true);
         $state.go('tab.report');
     }
-    
-
-    // Function controls the app's behavior when the form is submitted.  Added to allow for keyboard navigation
-    // from the username field to the password field when pressing the keyboard "go" button.
-    $scope.formSubmitted = function() {
-        // Determine the active text entry field when the "go" button was pressed
-        var focusedElement = document.activeElement;
-        
-        // If anything other than the username field was focused, attempt to login with the provided credentials
-        if(focusedElement.id !== "usernameInput")
-        {
-            $scope.login();
-            return true;
-        }
-        else
-        {
-            // If the user was focused on the usernameInput text field, switch focus to the passwordInput field and 
-            // cancel the login
-            document.getElementById("passwordInput").focus();
-            return false;
-        }
-    };
 
     // Checks the provided username and password and logs the user in
     // if the credentials are valid.  If invalid, notifies the user
