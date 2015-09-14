@@ -8,7 +8,7 @@
         <label class="item item-input">
             <input id="passwordInput" type="password" placeholder="{{'PASSWORD' | translate}}" ng-model="data.password" ng-keypress="passwordKeyPress($event)">
         </label>
-        <button class="button button-positive button-block" type="submit">
+        <button class="button button-positive button-block" ng-click="login()">
             Login
         </button>
     </div>
