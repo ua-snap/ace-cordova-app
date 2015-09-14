@@ -21,9 +21,8 @@
   <preference name="CROSSWALK_ANDROID_COMMANDLINE" value="––disable-pull-to-refresh-effect"/>
   <preference name="LIB_MODE" value="embedded"/>
   <preference name="CROSSWALK_ANDROID_VERSION" value="14+"/>
-  <!-- ios file support -->
   <feature name="File">
-      <param name="ios-package" value="CDVFile" />
+    <param name="ios-package" value="CDVFile"/>
   </feature>
   <feature name="StatusBar">
     <param name="ios-package" onload="true" value="CDVStatusBar"/>

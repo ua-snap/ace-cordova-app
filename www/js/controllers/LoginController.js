@@ -25,6 +25,16 @@ angular.module('ace.controllers')
         $state.go('tab.report');
     }
     
+    // Dynamically position the login block (css inconsistent)
+    var loginBlock = window.document.getElementById("loginContents");
+    
+    var screenHeight = window.screen.height;
+    var loginBlockHeight = loginBlock.clientHeight;
+    
+    // Calculate padding top (so that the bottom of the login block is 50 px above the bottom of the screen)
+    var paddingTop = screenHeight - loginBlockHeight - 30;
+    loginBlock.style.paddingTop = paddingTop.toString() + "px";
+    
     // Event handler to detect keypresses on the username field
     $scope.usernameKeyPress = function(e)
     {
