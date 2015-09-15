@@ -2,7 +2,7 @@
 
 self.onmessage = function(message) {
 	msg = message.data;
- 	var data = null;
+ 	var data = {};
 	var err = null;
 	
 	// Handle both parse and stringify case, catching any errors
@@ -20,7 +20,9 @@ self.onmessage = function(message) {
 	}
 	catch(error)
 	{
-		err = error;
+		err = {
+			error: "JSON error"
+		};
 	}
 	
 	// Return the result of the operation
