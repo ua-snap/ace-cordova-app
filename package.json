@@ -29,10 +29,6 @@
     "cordova-plugin-splashscreen",
     "com.ionic.keyboard",
     "org.apache.cordova.camera",
-    {
-      "locator": "https://github.com/crosswalk-project/cordova-plugin-crosswalk-webview.git",
-      "id": "cordova-plugin-crosswalk-webview"
-    },
     "cordova-plugin-network-information",
     "cordova-plugin-file-transfer",
     {
@@ -51,7 +47,7 @@
     }
   ],
   "cordovaPlatforms": [
-    "android",
-    "ios"
+    "ios",
+    "android"
   ]
 }

@@ -1,4 +1,11 @@
 {
   "name": "ACE",
-  "app_id": "ef83f697"
+  "app_id": "ef83f697",
+  "browsers": [
+    {
+      "platform": "android",
+      "browser": "crosswalk",
+      "version": "14.43.343.23"
+    }
+  ]
 }
