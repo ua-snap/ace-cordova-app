@@ -16,7 +16,7 @@ angular.module('ace', ['ionic', 'ace.controllers', 'ace.services', 'pascalprecht
     });
     })
     
-    .config(function($stateProvider, $urlRouterProvider, $translateProvider) {
+    .config(function($stateProvider, $urlRouterProvider, $translateProvider, $ionicConfigProvider) {
     // Ionic uses AngularUI Router which uses the concept of states
     // Learn more here: https://github.com/angular-ui/ui-router
     // Set up the various states which the app can be in.
@@ -135,4 +135,7 @@ angular.module('ace', ['ionic', 'ace.controllers', 'ace.services', 'pascalprecht
     
     // Set the preffered language to the current setting (default English)
     $translateProvider.preferredLanguage(settings.language);
+    
+    // Force navbar titles to display left-aligned
+    $ionicConfigProvider.navBar.alignTitle("left");
 });
