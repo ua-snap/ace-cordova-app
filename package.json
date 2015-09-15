@@ -48,8 +48,7 @@
     {
       "locator": "https://github.com/Initsogar/cordova-webintent.git",
       "id": "com.borismus.webintent"
-    },
-    "com.telerik.plugins.wkwebview"
+    }
   ],
   "cordovaPlatforms": [
     "android",
