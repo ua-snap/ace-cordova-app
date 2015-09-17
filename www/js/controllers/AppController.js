@@ -10,7 +10,7 @@ angular.module('ace.controllers', [])
 // for handling the left-side-menu
 
 // Create the AppController controller
-.controller('AppController', function($scope, DataService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, GeoService) {
+.controller('AppController', function($scope, DataService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, GeoService, $ionicHistory) {
   
     // Function toggles sliding the left side-menu out and back in
     // Called when the user presses the "More" (three vertical bars) button on the top left of the header bar
@@ -63,7 +63,10 @@ angular.module('ace.controllers', [])
             
             // Kick the user back out to the login screen
             $state.go('login');
-        
+            
+            // Clear any route history
+            $ionicHistory.clearHistory();
+            
         }, function(err) {
             // Error (already alerted in AuthService)
         });

@@ -5,7 +5,8 @@
     <button class="button button-icon ion-navicon" ng-click="toggleLeft()"></button>
   </ion-nav-buttons>
   <ion-nav-buttons side="right">
-    <a class="button button-clear icon-right ion-android-send" ng-click="openPopover($event)">{{'SUBMIT' | translate}}  </a>
+    <a id="submitBtn" class="button button-clear icon-right ion-android-send" ng-click="openPopover($event)">{{'SUBMIT' | translate}}  </a>
+    <a id="updateBtn" class="button button-clear icon-right ion-android-upload" style="display: none" ng-click="updateClicked()">{{'UPDATE' | translate}}  </a>
     <button class="button button-icon ion-android-more-vertical" ng-click="openOptionsMenu($event)"></button>
   </ion-nav-buttons>
   <ion-content>

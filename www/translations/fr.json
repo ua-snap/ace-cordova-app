@@ -98,5 +98,7 @@
       "SYNC_NOTIFICATIONS": "Notifications de synchronisation",
       "UNITS": "unités",
       "IMPERIAL": "impériale",
-      "METRIC": "Metric"
+      "METRIC": "Metric",
+      "EDIT_REPORT": "Modifier le texte",
+      "UPDATE": "Mettre à jour"
   }

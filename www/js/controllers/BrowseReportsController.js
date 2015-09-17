@@ -97,6 +97,25 @@ angular.module('ace.controllers')
 		 var reportCpy = JSON.parse(JSON.stringify(report));
 		 delete reportCpy.date;
 		 delete reportCpy.positionId;
+		 //delete reportCpy.id;
+		 
+		 // Save the report to be accessed by the report view
+		 DataShareService.setItem("edit", reportCpy);
+		 
+		 // Navigate to the tab.report state
+		 $state.go("tab.report");
+	 }
+	 
+	 // Template option button clicked (accessed via sliding the report to the left)
+	 $scope.templateClicked = function(report)
+	 {
+		 // Close the opened option button
+		 $ionicListDelegate.closeOptionButtons();
+		 
+		 // Copy the report, removing date, positionId, and id fields
+		 var reportCpy = JSON.parse(JSON.stringify(report));
+		 delete reportCpy.date;
+		 delete reportCpy.positionId;
 		 delete reportCpy.id;
 		 
 		 // Save the report to be accessed by the report view

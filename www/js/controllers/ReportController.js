@@ -15,16 +15,39 @@ angular.module('ace.controllers')
   // Declare and initialize modal handler object
   $scope.modalHandler = new ModalHandler();
   
+  $scope.editingReport = false;
+  
   // Adding enter event listener.  This function will be called just before every view load,
     // regardless of controller and state caching.  Here, this is used to enable the side menu drag functionality.
     $scope.$on('$ionicView.enter', function() {
     	$ionicSideMenuDelegate.canDragContent(true);
-        
-        // Re-translate the title (to ensure that it is correctly translated)
-        $translate(['WEATHER']).then(function(translations) {
-           $ionicNavBarDelegate.title(translations.WEATHER); 
-        });
     });
+    
+    // Modify nav view titles after view has entered
+    $scope.$on('$ionicView.afterEnter', function() {
+        // Check for edit report case (will have different title)
+        if(!$scope.editingReport)
+        {
+            // Re-translate the title (to ensure that it is correctly translated)
+            $translate(['WEATHER']).then(function(translations) {
+              $ionicNavBarDelegate.title(translations.WEATHER); 
+            });
+        }
+        else
+        {
+            // Change nav view title to indicate the report is being edited
+            $translate(['EDIT_REPORT']).then(function(translations) {
+              $ionicNavBarDelegate.title(translations.EDIT_REPORT); 
+            });
+            
+            // Swap out the submit button for the update button
+            var submitBtn = document.getElementById("submitBtn");
+            submitBtn.style.display = "none";
+            
+            var updateBtn = document.getElementById("updateBtn");
+            updateBtn.style.display = "block"
+        }
+    })
   
   // Check if sent here from template view
   $scope.$on('$ionicView.beforeEnter', function() {
@@ -33,6 +56,17 @@ angular.module('ace.controllers')
     {
         $scope.importReport(template);
         DataShareService.setItem("template", null);
+    }
+    else
+    {
+        // Check for edit variable
+        var editReport = DataShareService.getItem("edit", null);
+        if(editReport && editReport !== null)
+        {   
+            $scope.editingReport = true;
+            $scope.importReport(editReport);
+            DataShareService.setItem("edit", null);
+        }
     }
     
     // Turn tracking back on (if necessary)
@@ -110,6 +144,48 @@ angular.module('ace.controllers')
     document.addEventListener("online", window.thread_messenger.onlineListenerFunction, false)
     
   });
+  
+  // Function called when the update button is clicked
+  $scope.updateClicked = function() {
+      // Grab id and delete unnecessary report items (ones that cannot be changed in this view)
+      var reportId = $scope.report.id;
+      delete $scope.report.id;
+      delete $scope.report.userId;
+      
+      // Perform actual update
+      DataService.localWeatherReport_updateAll({id: reportId}, $scope.report, function(err, res) {
+          if(err) console.log(err);
+      });
+      
+      // Clear all entered data
+      $scope.report = new WeatherReport(); 
+      
+      // Clear modal and summary data
+      $scope.cloudCoverModal.clearData();
+      $scope.precipModal.clearData();
+      $scope.visibilityModal.clearData();
+      $scope.pressureModal.clearData();
+      $scope.surfaceTempModal.clearData();
+      $scope.windModal.clearData();
+      $scope.notesModal.clearData();
+      $scope.otherModal.clearData();
+      $scope.cameraModal.clearData();
+      
+      $scope.editingReport = false;
+      
+      // Re-translate the title (to ensure that it is correctly translated)
+      $translate(['WEATHER']).then(function(translations) {
+        $ionicNavBarDelegate.title(translations.WEATHER); 
+      });
+      
+      // Swap out the submit button for the update button
+      var submitBtn = document.getElementById("submitBtn");
+      submitBtn.style.display = "block";
+      
+      var updateBtn = document.getElementById("updateBtn");
+      updateBtn.style.display = "none";
+      
+  };
   
   // Field holds the contents of the current report that is being entered
   $scope.report = new WeatherReport();
@@ -285,7 +361,7 @@ angular.module('ace.controllers')
                     }, settings.general.notifications);
                 }
                 else {
-                    $ionicLoading.show({template: 'Report saved locally (will be uploaded once internet connection is re-established)', noBackdrop: true, duration: 1500});
+                    $ionicLoading.show({template: 'Report saved locally (will be uploaded once internet connection is re-established)', noBackdrop: true, duration: 2500});
                 }
             });
         });        
@@ -1415,7 +1491,9 @@ angular.module('ace.controllers')
         btn.style.display = "block";
            
       }, function() {
-        alert("error");
+        // Do nothing
+        
+        //alert("error");
       }, {limit:1});
   };
   
@@ -1468,7 +1546,9 @@ angular.module('ace.controllers')
         var btn = document.getElementById("openAttachmentButton");
         btn.style.display = "block";
     }, function() {
-        alert("error");
+        // Do nothing
+        
+        //alert("error");
     }, {limit:1});
   };
   
@@ -1495,7 +1575,9 @@ angular.module('ace.controllers')
          });
          
       }, function(err) {
-          alert(err);
+          // Do nothing
+          
+          //alert(err);
       }, {destinationType: Camera.DestinationType.FILE_URI, sourceType: Camera.PictureSourceType.PHOTOLIBRARY});
   };
   
