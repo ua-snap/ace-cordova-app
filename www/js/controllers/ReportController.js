@@ -279,110 +279,123 @@ angular.module('ace.controllers')
     var tempReport = $scope.report;
     GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
         
-        var localPos = {
-            userId: LocalStorageService.getItem("currentUser", {}, window).id,
-            latlng: {
-                lat: pos.coords.latitude,
-                lng: pos.coords.longitude,
-            },
-            timestamp: new Date(pos.timestamp),
-            accuracy: pos.coords.accuracy,
-            altitude: pos.coords.altitude,
-            altitudeAccuracy: pos.coords.altitudeAccuracy,
-            heading: pos.coords.heading,
-            speed: pos.coords.speed
-        };
-        
-        // Create the local position
-        DataService.localPosition_create(localPos, function(err, res) {
-            // Add position data to report
-            var position = res;
-            tempReport.positionId = position.id;
-            tempReport.userId = position.userId;
+        // Ensure that a position was actually returned
+        if(pos)
+        {
+            // Submit report
+            var localPos = {
+                userId: LocalStorageService.getItem("currentUser", {}, window).id,
+                latlng: {
+                    lat: pos.coords.latitude,
+                    lng: pos.coords.longitude,
+                },
+                timestamp: new Date(pos.timestamp),
+                accuracy: pos.coords.accuracy,
+                altitude: pos.coords.altitude,
+                altitudeAccuracy: pos.coords.altitudeAccuracy,
+                heading: pos.coords.heading,
+                speed: pos.coords.speed
+            };
             
-            // Create weather report
-            DataService.localWeatherReport_create(tempReport, function(err, res) {
-                if(window.navigator.connection.type !== "none") {
-                    
-                    // Upload attachment file if there is one
-                    if(tempReport.attachment && tempReport.attachment !== "")
-                    {
-                        // Need to handle attachment
+            // Create the local position
+            DataService.localPosition_create(localPos, function(err, res) {
+                // Add position data to report
+                var position = res;
+                tempReport.positionId = position.id;
+                tempReport.userId = position.userId;
+                
+                // Create weather report
+                DataService.localWeatherReport_create(tempReport, function(err, res) {
+                    if(window.navigator.connection.type !== "none") {
                         
-                        // Create new url string
-                        var uploadUrl = "https://ace-api-dev.herokuapp.com/api/containers/" + LocalStorageService.getItem("groupName", "null", window) + "/upload";
-                        
-                        // Create upload call
-                        // Set up options
-                        var options = {
-                            headers: {},
-                        };
-                        options.headers['authorization'] = LocalStorageService.getItem("access_token", "", window);
-                        
-                        // Grab the file name
-                        var fileName = tempReport.attachment.replace(/^.*[\\\/]/, '');
-                        
-                        // Can use file without adding type qualifier
-                        if(fileName.indexOf(".") !== -1)
+                        // Upload attachment file if there is one
+                        if(tempReport.attachment && tempReport.attachment !== "")
                         {
-                            options.fileName = fileName;
+                            // Need to handle attachment
+                            
+                            // Create new url string
+                            var uploadUrl = "https://ace-api-dev.herokuapp.com/api/containers/" + LocalStorageService.getItem("groupName", "null", window) + "/upload";
+                            
+                            // Create upload call
+                            // Set up options
+                            var options = {
+                                headers: {},
+                            };
+                            options.headers['authorization'] = LocalStorageService.getItem("access_token", "", window);
+                            
+                            // Grab the file name
+                            var fileName = tempReport.attachment.replace(/^.*[\\\/]/, '');
+                            
+                            // Can use file without adding type qualifier
+                            if(fileName.indexOf(".") !== -1)
+                            {
+                                options.fileName = fileName;
+                            }
+                            else
+                            {
+                                options.fileName = fileName + "." + tempReport.attachmentType.substr(tempReport.attachmentType.lastIndexOf("/") + 1);
+                            }
+                            
+                            // Mime type
+                            options.mimeType = tempReport.attachmentType;
+                            
+                            // Closure to persist report id
+                            (function(reportId, fName) {
+                                var fileTransfer = new FileTransfer();
+                                fileTransfer.upload(tempReport.attachment, encodeURI(uploadUrl), function(response) {                            
+                                    // Upload successful
+                                    // Create url
+                                    var url = "https://ace-api-dev.herokuapp.com/api/Containers/" + LocalStorageService.getItem("groupName", "", window) + "/download/" + fName;
+                                    DataService.localWeatherReport_updateAll({id: res.id}, {attachment: url}, function(err, res) {
+                                        if(err) console.log(err);
+                                    });
+                                }, function(error) {
+                                    // Upload failed
+                                    console.log(error);
+                                }, options);
+                            })(res.id, fileName);
+                            
                         }
-                        else
-                        {
-                            options.fileName = fileName + "." + tempReport.attachmentType.substr(tempReport.attachmentType.lastIndexOf("/") + 1);
-                        }
-                        
-                        // Mime type
-                        options.mimeType = tempReport.attachmentType;
-                        
-                        // Closure to persist report id
-                        (function(reportId, fName) {
-                            var fileTransfer = new FileTransfer();
-                            fileTransfer.upload(tempReport.attachment, encodeURI(uploadUrl), function(response) {                            
-                                // Upload successful
-                                // Create url
-                                var url = "https://ace-api-dev.herokuapp.com/api/Containers/" + LocalStorageService.getItem("groupName", "", window) + "/download/" + fName;
-                                DataService.localWeatherReport_updateAll({id: res.id}, {attachment: url}, function(err, res) {
-                                    if(err) console.log(err);
-                                });
-                            }, function(error) {
-                                // Upload failed
-                                console.log(error);
-                            }, options);
-                        })(res.id, fileName);
-                        
+                        var settings = SettingsService.getSettings(window);
+                        DataService.sync(function(model) {
+                            if(model === "report")
+                            {
+                                $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
+                            }
+                        }, settings.general.notifications);
                     }
-                    var settings = SettingsService.getSettings(window);
-                    DataService.sync(function(model) {
-                        if(model === "report")
-                        {
-                            $ionicLoading.show({template: 'Report Sent Successfully', noBackdrop: true, duration: 1500});
-                        }
-                    }, settings.general.notifications);
-                }
-                else {
-                    $ionicLoading.show({template: 'Report saved locally (will be uploaded once internet connection is re-established)', noBackdrop: true, duration: 2500});
-                }
+                    else {
+                        $ionicLoading.show({template: 'Report saved locally (will be uploaded once internet connection is re-established)', noBackdrop: true, duration: 2500});
+                    }
+                });
             });
-        });        
+            
+            // Clear all entered data
+            $scope.report = new WeatherReport();    
+            
+            // Clear modal and summary data
+            $scope.cloudCoverModal.clearData();
+            $scope.precipModal.clearData();
+            $scope.visibilityModal.clearData();
+            $scope.pressureModal.clearData();
+            $scope.surfaceTempModal.clearData();
+            $scope.windModal.clearData();
+            $scope.notesModal.clearData();
+            $scope.otherModal.clearData();
+            $scope.cameraModal.clearData();
+            
+            // Hide the popover
+            $scope.submitPopover.hide();
+        }
+        else
+        {
+            // Notify user of lack of gps position info
+            alert("GPS location not found.  Please try again once GPS location is found.");
+            
+            // Hide the popover
+            $scope.submitPopover.hide();
+        }   
     });
-    
-    // Clear all entered data
-    $scope.report = new WeatherReport();    
-    
-    // Clear modal and summary data
-    $scope.cloudCoverModal.clearData();
-    $scope.precipModal.clearData();
-    $scope.visibilityModal.clearData();
-    $scope.pressureModal.clearData();
-    $scope.surfaceTempModal.clearData();
-    $scope.windModal.clearData();
-    $scope.notesModal.clearData();
-    $scope.otherModal.clearData();
-    $scope.cameraModal.clearData();
-    
-    // Hide the popover
-    $scope.submitPopover.hide();
   };
   
   // Function to import a report object (from template selection)
