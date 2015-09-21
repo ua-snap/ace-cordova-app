@@ -6,7 +6,7 @@ angular.module('ace.controllers')
 //-----------------------------------------------------------------------------------------------
  
 // Controller for the settings view
-.controller('SettingsGeneralController', function($translate, $scope, $ionicSideMenuDelegate, SettingsService, $ionicHistory, $state) {
+.controller('SettingsGeneralController', function($translate, $scope, $ionicSideMenuDelegate, SettingsService, $ionicHistory, $state, DataService) {
 	// Pull settings from local storage BEFORE displaying view
 	$scope.$on('$ionicView.beforeEnter', function() {
 		var settings = SettingsService.getSettings(window);
@@ -52,6 +52,7 @@ angular.module('ace.controllers')
 		notifications: {
 			checked: true
 		},
+		syncInterval: 5,
 		units: "Imperial"
 	};
 	
@@ -71,4 +72,52 @@ angular.module('ace.controllers')
 		settings.general.units = $scope.generalSettings.units;
 		SettingsService.updateSettings(window, settings);
 	};
+	
+	// Change handler for the sync interval setting
+	$scope.syncIntervalChanged = function() {
+		// Ignore intermediate changes (where no value is provided)
+		if($scope.generalSettings.syncInterval !== "")
+		{
+			// Lower bound at 6 seconds
+			var interval = Number($scope.generalSettings.syncInterval);
+			if(interval < 0.1)
+			{
+				interval = 0.1;
+			}
+			var settings = SettingsService.getSettings(window);
+			settings.general.syncInterval = interval;
+			SettingsService.updateSettings(window, settings);	
+			
+			// Reset the actual sync timer
+			if(window.thread_messenger.syncTimer)
+			{
+				// Clear the interval
+				window.clearInterval(window.thread_messenger.syncTimer);
+				
+				// Turn auto-upload back on
+				window.thread_messenger.syncTimer = window.setInterval(function() {
+					// Check online state
+					if(window.navigator.connection.type !== "none")
+					{
+						// Online so attempt to sync
+						var settings = SettingsService.getSettings(window);
+						DataService.sync(null, settings.general.notifications);
+					}        
+				}, interval * 60000);
+			}
+			else
+			{
+				// Turn auto-upload back on
+				window.thread_messenger.syncTimer = window.setInterval(function() {
+					// Check online state
+					if(window.navigator.connection.type !== "none")
+					{
+						// Online so attempt to sync
+						var settings = SettingsService.getSettings(window);
+						DataService.sync(null, settings.general.notifications);
+					}        
+				}, interval * 60000);
+			}
+		};
+	}
 });

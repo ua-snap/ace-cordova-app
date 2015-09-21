@@ -35,7 +35,7 @@ angular.module('ace.controllers')
 		enablePositionTracking: {
 			checked: true
 		},
-		trackingInterval: 1,
+		trackingInterval: 60,
 		historyPointNum: 100
 	};
 	
@@ -74,16 +74,29 @@ angular.module('ace.controllers')
 	};
 	
 	// Change the frequency at which a user's position is recorded in the tracking functionality
-	$scope.trackingFrequencyChanged = function() {
-		var settings = SettingsService.getSettings(window);
-		settings.gps.trackingInterval = $scope.gpsSettings.trackingInterval;
-		SettingsService.updateSettings(window, settings);	
-		
-		// Update tracking interval in geo service
-		if(settings.positionTrackingEnabled)
+	$scope.trackingIntervalChanged = function() {
+		// ignore intermediate changes ("")
+		if($scope.gpsSettings.trackingInterval !== "")
 		{
-			GeoService.disableTracking();
-			GeoService.enableTracking(settings.gps.trackingInterval, null);
+			var settings = SettingsService.getSettings(window);
+			settings.gps.trackingInterval = Number($scope.gpsSettings.trackingInterval);
+			SettingsService.updateSettings(window, settings);	
+			
+			// Update tracking interval in geo service
+			if(settings.positionTrackingEnabled)
+			{
+				GeoService.disableTracking();
+				
+				// Lower bound for position tracking interval: 1 second 
+				if(settings.gps.trackingInterval < 1)
+				{
+					GeoService.enableTracking(1, null);
+				}
+				else
+				{
+					GeoService.enableTracking(settings.gps.trackingInterval, null);
+				}
+			}
 		}
 	};
 	

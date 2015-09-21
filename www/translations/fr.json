@@ -100,5 +100,6 @@
       "IMPERIAL": "impériale",
       "METRIC": "Metric",
       "EDIT_REPORT": "Modifier le texte",
-      "UPDATE": "Mettre à jour"
+      "UPDATE": "Mettre à jour",
+      "SYNC_INTERVAL": "intervalle de synchronisation"
   }

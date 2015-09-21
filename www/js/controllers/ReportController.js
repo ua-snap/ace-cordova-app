@@ -76,7 +76,7 @@ angular.module('ace.controllers')
         GeoService.enableTracking(settings.gps.trackingInterval);
     }    
     
-    // Turn auto-upload back on (60 second interval)
+    // Turn auto-upload back on
     window.thread_messenger.syncTimer = window.setInterval(function() {
         // Check online state
         if(window.navigator.connection.type !== "none")
@@ -85,7 +85,7 @@ angular.module('ace.controllers')
             var settings = SettingsService.getSettings(window);
             DataService.sync(null, settings.general.notifications);
         }        
-    }, 60000);
+    }, settings.general.syncInterval * 60000);
     
     // Ensure permission to add notifications
     window.plugin.notification.local.hasPermission(function(granted) {

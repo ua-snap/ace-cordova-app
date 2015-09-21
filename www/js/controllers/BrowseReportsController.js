@@ -57,6 +57,9 @@ angular.module('ace.controllers')
 				for(var i = 0; i < reportArray.length; i++)
 				{
 					reportArray[i].date = positionMap[reportArray[i].positionId].timestamp;
+					var reportDate = reportArray[i].date;
+					reportArray[i].dateString = "Report timestamp: " + reportDate.getHours() + ":" + reportDate.getMinutes() + " " 
+						+ (reportDate.getMonth() + 1) + "/" + reportDate.getDate() + "/" + reportDate.getFullYear();
 				}
 				
 				// Update the view

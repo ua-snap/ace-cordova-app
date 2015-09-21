@@ -5,6 +5,10 @@
   <ion-content>
     <ion-list>
       <ion-toggle ng-model="generalSettings.notifications.checked" ng-change="notificationsChanged()">{{'SYNC_NOTIFICATIONS' | translate}}</ion-toggle>
+      <label class="item item-input">
+          <span class="input-label">{{'SYNC_INTERVAL' | translate}} (m)</span>
+          <input type="tel" ng-model="generalSettings.syncInterval" ng-change="syncIntervalChanged()">
+      </label>
       <div class="item">
           {{'UNITS' | translate}}:
           <ion-radio ng-repeat="unit in unitsArray" ng-value="unit" ng-model="generalSettings.units" ng-change="unitsChanged()">

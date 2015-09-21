@@ -100,5 +100,6 @@
      "IMPERIAL": "Imperial",
      "METRIC": "Metric",
      "EDIT_REPORT": "Edit Report",
-     "UPDATE": "Update"
+     "UPDATE": "Update",
+     "SYNC_INTERVAL": "Sync Interval"
   }

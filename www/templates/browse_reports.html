@@ -6,7 +6,7 @@
 		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		<ion-list>
 			<ion-item collection-repeat="report in reports" ng-click="elementClicked(report)">
-				{{report.date.toString()}}
+				{{report.dateString}}
 				<ion-option-button class="button-balanced" ng-click="resendClicked(report)">
 					Resend
 				</ion-option-button>
