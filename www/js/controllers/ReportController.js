@@ -106,7 +106,7 @@ angular.module('ace.controllers')
                 
                 // Request password
                 $ionicPopup.prompt({
-                    title: "Internet connectivity detected.  Enter password to log in to server",
+                    title: "Internet connection detected.  Enter password to confirm login.",
                     inputType: 'password'
                 }).then(function(password) {
                     // Log in to the server
@@ -520,7 +520,8 @@ angular.module('ace.controllers')
     
     if(report.notes && report.notes != "")
     {
-        document.getElementById("notes_sum").innerText = report.notes;
+        // Take only first line of notes
+        document.getElementById("notes_sum").innerText = report.notes.split("\n")[0];
         $scope.notesModal.input = report.notes;
         $scope.notesModal.inputTemp = report.notes;
     }
@@ -1432,8 +1433,8 @@ angular.module('ace.controllers')
       // Load into report
       $scope.report.notes = $scope.notesModal.input;
       
-      // Update summary on tab-report.html
-      document.getElementById('notes_sum').innerText = $scope.report.notes;
+      // Update summary on tab-report.html (only first line)
+      document.getElementById('notes_sum').innerText = $scope.report.notes.split("\n")[0];
       
       // close out the modal
       $scope.notesModal.hide();
