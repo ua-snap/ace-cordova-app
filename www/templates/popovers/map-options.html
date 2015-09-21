@@ -1,4 +1,4 @@
-<ion-popover-view>
+<ion-popover-view class="submit">
 	<ion-header-bar>
 		<h1 class="title">{{'MAP_OPTIONS' | translate}}</h1>
 	</ion-header-bar>
@@ -8,10 +8,10 @@
 			<ion-toggle ng-model="settings.displayHistory.checked" ng-change="displayHistoryChanged()">{{'DISPLAY_HISTORY' | translate}}</ion-toggle>
 			<ion-toggle ng-model="settings.displayReports.checked" ng-change="displayReportsChanged()">{{'DISPLAY_REPORTS' | translate}}</ion-toggle>
 			<ion-toggle ng-model="settings.displayOtherUsers.checked" ng-change="displayOtherUsersChanged()">Display Other Users</ion-toggle>
-			<ion-item>History Start Date</ion-item>
-			<input type="datetime-local" ng-model="settings.displayHistory.startDate" ng-change="displayHistoryStartChanged()"></input>
-			<ion-item>History End Date</ion-item>
-			<input type="datetime-local" ng-model="settings.displayHistory.endDate" ng-change="displayHistoryEndChanged()"></input>
+			<ion-item>Position History Start Date</ion-item>
+			<input style="margin: auto" type="datetime-local" ng-model="settings.displayHistory.startDate" ng-change="displayHistoryStartChanged()"></input>
+			<ion-item>Position History End Date</ion-item>
+			<input style="margin: auto" type="datetime-local" ng-model="settings.displayHistory.endDate" ng-change="displayHistoryEndChanged()"></input>
 		</div>
 	</ion-content>
 </ion-popover-view>
