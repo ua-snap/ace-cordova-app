@@ -99,6 +99,9 @@ angular.module('ace.controllers')
             // Move the user to the default view (tab.report)
             $state.go('tab.report');
             
+            // Re-enable the back button (if necessary)
+            window.removeEventListener("backbutton", window.hardwareBackButtonHandler, false);
+            
             // Re-enable the ability to drag the side menu out (disabled on 
             // previous logouts)
             $ionicSideMenuDelegate.canDragContent(true);

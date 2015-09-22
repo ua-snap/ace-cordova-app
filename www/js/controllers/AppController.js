@@ -67,6 +67,12 @@ angular.module('ace.controllers', [])
             // Clear any route history
             $ionicHistory.clearHistory();
             
+            // Disallow users getting back into app via hardware back button
+            window.hardwareBackButtonHandler = function(e) {
+                $state.go('login');
+            };
+            document.addEventListener("backbutton", window.hardwareBackButtonHandler, false)
+            
         }, function(err) {
             // Error (already alerted in AuthService)
         });
