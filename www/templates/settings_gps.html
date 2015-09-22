@@ -10,10 +10,10 @@
 			</label>
       <ion-toggle ng-model="gpsSettings.highAccuracy.checked" ng-change="enableHighAccuracy()">{{'HIGH_ACCURACY' | translate}}</ion-toggle>
       <ion-toggle ng-model="gpsSettings.enablePositionTracking.checked" ng-change="enablePosTrackingChanged()">{{'ENABLE_POSITION_TRACKING' | translate}}</ion-toggle>
-			<label class="item item-input">
-				<span class="input-label">{{'POSITION_TRACKING_INTERVAL' | translate}} (s)</span>
-				<input type="tel" ng-model="gpsSettings.trackingInterval" ng-change="trackingIntervalChanged()">
-			</label>    
+      <label class="item item-input">
+          <span class="input-label">{{'POSITION_TRACKING_INTERVAL' | translate}} (s)</span>
+          <input type="tel" style="padding-left: 25px" ng-model="gpsSettings.trackingInterval" ng-change="trackingIntervalChanged()">
+      </label>    
     </ion-list>
   </ion-content>
 </ion-view>
