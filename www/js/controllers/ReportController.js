@@ -116,7 +116,26 @@ angular.module('ace.controllers')
                         
                         // Sync
                         var settings = SettingsService.getSettings(window);
-                        DataService.sync(null, settings.general.notifications);
+                        DataService.sync(function(model) {
+                            // Check for reports saved offline
+                            if(model === "report")
+                            {
+                                if(window.thread_messenger.offlineReportCounter && window.thread_messenger.offlineReportCounter > 0)
+                                {
+                                    if(window.thread_messenger.offlineReportCounter > 1)
+                                    {
+                                        $ionicLoading.show({template: window.thread_messenger.offlineReportCounter.toString() + 
+                                            ' Saved Reports Uploaded', noBackdrop: true, duration: 1500});
+                                    }
+                                    else
+                                    {
+                                        $ionicLoading.show({template: window.thread_messenger.offlineReportCounter.toString() + 
+                                            ' Saved Report Uploaded', noBackdrop: true, duration: 1500});
+                                    }
+                                    window.thread_messenger.offlineReportCounter = 0;
+                                }
+                            }
+                        }, settings.general.notifications);
                         window.onlineTriggered = false;
                     }, function(err) {
                         // Error
@@ -375,6 +394,13 @@ angular.module('ace.controllers')
                     }
                     else {
                         $ionicLoading.show({template: 'Report saved locally (will be uploaded once internet connection is re-established)', noBackdrop: true, duration: 2500});
+                        
+                        // Increment offline report counter
+                        if(!window.thread_messenger.offlineReportCounter)
+                        {
+                            window.thread_messenger.offlineReportCounter = 0;
+                        }
+                        window.thread_messenger.offlineReportCounter++;
                     }
                 });
             });

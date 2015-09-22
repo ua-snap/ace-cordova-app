@@ -51,9 +51,9 @@ angular.module('ace.controllers', [])
             document.removeEventListener("online", window.thread_messenger.onlineListenerFunction, false);
             
             // Kill the sync thread and stop the sync interval timer
-            DataService.terminate();
             window.clearInterval(window.thread_messenger.syncTimer);
             window.thread_messenger = undefined;
+            DataService.terminate();
             
             // Remove access token id
             LocalStorageService.setItem("access_token", "", window);
