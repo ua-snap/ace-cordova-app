@@ -155,6 +155,15 @@ angular.module('ace.controllers')
       // Perform actual update
       DataService.localWeatherReport_updateAll({id: reportId}, $scope.report, function(err, res) {
           if(err) console.log(err);
+          
+          // Perform sync
+          var settings = SettingsService.getSettings(window);
+          DataService.sync(function(model) {
+              if(model === "report")
+              {
+                  $ionicLoading.show({template: 'Report Updated Successfully', noBackdrop: true, duration: 1500});
+              }
+          }, settings.general.notifications);
       });
       
       // Clear all entered data

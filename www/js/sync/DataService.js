@@ -633,7 +633,7 @@ angular.module('ace.services')
 						text: 'Syncing with remote server...',
 						title: 'ACE Mobile App',
 						sound: "file://sounds/point1sec.mp3",
-						at: Date.now(),
+						at: (Date.now() - 10000),
 						ongoing: false,
 						smallIcon: 'ic_cloud_white_24dp' 			
 					});
@@ -662,10 +662,10 @@ angular.module('ace.services')
 									smallIcon: "ic_cloud_done_white_24dp"
 								});
 								
-								// Let "complete" stay displayed for 1 second, then clear
+								// Let "complete" stay displayed for 2 seconds, then clear
 								window.setTimeout(function() {
 									window.plugin.notification.local.cancel(230476843);
-								}, 1000);
+								}, 2000);
 							}
 						});
 					}

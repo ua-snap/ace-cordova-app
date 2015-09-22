@@ -58,8 +58,26 @@ angular.module('ace.controllers')
 				{
 					reportArray[i].date = positionMap[reportArray[i].positionId].timestamp;
 					var reportDate = reportArray[i].date;
-					reportArray[i].dateString = "Report timestamp: " + reportDate.getHours() + ":" + reportDate.getMinutes() + " " 
-						+ (reportDate.getMonth() + 1) + "/" + reportDate.getDate() + "/" + reportDate.getFullYear();
+					
+					// Save string with correct formatting
+					if(reportDate.getHours() < 10)
+					{
+						if(reportDate.getMinutes() < 10)
+						{
+							reportArray[i].dateString = "Report timestamp: 0" + reportDate.getHours() + ":0" + reportDate.getMinutes() + " " 
+								+ (reportDate.getMonth() + 1) + "/" + reportDate.getDate() + "/" + reportDate.getFullYear();
+						}
+						else
+						{
+							reportArray[i].dateString = "Report timestamp: 0" + reportDate.getHours() + ":" + reportDate.getMinutes() + " " 
+								+ (reportDate.getMonth() + 1) + "/" + reportDate.getDate() + "/" + reportDate.getFullYear();
+						}
+					}
+					else
+					{
+						reportArray[i].dateString = "Report timestamp: " + reportDate.getHours() + ":" + reportDate.getMinutes() + " " 
+							+ (reportDate.getMonth() + 1) + "/" + reportDate.getDate() + "/" + reportDate.getFullYear();
+					}
 				}
 				
 				// Update the view
