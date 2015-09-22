@@ -1509,9 +1509,19 @@ angular.module('ace.controllers')
             $scope.cameraModal.tempAttachmentType = fileType;
         });
         
-        // Display the attachment button
-        var btn = document.getElementById("openAttachmentButton");
-        btn.style.display = "block";
+        // Display the attachment button on Android
+        if(window.cordova.platformId === "android")
+        {
+            var btn = document.getElementById("openAttachmentButton");
+            btn.style.display = "block";
+        }
+        else
+        {
+            var fileNameContainer = document.getElementById("fileNameContainer");
+            fileNameContainer.style.display = "block";
+            var fileNameField = document.getElementById("fileNameField");
+            fileNameField.innerText = uri.replace(/^.*[\\\/]/, '');
+        }
            
       }, function() {
         // Do nothing
@@ -1565,9 +1575,20 @@ angular.module('ace.controllers')
         // Save type
         $scope.cameraModal.tempAttachmentType = mediaFiles[0].type;
         
-        // Display the attachment button
-        var btn = document.getElementById("openAttachmentButton");
-        btn.style.display = "block";
+        // Display the attachment button on Android
+        if(window.cordova.platformId === "android")
+        {
+            var btn = document.getElementById("openAttachmentButton");
+            btn.style.display = "block";
+        }
+        else
+        {
+            var fileNameContainer = document.getElementById("fileNameContainer");
+            fileNameContainer.style.display = "block";
+            var fileNameField = document.getElementById("fileNameField");
+            fileNameField.innerText = mediaFiles[0].fullPath.replace(/^.*[\\\/]/, '');
+        }
+        
     }, function() {
         // Do nothing
         
@@ -1588,9 +1609,19 @@ angular.module('ace.controllers')
          // Initially set the tempAttachment
          $scope.cameraModal.tempAttachment = uri;
          
-         // Display the attachment button
-         var btn = document.getElementById("openAttachmentButton");
-         btn.style.display = "block";
+        // Display the attachment button on Android
+        if(window.cordova.platformId === "android")
+        {
+            var btn = document.getElementById("openAttachmentButton");
+            btn.style.display = "block";
+        }
+        else
+        {
+            var fileNameContainer = document.getElementById("fileNameContainer");
+            fileNameContainer.style.display = "block";
+            var fileNameField = document.getElementById("fileNameField");
+            fileNameField.innerText = uri.replace(/^.*[\\\/]/, '');
+        }
          
         // Determine attachment type
          $scope.determineAttachmentType(uri, function(fileType) {
@@ -1608,14 +1639,38 @@ angular.module('ace.controllers')
   $scope.openModal8 = function() {
       $scope.cameraModal.show();
       var btn = document.getElementById("openAttachmentButton");
-      if($scope.report.attachment && $scope.report.attachment !== "")
-      {      
-          $scope.cameraModal.tempAttachment = $scope.report.attachment;
-          btn.style.margin = "auto";
-      }     
+      if(window.cordova.platformId === "android")
+      {
+          if($scope.report.attachment && $scope.report.attachment !== "")
+          {      
+              $scope.cameraModal.tempAttachment = $scope.report.attachment;
+              btn.style.margin = "auto";
+          }     
+          else
+          {
+              btn.style.display = "none";
+          }
+      }
       else
       {
+          // iOS platform
           btn.style.display = "none";
+          
+          // Display file name field if necessary
+          if($scope.report.attachment && $scope.report.attachment !== "")
+          {      
+              $scope.cameraModal.tempAttachment = $scope.report.attachment;
+              var fileNameContainer = document.getElementById("fileNameContainer");
+              fileNameContainer.style.display = "block";
+              var fileNameField = document.getElementById("fileNameField");
+              fileNameField.innerText = $scope.cameraModal.tempAttachment.replace(/^.*[\\\/]/, '');
+          }     
+          else
+          {
+              var fileNameContainer = document.getElementById("fileNameContainer");
+              fileNameContainer.style.display = "none";
+          }
+          
       }
       $scope.$apply();
   };
