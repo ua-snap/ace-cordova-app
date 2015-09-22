@@ -362,7 +362,7 @@ angular.module('ace.controllers')
                                     // Upload failed
                                     console.log(error);
                                 }, options);
-                            })(res.id, fileName);
+                            })(res.id, options.fileName);
                             
                         }
                         var settings = SettingsService.getSettings(window);
@@ -1672,7 +1672,6 @@ angular.module('ace.controllers')
           }
           
       }
-      $scope.$apply();
   };
   
   // Close the camera modal
