@@ -101,5 +101,10 @@
      "METRIC": "Metric",
      "EDIT_REPORT": "Edit Report",
      "UPDATE": "Update",
-     "SYNC_INTERVAL": "Sync Interval"
+     "SYNC_INTERVAL": "Sync Interval",
+     "ATTACHMENT": "Attachment",
+     "DISPLAY_OTHER_USERS": "Display Other Users",
+     "POSITION_HISTORY_START_DATE": "Position History Start Date",
+     "POSITION_HISTORY_END_DATE": "Positin History End Date",
+     "REPORT_TIMESTAMP": "Report Timestamp"
   }

@@ -8,7 +8,7 @@ angular.module('ace.controllers')
  
 // AngularJS Controller for the settings view
 // This view displays a list of all reports that have been submitted by the current user
-.controller('BrowseReportsController', function($scope, $ionicListDelegate, $ionicLoading, SettingsService, $ionicSideMenuDelegate, GeoService, $ionicHistory, $state, DataService, LocalStorageService, DataShareService) {
+.controller('BrowseReportsController', function($scope, $timeout, $ionicNavBarDelegate, $translate, $ionicListDelegate, $ionicLoading, SettingsService, $ionicSideMenuDelegate, GeoService, $ionicHistory, $state, DataService, LocalStorageService, DataShareService) {
 	// Array to hold all reports (and to be accessed from the view via Angular)
 	$scope.reports = [];
 	  
@@ -24,6 +24,11 @@ angular.module('ace.controllers')
 	$scope.$on('$ionicView.enter', function() {
 		// Enable dragging of the side menu
 		$ionicSideMenuDelegate.canDragContent(false);
+		
+		// Re-translate the title (to ensure that it is correctly translated)
+		$translate(['PREVIOUS_REPORTS']).then(function(translations) {
+			$ionicNavBarDelegate.title(translations.PREVIOUS_REPORTS); 
+		});
 	});
 	
 	// Function called from pull to refresh
@@ -53,40 +58,44 @@ angular.module('ace.controllers')
 					positionMap[res2[i].id] = res2[i];
 				} 
 				
-				// Add the timestamp into each report object (to be displayed on the list)
-				for(var i = 0; i < reportArray.length; i++)
-				{
-					reportArray[i].date = positionMap[reportArray[i].positionId].timestamp;
-					var reportDate = reportArray[i].date;
-					
-					// Save string with correct formatting
-					if(reportDate.getHours() < 10)
+				$translate(['REPORT_TIMESTAMP']).then(function(translations) {
+					// Add the timestamp into each report object (to be displayed on the list)
+					for(var i = 0; i < reportArray.length; i++)
 					{
-						if(reportDate.getMinutes() < 10)
+						reportArray[i].date = positionMap[reportArray[i].positionId].timestamp;
+						var reportDate = reportArray[i].date;
+						
+						// Save string with correct formatting
+						if(reportDate.getHours() < 10)
 						{
-							reportArray[i].dateString = "Report timestamp: 0" + reportDate.getHours() + ":0" + reportDate.getMinutes() + " " 
-								+ (reportDate.getMonth() + 1) + "/" + reportDate.getDate() + "/" + reportDate.getFullYear();
+							if(reportDate.getMinutes() < 10)
+							{
+								reportArray[i].dateString = translations.REPORT_TIMESTAMP + ": 0" + reportDate.getHours() + ":0" + reportDate.getMinutes() + " " 
+									+ (reportDate.getMonth() + 1) + "/" + reportDate.getDate() + "/" + reportDate.getFullYear();
+							}
+							else
+							{
+								reportArray[i].dateString = translations.REPORT_TIMESTAMP + ": 0" + reportDate.getHours() + ":" + reportDate.getMinutes() + " " 
+									+ (reportDate.getMonth() + 1) + "/" + reportDate.getDate() + "/" + reportDate.getFullYear();
+							}
 						}
 						else
 						{
-							reportArray[i].dateString = "Report timestamp: 0" + reportDate.getHours() + ":" + reportDate.getMinutes() + " " 
+							reportArray[i].dateString = translations.REPORT_TIMESTAMP + ": " + reportDate.getHours() + ":" + reportDate.getMinutes() + " " 
 								+ (reportDate.getMonth() + 1) + "/" + reportDate.getDate() + "/" + reportDate.getFullYear();
 						}
 					}
-					else
-					{
-						reportArray[i].dateString = "Report timestamp: " + reportDate.getHours() + ":" + reportDate.getMinutes() + " " 
-							+ (reportDate.getMonth() + 1) + "/" + reportDate.getDate() + "/" + reportDate.getFullYear();
-					}
-				}
-				
-				// Update the view
-				$scope.$apply(function() {
-					$scope.reports = reportArray;
 					
-					// Turn off the spinning refresh notification
-					$scope.$broadcast('scroll.refreshComplete');	
-				});		
+					// Update the view
+					$timeout(function() {
+						$scope.reports = reportArray;
+						
+						// Turn off the spinning refresh notification
+						$scope.$broadcast('scroll.refreshComplete');	
+					});		
+				});
+				
+				
 			});
 		});
 	};

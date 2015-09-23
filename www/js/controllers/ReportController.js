@@ -243,7 +243,8 @@ angular.module('ace.controllers')
         'WIND_SPEED',
         'WIND_DIRECTION',
         'OTHER',
-        'NOTES'
+        'NOTES',
+        'ATTACHMENT'
     ];
     
     $translate(translationsArray).then(function(translations) {
@@ -287,7 +288,7 @@ angular.module('ace.controllers')
         notes.innerText = translations.NOTES + ":\n" + $scope.report.notes;
         
         var attachment = document.getElementById("sumcat8");
-        attachment.innerText = "Attachment: " + $scope.report.attachment.replace(/^.*[\\\/]/, ''); 
+        attachment.innerText = translations.ATTACHMENT + ": " + $scope.report.attachment.replace(/^.*[\\\/]/, ''); 
     });
     
     

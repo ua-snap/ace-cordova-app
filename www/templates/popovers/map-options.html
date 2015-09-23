@@ -4,13 +4,13 @@
 	</ion-header-bar>
 	<ion-content>
 		<div class="list">
-			<ion-toggle ng-model="settings.displayPos.checked" ng-change="displayPosChanged()">{{'DISPLAY_POSITION' | translate}}</ion-toggle>
-			<ion-toggle ng-model="settings.displayHistory.checked" ng-change="displayHistoryChanged()">{{'DISPLAY_HISTORY' | translate}}</ion-toggle>
-			<ion-toggle ng-model="settings.displayReports.checked" ng-change="displayReportsChanged()">{{'DISPLAY_REPORTS' | translate}}</ion-toggle>
-			<ion-toggle ng-model="settings.displayOtherUsers.checked" ng-change="displayOtherUsersChanged()">Display Other Users</ion-toggle>
-			<ion-item>Position History Start Date</ion-item>
+			<ion-toggle ng-model="settings.displayPos.checked" ng-change="displayPosChanged()" style="white-space: pre-wrap">{{'DISPLAY_POSITION' | translate}}</ion-toggle>
+			<ion-toggle ng-model="settings.displayHistory.checked" ng-change="displayHistoryChanged()" style="white-space: pre-wrap">{{'DISPLAY_HISTORY' | translate}}</ion-toggle>
+			<ion-toggle ng-model="settings.displayReports.checked" ng-change="displayReportsChanged()" style="white-space: pre-wrap">{{'DISPLAY_REPORTS' | translate}}</ion-toggle>
+			<ion-toggle ng-model="settings.displayOtherUsers.checked" ng-change="displayOtherUsersChanged()" style="white-space: pre-wrap">{{'DISPLAY_OTHER_USERS' | translate}}</ion-toggle>
+			<ion-item style="white-space: pre-wrap">{{'POSITION_HISTORY_START_DATE' | translate}}</ion-item>
 			<input style="margin: auto" type="datetime-local" ng-model="settings.displayHistory.startDate" ng-change="displayHistoryStartChanged()"></input>
-			<ion-item>Position History End Date</ion-item>
+			<ion-item style="white-space: pre-wrap">{{'POSITION_HISTORY_END_DATE' | translate}}</ion-item>
 			<input style="margin: auto" type="datetime-local" ng-model="settings.displayHistory.endDate" ng-change="displayHistoryEndChanged()"></input>
 		</div>
 	</ion-content>
