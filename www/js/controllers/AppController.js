@@ -59,7 +59,7 @@ angular.module('ace.controllers', [])
             LocalStorageService.setItem("access_token", "", window);
             
             // Remove any notifications
-            window.plugin.notification.local.cancel(230476843);
+            window.plugin.notification.local.cancel(["230476843"]);
             
             // Kick the user back out to the login screen
             $state.go('login');
