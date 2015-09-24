@@ -652,7 +652,7 @@ angular.module('ace.services')
 						var event = new Event('sync_complete');						
 						document.dispatchEvent(event);
 						
-						window.plugin.notification.local.isPresent(230476843, function(present) {
+						window.plugin.notification.local.isPresent("230476843", function(present) {
 							if(present)
 							{
 								window.plugin.notification.local.update({
@@ -664,7 +664,7 @@ angular.module('ace.services')
 								
 								// Let "complete" stay displayed for 2 seconds, then clear
 								window.setTimeout(function() {
-									window.plugin.notification.local.cancel(230476843);
+									window.plugin.notification.local.cancel(["230476843"]);
 								}, 2000);
 							}
 						});
