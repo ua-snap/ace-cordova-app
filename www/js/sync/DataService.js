@@ -24,7 +24,7 @@ angular.module('ace.services')
  * Docs: https://docs.strongloop.com/display/public/LB/Synchronization
  * Example app: https://github.com/strongloop/loopback-example-offline-sync
  * 
- * @class AuthService
+ * @class DataService
  * @constructor
  */
  

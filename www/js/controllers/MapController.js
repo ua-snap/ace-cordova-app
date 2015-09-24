@@ -100,6 +100,12 @@ angular.module('ace.controllers')
     $scope.$on('$ionicView.leave', function() {
         // Save the state of the map
         $scope.saveMapState();
+        
+        // Disable the position update function (if necessary)
+        if($scope.positionUpdateInterval !== undefined)
+        {
+            window.clearInterval($scope.positionUpdateInterval);
+        }
     });
     
     // Save the state of the map (usually prior to view exit)

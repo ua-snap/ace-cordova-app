@@ -76,16 +76,19 @@ angular.module('ace.controllers')
         GeoService.enableTracking(settings.gps.trackingInterval);
     }    
     
-    // Turn auto-upload back on
-    window.thread_messenger.syncTimer = window.setInterval(function() {
-        // Check online state
-        if(window.navigator.connection.type !== "none")
-        {
-            // Online so attempt to sync
-            var settings = SettingsService.getSettings(window);
-            DataService.sync(null, settings.general.notifications);
-        }        
-    }, settings.general.syncInterval * 60000);
+    // Turn auto-upload back on (if necessary)
+    if(window.thread_messenger.syncTimer === undefined)
+    {
+        window.thread_messenger.syncTimer = window.setInterval(function() {
+            // Check online state
+            if(window.navigator.connection.type !== "none")
+            {
+                // Online so attempt to sync
+                var settings = SettingsService.getSettings(window);
+                DataService.sync(null, settings.general.notifications);
+            }        
+        }, settings.general.syncInterval * 60000);
+    }
     
     // Ensure permission to add notifications
     window.plugin.notification.local.hasPermission(function(granted) {
@@ -95,72 +98,75 @@ angular.module('ace.controllers')
         }
     });
     
-    window.thread_messenger.onlineListenerFunction = function() {
-        if(window.onlineTriggered === undefined || window.onlineTriggered === false)
-        {
-            window.onlineTriggered = true;
-            // Check if we were previously logged in
-            if(LocalStorageService.getItem("access_token", "", window) === null)
+    if(window.thread_messenger.onlineListenerFunction === undefined)
+    {
+        window.thread_messenger.onlineListenerFunction = function() {
+            if(window.onlineTriggered === undefined || window.onlineTriggered === false)
             {
-                // The user never logged in to the server
-                
-                // Request password
-                $ionicPopup.prompt({
-                    title: "Internet connection detected.  Enter password to confirm login.",
-                    inputType: 'password'
-                }).then(function(password) {
-                    // Log in to the server
-                    AuthService.loginUser(LocalStorageService.getItem("currentUser", {}, window).username, password, function(result) {
-                        // Set access token
-                        LocalStorageService.setItem("access_token", result.id, window);
-                        
-                        // Sync
-                        var settings = SettingsService.getSettings(window);
-                        DataService.sync(function(model) {
-                            // Check for reports saved offline
-                            if(model === "report")
-                            {
-                                if(window.thread_messenger.offlineReportCounter && window.thread_messenger.offlineReportCounter > 0)
-                                {
-                                    if(window.thread_messenger.offlineReportCounter > 1)
-                                    {
-                                        $ionicLoading.show({template: window.thread_messenger.offlineReportCounter.toString() + 
-                                            ' Saved Reports Uploaded', noBackdrop: true, duration: 1500});
-                                    }
-                                    else
-                                    {
-                                        $ionicLoading.show({template: window.thread_messenger.offlineReportCounter.toString() + 
-                                            ' Saved Report Uploaded', noBackdrop: true, duration: 1500});
-                                    }
-                                    window.thread_messenger.offlineReportCounter = 0;
-                                }
-                            }
-                        }, settings.general.notifications);
-                        window.onlineTriggered = false;
-                    }, function(err) {
-                        // Error
-                        alert(err);
-                    });
-                });
-            }
-            else
-            {
-                // The user was previously logged in, so just sync immediately
-                var settings = SettingsService.getSettings(window);
-                
-                // Sync only if settings is valid (user is logged in)
-                if(settings)
+                window.onlineTriggered = true;
+                // Check if we were previously logged in
+                if(LocalStorageService.getItem("access_token", "", window) === null)
                 {
-                    DataService.sync(null, settings.general.notifications); 
+                    // The user never logged in to the server
+                    
+                    // Request password
+                    $ionicPopup.prompt({
+                        title: "Internet connection detected.  Enter password to confirm login.",
+                        inputType: 'password'
+                    }).then(function(password) {
+                        // Log in to the server
+                        AuthService.loginUser(LocalStorageService.getItem("currentUser", {}, window).username, password, function(result) {
+                            // Set access token
+                            LocalStorageService.setItem("access_token", result.id, window);
+                            
+                            // Sync
+                            var settings = SettingsService.getSettings(window);
+                            DataService.sync(function(model) {
+                                // Check for reports saved offline
+                                if(model === "report")
+                                {
+                                    if(window.thread_messenger.offlineReportCounter && window.thread_messenger.offlineReportCounter > 0)
+                                    {
+                                        if(window.thread_messenger.offlineReportCounter > 1)
+                                        {
+                                            $ionicLoading.show({template: window.thread_messenger.offlineReportCounter.toString() + 
+                                                ' Saved Reports Uploaded', noBackdrop: true, duration: 1500});
+                                        }
+                                        else
+                                        {
+                                            $ionicLoading.show({template: window.thread_messenger.offlineReportCounter.toString() + 
+                                                ' Saved Report Uploaded', noBackdrop: true, duration: 1500});
+                                        }
+                                        window.thread_messenger.offlineReportCounter = 0;
+                                    }
+                                }
+                            }, settings.general.notifications);
+                            window.onlineTriggered = false;
+                        }, function(err) {
+                            // Error
+                            alert(err);
+                        });
+                    });
                 }
-                window.onlineTriggered = false;
-                
+                else
+                {
+                    // The user was previously logged in, so just sync immediately
+                    var settings = SettingsService.getSettings(window);
+                    
+                    // Sync only if settings is valid (user is logged in)
+                    if(settings)
+                    {
+                        DataService.sync(null, settings.general.notifications); 
+                    }
+                    window.onlineTriggered = false;
+                    
+                }
             }
         }
+        
+        // Setup to to perform when going online from being offline
+        document.addEventListener("online", window.thread_messenger.onlineListenerFunction, false)
     }
-    
-    // Setup to to perform when going online from being offline
-    document.addEventListener("online", window.thread_messenger.onlineListenerFunction, false)
     
   });
   

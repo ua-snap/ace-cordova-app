@@ -52,8 +52,8 @@ angular.module('ace.controllers', [])
             
             // Kill the sync thread and stop the sync interval timer
             window.clearInterval(window.thread_messenger.syncTimer);
-            window.thread_messenger = undefined;
             DataService.terminate();
+            delete window.thread_messenger;
             
             // Remove access token id
             LocalStorageService.setItem("access_token", "", window);
