@@ -629,13 +629,13 @@ angular.module('ace.services')
 				{
 					// Display syncing notification (random number id)
 					window.plugin.notification.local.schedule({
-						id: "230476843",
+						id: 230476843,
 						text: 'Syncing with remote server...',
 						title: 'ACE Mobile App',
 						sound: "file://sounds/point1sec.mp3",
 						at: (Date.now() - 10000),
 						ongoing: false,
-						smallIcon: 'ic_cloud_white_24dp' 			
+						smallIcon: 'ic_cloud_white_24dp'			
 					});
 				}		
 				
@@ -652,21 +652,21 @@ angular.module('ace.services')
 						var event = new Event('sync_complete');						
 						document.dispatchEvent(event);
 						
-						window.plugin.notification.local.isPresent("230476843", function(present) {
+						window.plugin.notification.local.isPresent(230476843, function(present) {
 							if(present)
 							{
 								window.plugin.notification.local.update({
-									id: "230476843",
+									id: 230476843,
 									text: 'Sync complete!',
 									title: 'ACE Mobile App',
-									smallIcon: "ic_cloud_done_white_24dp"
+									smallIcon: 'ic_cloud_done_white_24dp'
 								}, function() {
 									// Let "complete" stay displayed for 2 seconds, then clear
 									window.setTimeout(function() {
 										window.plugin.notification.local.clearAll();
 										window.plugin.notification.local.cancelAll();
 									}, 2000);
-								});
+								});	
 							}
 						});
 					}
