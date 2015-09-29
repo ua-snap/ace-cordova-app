@@ -127,7 +127,12 @@ self.onmessage = function(message) {
 					// Make err.stack a simple primitive to allow passing as a message
 					var errCpy = {
 						message: err.message,
-						stack: err.stack.toString()
+					}
+					
+					// Add stack if present (may not be in older iOS webviews)
+					if(err.stack)
+					{
+						errCpy.stack = err.stack.toString();
 					}
 				}
 				
