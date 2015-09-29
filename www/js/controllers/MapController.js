@@ -227,6 +227,12 @@ angular.module('ace.controllers')
         // set in service
         GeoService.setFollowPosition($scope.settings.followPos);
         
+        // Handle displaying other users
+        if($scope.settings.displayOtherUsers.checked)
+        {
+            $scope.displayOtherUserPositions();
+        }
+        
     };
     
     // Update the current location marker position
