@@ -115,12 +115,12 @@ self.onmessage = function(message) {
 				if(res) {
 					// Save access token id
 					window.localStorage.setItem("access_token", res.id);
-				}
-				
-				// Save current user object
-				if(res.user)
-				{
-					window.localStorage.setItem("currentUser", res.user);
+					
+					// Save current user object
+					if(res.user)
+					{
+						window.localStorage.setItem("currentUser", res.user);
+					}
 				}
 				
 				else if(err) {
