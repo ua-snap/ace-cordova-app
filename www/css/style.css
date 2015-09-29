@@ -125,3 +125,9 @@ ion-popover-view.submit {
 .icon-positive {
   color: #0c63ee;
 }
+
+.button-login-ionic-override {
+    background-color: transparent;
+    padding-left: 0px;
+    border:  none;
+}

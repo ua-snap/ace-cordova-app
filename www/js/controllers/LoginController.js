@@ -25,15 +25,26 @@ angular.module('ace.controllers')
         $state.go('tab.report');
     }
     
-    // Dynamically position the login block (css inconsistent)
     var loginBlock = window.document.getElementById("loginContents");
     
     var screenHeight = window.innerHeight;
-    var loginBlockHeight = loginBlock.clientHeight;
-    
+    var loginBlockHeight = loginBlock.clientHeight - Number(loginBlock.style.paddingTop.replace("px", ""));
+
     // Calculate padding top (so that the bottom of the login block is 30 px above the bottom of the screen)
     var paddingTop = screenHeight - loginBlockHeight - 30;
     loginBlock.style.paddingTop = paddingTop.toString() + "px";
+    
+    // Function to dynamically reposition the login inputs and button
+    window.onorientationchange = function(e) {
+        var loginBlock = window.document.getElementById("loginContents");
+    
+        var screenHeight = window.innerHeight;
+        var loginBlockHeight = loginBlock.clientHeight - Number(loginBlock.style.paddingTop.replace("px", ""));
+    
+        // Calculate padding top (so that the bottom of the login block is 30 px above the bottom of the screen)
+        var paddingTop = screenHeight - loginBlockHeight - 30;
+        loginBlock.style.paddingTop = paddingTop.toString() + "px";
+   };
     
     // Event handler to detect keypresses on the username field
     $scope.usernameKeyPress = function(e)
@@ -101,6 +112,9 @@ angular.module('ace.controllers')
             
             // Re-enable the back button (if necessary)
             window.removeEventListener("backbutton", window.hardwareBackButtonHandler, false);
+            
+            // Remove the orientation change listener
+            window.onorientationchange = null;
             
             // Re-enable the ability to drag the side menu out (disabled on 
             // previous logouts)
