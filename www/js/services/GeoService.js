@@ -262,29 +262,8 @@ angular.module('ace.services')
 			// Set the interval function
 			mTimerId = setInterval(function() {
 				self.getCurrentPosition(navigator.geolocation, function(position) {			
-					var insert = false;
+					// Insert if valid position
 					if(position !== null)
-					{
-						// Automatically insert if no other entries have been inserted
-						if(lastPos === null)
-						{
-							insert = true
-						}
-						else if(position.coords.accuracy === lastPos.coords.accuracy)
-						{
-							if(self.getDistanceHaversine(position, lastPos) > position.coords.accuracy)
-							{
-								insert = true;
-							}
-						}
-						else
-						{
-							insert = true;
-						}			
-					}
-					
-					// Insert if necessary
-					if(insert)
 					{
 						var newPosition = {
 							userId: LocalStorageService.getItem("currentUser", {}, window).id,

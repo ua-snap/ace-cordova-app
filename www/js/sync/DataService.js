@@ -644,13 +644,8 @@ angular.module('ace.services')
 					window.thread_messenger.syncCounter++;
 					if(window.thread_messenger.syncCounter === 4)
 					{
-						// Reset counter and indicator and clear notification
+						// Reset counter and clear notification
 						window.thread_messenger.syncCounter = 0;
-						window.thread_messenger.syncing = false;
-						
-						// Fire off a "sync_complete" event
-						var event = new Event('sync_complete');						
-						document.dispatchEvent(event);
 						
 						window.plugin.notification.local.isPresent(230476843, function(present) {
 							if(present)
@@ -669,6 +664,11 @@ angular.module('ace.services')
 								});	
 							}
 						});
+						
+						// Fire off a "sync_complete" event
+						var event = new Event('sync_complete');						
+						document.dispatchEvent(event);
+						
 					}
 					
 					// Execute callback
@@ -676,6 +676,9 @@ angular.module('ace.services')
 					{
 						cb.apply(this, arguments);
 					}
+					
+					// Reset indicator
+					window.thread_messenger.syncing = false;
 					
 					// Handle the oldest pending sync request
 					if(window.thread_messenger.syncRequestQueue.length > 0)

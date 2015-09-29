@@ -13,14 +13,14 @@
 
 // Class contains application-level settings.  Intended to be stored in LocalStorage and accessed from there via the
 // SettingsService.
-// Note: this class contains the default settings for the ACE mobile app
+// Note: this class contains the DEFAULT SETTINGS for the ACE mobile app
 var Settings = function() {
 	// GPS settings
 	this.gps = {
 		timeout: 10,
 		highAccuracy: true,
 		positionTrackingEnabled: true,
-		trackingInterval: 60,
+		trackingInterval: 15,
 		displayedHistoryPoints: 100
 	};
 	

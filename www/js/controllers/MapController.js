@@ -446,47 +446,40 @@ angular.module('ace.controllers')
     
     // Display the most recent position of all other users
     $scope.displayOtherUserPositions = function() {
-        var filter = {
-            where: {
-                groupId: LocalStorageService.getItem("currentUser", {}, window).groupId
-            }
-        };
-        DataService.localMobileUser_find(filter, function(err, res) {
-            // Res contains an array of all users in the current group
-            var users = res;
-            
-            // Get the latest position from all users in the current user's group
-            for(var i = 0; i < users.length; i++)
-            {                
-                var filter = {
-                    where: {and: [
-                        {userId: users[i].id},
-                        {timestamp: {gt: $scope.settings.displayHistory.startDate}},
-                        {timestamp: {lt: $scope.settings.displayHistory.endDate}}
-                        ]},
-                    limit: 1,
-                    order: 'timestamp DESC'
-                };
-            
-                DataService.localPosition_find(filter, function(err, res2) {
-                    // Res2 contains at most 1 position (limit: 1 in filter)
-                    if(res2.length > 0)
+        // users contains an array of all users in the current group
+        var users = LocalStorageService.getItem("groupUserIds", [], window);
+        
+        // Get the latest position from all users in the current user's group
+        for(var i = 0; i < users.length; i++)
+        {                
+            var filter = {
+                where: {and: [
+                    {userId: users[i]},
+                    {timestamp: {gt: $scope.settings.displayHistory.startDate}},
+                    {timestamp: {lt: $scope.settings.displayHistory.endDate}}
+                    ]},
+                limit: 1,
+                order: 'timestamp DESC'
+            };
+        
+            DataService.localPosition_find(filter, function(err, res2) {
+                // Res2 contains at most 1 position (limit: 1 in filter)
+                if(res2.length > 0)
+                {
+                    if(res2[0].userId !== LocalStorageService.getItem("currentUser", {}, window).id)
                     {
-                        if(res2[0].userId !== LocalStorageService.getItem("currentUser", {}, window).id)
-                        {
-                            var latlng = new google.maps.LatLng(res2[0].latlng.lat, res2[0].latlng.lng);
-                            var marker = new google.maps.Marker({
-                                    position: latlng,
-                                    map: $scope.map,
-                                    title: "current_pos",
-                                    icon: 'img/ic_person_pin_red_18dp_2x.png'
-                            });
-                            $scope.otherUserMarkers.push(marker);
-                        } 
-                    }                                       
-                });
-            }           
-        });
+                        var latlng = new google.maps.LatLng(res2[0].latlng.lat, res2[0].latlng.lng);
+                        var marker = new google.maps.Marker({
+                                position: latlng,
+                                map: $scope.map,
+                                title: "current_pos",
+                                icon: 'img/ic_person_pin_red_18dp_2x.png'
+                        });
+                        $scope.otherUserMarkers.push(marker);
+                    } 
+                }                                       
+            });
+        }           
     };
     
     // Draws a line on the map where the user has traveled
