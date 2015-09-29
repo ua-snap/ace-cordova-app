@@ -10,7 +10,7 @@ angular.module('ace.controllers', [])
 // for handling the left-side-menu
 
 // Create the AppController controller
-.controller('AppController', function($scope, DataService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, GeoService, $ionicHistory) {
+.controller('AppController', function($scope, $ionicLoading, DataService, SettingsService, AuthService, LocalStorageService, $ionicSideMenuDelegate, $state, $http, GeoService, $ionicHistory) {
   
     // Function toggles sliding the left side-menu out and back in
     // Called when the user presses the "More" (three vertical bars) button on the top left of the header bar
@@ -27,7 +27,16 @@ angular.module('ace.controllers', [])
         // Set user name in left side menu
         document.getElementById("username_title").innerText = LocalStorageService.getItem("currentUser", null, window).username;
     });
-  
+    
+    // Click handler for sync option
+    $scope.syncNow = function() {
+        // This function was accessed by sliding out the left menu, so close it back up.
+        $ionicSideMenuDelegate.toggleLeft();
+        
+        // Perform sync
+        var settings = SettingsService.getSettings(window);
+        DataService.sync(null, settings.general.notifications);
+    };
   
     // Function called when the user clicks the "logout" button on the left-side menu
     $scope.logout = function() {

@@ -114,10 +114,13 @@
       <ion-content scroll="false" ng-controller="AppController">
         <ion-list>
           <ion-item ng-click="logout()">
-            {{&apos;LOGOUT&apos; | translate}}
+            {{'LOGOUT' | translate}}
           </ion-item>
           <ion-item ng-click="openSettings()">
-            {{&apos;SETTINGS&apos; | translate}}
+            {{'SETTINGS' | translate}}
+          </ion-item>
+          <ion-item ng-click="syncNow()">
+              {{'SYNC' | translate}}
           </ion-item>
       </ion-list></ion-content>
     </ion-side-menu>

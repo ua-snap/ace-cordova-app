@@ -106,5 +106,6 @@
      "DISPLAY_OTHER_USERS": "Display Other Users",
      "POSITION_HISTORY_START_DATE": "Position History Start Date",
      "POSITION_HISTORY_END_DATE": "Positin History End Date",
-     "REPORT_TIMESTAMP": "Report Timestamp"
+     "REPORT_TIMESTAMP": "Report Timestamp",
+     "SYNC": "Sync"
   }

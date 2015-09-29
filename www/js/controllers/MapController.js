@@ -228,7 +228,7 @@ angular.module('ace.controllers')
         GeoService.setFollowPosition($scope.settings.followPos);
         
         // Handle displaying other users
-        if($scope.settings.displayOtherUsers.checked)
+        if($scope.settings.displayOtherUsers && $scope.settings.displayOtherUsers.checked)
         {
             $scope.displayOtherUserPositions();
         }
