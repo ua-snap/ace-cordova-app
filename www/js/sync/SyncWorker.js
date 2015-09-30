@@ -95,7 +95,7 @@ self.onmessage = function(message) {
 		window.saveWorkerPort.postMessage({req: "load"});
 		window.loading = true;
 		window.saveWorkerPort.onmessage = function(msg) {
-			// Call the load function, which expects the data at window.localStorage.getItem("")
+			// Call the load function, which expects the data at window.localStorage.getItem("ace-db")
 			var memory = window.client.models.LocalMobileUser.getConnector();
 			window.localStorage.setItem("ace-db", msg.data);
 			memory.loadFromFile(function() {
@@ -477,6 +477,42 @@ self.onmessage = function(message) {
 				};
 				self.postMessage(returnMsg);
 			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "localmobileuser.currentcheckpoint") {
+		(function(id) {
+			window.client.models.LocalMobileUser.currentCheckpoint(function(err, currentCheckpointId) {
+				var returnMsg = {
+					cbId: id,
+					args: [err, currentCheckpointId]	
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "remotemobileuser.currentcheckpoint") {
+		(function(id) {
+			window.client.models.RemoteMobileUser.currentCheckpoint(function(err, currentCheckpointId) {
+				var returnMsg = {
+					cbId: id,
+					args: [err, currentCheckpointId]
+				};
+				self.postMessage(returnMsg);
+			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "resetlocalmodels") {
+		// Call the load function, which expects the data at window.localStorage.getItem("ace-db")
+		var memory = window.client.models.LocalMobileUser.getConnector();
+		window.localStorage.setItem("ace-db", {});
+		(function(id) {
+			memory.loadFromFile(function() {
+				var returnMsg = {
+					cbId: id,
+					args: [true]
+				};
+				self.postMessage(returnMsg);
+			});	
 		})(msg.cbId);
 	}
 	

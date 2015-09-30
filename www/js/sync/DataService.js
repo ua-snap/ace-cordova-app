@@ -577,6 +577,26 @@ angular.module('ace.services')
 			this.sendMessage("localposition.find", null, filter, cb);
 		},
 		
+		/**
+		 * @method localMobileUser_currentCheckpoint
+		 * 
+		 * @description Function gets the current checkpoint for all local models
+		 * 
+		 */
+		
+		// Function gets the current checkpoint for all local models
+		localMobileUser_currentCheckpoint(cb) {
+			this.sendMessage("localmobileuser.currentcheckpoint", null, null, cb);	
+		},
+		
+		remoteMobileUser_currentCheckpoint(cb) {
+			this.sendMessage("remotemobileuser.currentcheckpoint", null, null, cb);	
+		},
+		
+		resetLocalModels(cb) {
+			this.sendMessage("resetlocalmodels", null, null, cb);
+		},
+		
 		// Sync
 		//--------------------------------------------------------------------------------------------------
 		

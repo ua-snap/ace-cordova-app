@@ -91,9 +91,27 @@ angular.module('ace.services', [])
                             // Save group name (to be used when uploading to group containers)
                             LocalStorageService.setItem("groupName", result.__data.name, window);
                             
-                            // SYNC 
-                            var settings = SettingsService.getSettings(window);
-                            DataService.sync(null, settings.general.notifications);                           
+                            // Before sync, ensure that the current checkpoint is not greater than the remote checkpoint
+                            // If it is, the remote data has been removed, so nuke the local data store before syncing
+                            DataService.localMobileUser_currentCheckpoint(function(err, localCheckpoint) {
+                                DataService.remoteMobileUser_currentCheckpoint(function(err, remoteCheckpoint) {
+                                    if(localCheckpoint > remoteCheckpoint)
+                                    {
+                                        // Kill local data models before syncing
+                                        DataService.resetLocalModels(function(res) {
+                                            // SYNC 
+                                            var settings = SettingsService.getSettings(window);
+                                            DataService.sync(null, settings.general.notifications);
+                                        });
+                                    }
+                                    else
+                                    {
+                                        // SYNC 
+                                        var settings = SettingsService.getSettings(window);
+                                        DataService.sync(null, settings.general.notifications);
+                                    }
+                                });
+                            });                     
                         }                       
                         else if(err)
                         {
