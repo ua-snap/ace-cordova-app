@@ -107,5 +107,5 @@
      "POSITION_HISTORY_START_DATE": "Position History Start Date",
      "POSITION_HISTORY_END_DATE": "Positin History End Date",
      "REPORT_TIMESTAMP": "Report Timestamp",
-     "SYNC": "Sync"
+     "SYNC_NOW": "Sync now"
   }

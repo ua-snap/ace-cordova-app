@@ -35,7 +35,18 @@ angular.module('ace.controllers', [])
         
         // Perform sync
         var settings = SettingsService.getSettings(window);
-        DataService.sync(null, settings.general.notifications);
+        DataService.sync(function(model) {
+            if(!window.syncNowCounter)
+            {
+                window.syncNowCounter = 0;
+            }
+            window.syncNowCounter++;
+            if(window.syncNowCounter === 4)
+            {
+                delete window.syncNowCounter;
+                $ionicLoading.show({template: 'Sync complete', noBackdrop: true, duration: 1500});
+            }
+        }, settings.general.notifications);
     };
   
     // Function called when the user clicks the "logout" button on the left-side menu
