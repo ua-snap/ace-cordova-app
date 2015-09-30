@@ -582,6 +582,8 @@ angular.module('ace.services')
 		 * 
 		 * @description Function gets the current checkpoint for all local models
 		 * 
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, currentCheckpoint)
 		 */
 		
 		// Function gets the current checkpoint for all local models
@@ -589,10 +591,26 @@ angular.module('ace.services')
 			this.sendMessage("localmobileuser.currentcheckpoint", null, null, cb);	
 		},
 		
+		/**
+		 * @method remoteMobileUser_currentCheckpoint
+		 * 
+		 * @description Function gets the current checkpoint for all remote models
+		 * 
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, currentCheckpoint)
+		 */
 		remoteMobileUser_currentCheckpoint(cb) {
 			this.sendMessage("remotemobileuser.currentcheckpoint", null, null, cb);	
 		},
 		
+		/**
+		 * @method resetLocalModels
+		 * 
+		 * @description Clears and resets all local data models
+		 * 
+		 * @param {function} cb Callback function to be executed after the remote call is executed.  Will be passed
+		 * 		the following parameters cb(err, currentCheckpoint)
+		 */
 		resetLocalModels(cb) {
 			this.sendMessage("resetlocalmodels", null, null, cb);
 		},

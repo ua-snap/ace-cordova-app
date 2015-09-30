@@ -481,6 +481,7 @@ self.onmessage = function(message) {
 	}
 	else if(msg.req === "localmobileuser.currentcheckpoint") {
 		(function(id) {
+			// Get the (local) current checkpoint
 			window.client.models.LocalMobileUser.currentCheckpoint(function(err, currentCheckpointId) {
 				var returnMsg = {
 					cbId: id,
@@ -492,6 +493,7 @@ self.onmessage = function(message) {
 	}
 	else if(msg.req === "remotemobileuser.currentcheckpoint") {
 		(function(id) {
+			// Get the (remote) current checkpoint
 			window.client.models.RemoteMobileUser.currentCheckpoint(function(err, currentCheckpointId) {
 				var returnMsg = {
 					cbId: id,
@@ -502,6 +504,7 @@ self.onmessage = function(message) {
 		})(msg.cbId);
 	}
 	else if(msg.req === "resetlocalmodels") {
+		// Clear all local data
 		// Call the load function, which expects the data at window.localStorage.getItem("ace-db")
 		var memory = window.client.models.LocalMobileUser.getConnector();
 		window.localStorage.setItem("ace-db", {});
