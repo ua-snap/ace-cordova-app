@@ -102,9 +102,10 @@ angular.module('ace.controllers')
         $scope.saveMapState();
         
         // Disable the position update function (if necessary)
-        if($scope.positionUpdateInterval !== undefined)
+        if(window.mapPositionUpdateInterval !== undefined)
         {
-            window.clearInterval($scope.positionUpdateInterval);
+            window.clearInterval(window.mapPositionUpdateInterval);
+            delete window.mapPositionUpdateInterval;
         }
     });
     
@@ -265,7 +266,7 @@ angular.module('ace.controllers')
         {   
             // Instead of adding a callback to the GeoService.watchPosition functionality, add a timer that updates 
             // the marker (will be much less cpu intensive, trying to fix map lockup bug)
-            $scope.positionUpdateInterval = window.setInterval(function() {
+            window.mapPositionUpdateInterval = window.setInterval(function() {
                 GeoService.getCurrentPosition(navigator.geolocation, function(position) {
                     if(position)
                     {
@@ -284,7 +285,8 @@ angular.module('ace.controllers')
             
             // Clear the callback function (that updates the marker)
             //GeoService.setWatchCallback(null);
-            window.clearInterval($scope.positionUpdateInterval);
+            window.clearInterval(window.mapPositionUpdateInterval);
+            delete window.mapPositionUpdateInterval;
             
             // Make sure follow position setting is false
             if($scope.settings.followPos)

@@ -56,6 +56,12 @@ angular.module('ace.controllers', [])
             // Stop watching position
             GeoService.disableWatchPosition(navigator.geolocation);
             
+            // Clear out the position update interval (if the map was opened)
+            if(window.mapPositionUpdateInterval)
+            {
+                window.clearInterval(window.mapPositionUpdateInterval);
+            }
+            
             // Remove "online" event listener
             document.removeEventListener("online", window.thread_messenger.onlineListenerFunction, false);
             
