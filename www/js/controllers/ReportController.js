@@ -17,7 +17,7 @@ angular.module('ace.controllers')
   
   $scope.editingReport = false;
   
-  // Adding enter event listener.  This function will be called just before every view load,
+    // Adding enter event listener.  This function will be called just before every view load,
     // regardless of controller and state caching.  Here, this is used to enable the side menu drag functionality.
     $scope.$on('$ionicView.enter', function() {
     	$ionicSideMenuDelegate.canDragContent(true);

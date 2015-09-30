@@ -25,26 +25,29 @@ angular.module('ace.controllers')
         $state.go('tab.report');
     }
     
-    var loginBlock = window.document.getElementById("loginContents");
+    // Dynamically reposition login block and set orientation listener on EVERY view entry
+    $scope.$on('$ionicView.enter', function() {
+    	var repositionLoginBlock = function() {
+            var loginBlock = window.document.getElementById("loginContents");
+        
+            var screenHeight = window.innerHeight;
+            var loginBlockHeight = loginBlock.clientHeight - Number(loginBlock.style.paddingTop.replace("px", ""));
+        
+            // Calculate padding top (so that the bottom of the login block is 30 px above the bottom of the screen)
+            var paddingTop = screenHeight - loginBlockHeight - 30;
+            loginBlock.style.paddingTop = paddingTop.toString() + "px";
+        };
+        
+        repositionLoginBlock();
+        
+        // Function to dynamically reposition the login inputs and button
+        window.onorientationchange = function(e) {
+            // Wait to ensure that orientation change is complete (UI is updated)
+            window.setTimeout(repositionLoginBlock, 5);
+        };
+    });
     
-    var screenHeight = window.innerHeight;
-    var loginBlockHeight = loginBlock.clientHeight - Number(loginBlock.style.paddingTop.replace("px", ""));
-
-    // Calculate padding top (so that the bottom of the login block is 30 px above the bottom of the screen)
-    var paddingTop = screenHeight - loginBlockHeight - 30;
-    loginBlock.style.paddingTop = paddingTop.toString() + "px";
     
-    // Function to dynamically reposition the login inputs and button
-    window.onorientationchange = function(e) {
-        var loginBlock = window.document.getElementById("loginContents");
-    
-        var screenHeight = window.innerHeight;
-        var loginBlockHeight = loginBlock.clientHeight - Number(loginBlock.style.paddingTop.replace("px", ""));
-    
-        // Calculate padding top (so that the bottom of the login block is 30 px above the bottom of the screen)
-        var paddingTop = screenHeight - loginBlockHeight - 30;
-        loginBlock.style.paddingTop = paddingTop.toString() + "px";
-   };
     
     // Event handler to detect keypresses on the username field
     $scope.usernameKeyPress = function(e)
