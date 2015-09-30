@@ -257,6 +257,7 @@ angular.module('ace.services')
 			if(mTimerId)
 			{
 				clearInterval(mTimerId);
+				delete mTimerId;
 			}
 			
 			// Set the interval function

@@ -66,6 +66,9 @@ angular.module('ace.controllers')
       },
       displayReports: {
           checked: false
+      },
+      displayOtherUsers: {
+          checked: false
       }
     };
     
