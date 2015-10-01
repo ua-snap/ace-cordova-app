@@ -12,7 +12,7 @@ if(self.importScripts !== undefined)
 	// Local storage shim - use a simple dictionary object
 	var localStorage = {};
 	localStorage.data = {};
-	
+
 	// getItem shim
 	localStorage.getItem = function(key, defaultValue) {
 		var temp = localStorage.data[key];
@@ -39,10 +39,10 @@ if(self.importScripts !== undefined)
 	// Window shim - required for loopback in the browser (browser.bundle.js)
 	this.window = this;
 	window.localStorage = localStorage;
-	
+
 	// Remove partial fetch support (doesn't work anyway).  Force to use XMLHttpRequest
 	window.fetch = undefined;
-	
+
 	// Add console shim (for ios only)
 	if(window.console === undefined)
 	{
@@ -50,14 +50,14 @@ if(self.importScripts !== undefined)
 			// do nothing
 		};
 	}
-	
+
 	// FormData shim - Attribution in file
 	self.importScripts("../../js/polyfill/FormDataPolyfill.js")
-	
+
 	// Set up the loopback in the browser instance
 	self.importScripts("../../js/sync/browser.bundle.js");
 	self.importScripts("../../js/sync/lbclient.js");
-	
+
 	// Utility libraries
 	self.importScripts("../../lib/underscore/underscore.js");
 	self.importScripts("../../lib/async/dist/async.js");
@@ -75,14 +75,14 @@ self.onmessage = function(message) {
 		if(!window.requestQueue)
 		{
 			window.requestQueue = [];
-		}		
+		}
 		window.requestQueue.unshift(message);
 		return;
 	}
-	
+
 	// Grab the actual message object that was passed
 	var msg = message.data;
-	
+
 	// Setup message channel
 	//------------------------------------------------
 	// Message port initialization for the Save thread
@@ -90,7 +90,7 @@ self.onmessage = function(message) {
 	{
 		// Save port for channel communication with save thread
 		window.saveWorkerPort = message.ports[0];
-		
+
 		// Load the appropriate data
 		window.saveWorkerPort.postMessage({req: "load"});
 		window.loading = true;
@@ -103,7 +103,7 @@ self.onmessage = function(message) {
 				window.loading = false;
 				var tempMsg = window.requestQueue.pop();
 				self.onmessage(tempMsg);
-			});			
+			});
 		};
 	}
 	// MobileUser
@@ -111,59 +111,59 @@ self.onmessage = function(message) {
 	else if(msg.req === "login") {
 		(function(id) {
 			window.client.models.RemoteMobileUser.login(msg.params, msg.filter, function(err, res) {
-				
+
 				if(res) {
 					// Save access token id
 					window.localStorage.setItem("access_token", res.id);
-					
+
 					// Save current user object
 					if(res.user)
 					{
 						window.localStorage.setItem("currentUser", res.user);
 					}
 				}
-				
+
 				else if(err) {
 					// Make err.stack a simple primitive to allow passing as a message
 					var errCpy = {
 						message: err.message,
 					}
-					
+
 					// Add stack if present (may not be in older iOS webviews)
 					if(err.stack)
 					{
 						errCpy.stack = err.stack.toString();
 					}
 				}
-				
+
 				// Formulate and send response message
 				var args = [errCpy, res];
-				
+
 				var returnMsg = {
 					cbId: id,
 					args: args
 				};
 				self.postMessage(returnMsg);
-				
-				
+
+
 			});
 		})(msg.cbId);
 	}
 	else if(msg.req === "login-offline") {
 		(function(id) {
 			window.client.models.LocalMobileUser.login(msg.params, msg.filter, function(err, res) {
-				
+
 				if(res) {
 					// Save access token id
 					window.localStorage.setItem("access_token", res.id);
 				}
-				
+
 				// Save current user object
 				if(res.user)
 				{
 					window.localStorage.setItem("currentUser", res.user);
 				}
-				
+
 				else if(err) {
 					// Make err.stack a simple primitive to allow passing as a message
 					var errCpy = {
@@ -171,19 +171,19 @@ self.onmessage = function(message) {
 						stack: err.stack.toString()
 					}
 				}
-				
+
 				// Formulate and send response message
 				var args = [errCpy, res];
-				
+
 				var returnMsg = {
 					cbId: id,
 					args: args
 				};
 				self.postMessage(returnMsg);
-				
-				
+
+
 			});
-			
+
 		})(msg.cbId);
 	}
 	else if(msg.req === "localmobileuser.find") {
@@ -199,7 +199,7 @@ self.onmessage = function(message) {
 					var args = [err, users];
 					var returnMsg = {
 						cbId: id,
-						args: args	
+						args: args
 					};
 					self.postMessage(returnMsg);
 				});
@@ -215,12 +215,12 @@ self.onmessage = function(message) {
 					var args = [err, users];
 					var returnMsg = {
 						cbId: id,
-						args: args	
+						args: args
 					};
 					self.postMessage(returnMsg);
 				});
 			}
-			
+
 		})(msg.cbId);
 	}
 	else if(msg.req === "localmobileuser.updateall") {
@@ -273,7 +273,7 @@ self.onmessage = function(message) {
 			});
 		})(msg.cbId);
 	}
-	
+
 	// Group
 	//---------------------------------------------
 	else if(msg.req === "remotegroup.findone") {
@@ -290,8 +290,8 @@ self.onmessage = function(message) {
 	                }
 	                window.localStorage.setItem("groupUserIds", groupUsersIdArray);
 				}
-				
-			   
+
+
 				var args = [err, res];
 				var returnMsg = {
 					cbId: id,
@@ -315,8 +315,8 @@ self.onmessage = function(message) {
 	                }
 	                window.localStorage.setItem("groupUserIds", groupUsersIdArray);
 				}
-				
-			   
+
+
 				var args = [err, res];
 				var returnMsg = {
 					cbId: id,
@@ -326,7 +326,7 @@ self.onmessage = function(message) {
 			});
 		})(msg.cbId);
 	}
-	
+
 	// Sync
 	//-------------------------------
 	else if(msg.req === "sync") {
@@ -336,29 +336,29 @@ self.onmessage = function(message) {
 				var args = [arg];
 				var returnMsg = {
 					cbId: id,
-					args: args	
+					args: args
 				};
 				self.postMessage(returnMsg);
 			});
 		})(msg.cbId);
 	}
-	
+
 	// LocalPosition
 	//---------------------------------------------
 	else if(msg.req === "localposition.create") {
 		(function(id) {
 			window.client.models.LocalPosition.create(msg.params, function(err, res) {
 				var args;
-				 
+
 				if(res)
 				{
 					args = [err, res.toJSON()];
-				}				
+				}
 				else
 				{
 					args = [err, res];
 				}
-				
+
 				var returnMsg = {
 						cbId: id,
 						args: args
@@ -399,10 +399,10 @@ self.onmessage = function(message) {
 					self.postMessage(returnMsg);
 				});
 			}
-			
+
 		})(msg.cbId);
 	}
-	
+
 	// WeatherReport
 	//------------------------------------------------
 	else if(msg.req === "localweatherreport.create") {
@@ -413,7 +413,7 @@ self.onmessage = function(message) {
 				if(res)
 				{
 					report = res.toJSON();
-				}	
+				}
 				else if(err)
 				{
 					errCpy = {
@@ -421,13 +421,13 @@ self.onmessage = function(message) {
 						stack: err.stack.toString()
 					};
 				}
-				
+
 				var args = [errCpy, report];
 				var returnMsg = {
 					cbId: id,
 					args: args
 				};
-				self.postMessage(returnMsg);			
+				self.postMessage(returnMsg);
 			});
 		})(msg.cbId);
 	}
@@ -465,7 +465,7 @@ self.onmessage = function(message) {
 					self.postMessage(returnMsg);
 				});
 			}
-			
+
 		})(msg.cbId);
 	}
 	else if(msg.req === "localweatherreport.updateall") {
@@ -485,7 +485,7 @@ self.onmessage = function(message) {
 			window.client.models.LocalMobileUser.currentCheckpoint(function(err, currentCheckpointId) {
 				var returnMsg = {
 					cbId: id,
-					args: [err, currentCheckpointId]	
+					args: [err, currentCheckpointId]
 				};
 				self.postMessage(returnMsg);
 			});
@@ -515,10 +515,47 @@ self.onmessage = function(message) {
 					args: [true]
 				};
 				self.postMessage(returnMsg);
-			});	
+			});
 		})(msg.cbId);
 	}
-	
+	else if(msg.req === "localgolfreport.find") {
+		(function(id) {
+			if(msg.filter !== null)
+			{
+				window.client.models.LocalGolfReport.find(msg.filter, function(err, res) {
+					var reports = [];
+					for(var i = 0; i < res.length; i++)
+					{
+						reports.push(res[i].toJSON());
+					}
+					var args = [err, reports];
+					var returnMsg = {
+						cbId: id,
+						args: args
+					};
+					self.postMessage(returnMsg);
+				});
+			}
+			else
+			{
+				window.client.models.LocalGolfReport.find(function(err, res) {
+					var reports = [];
+					for(var i = 0; i < res.length; i++)
+					{
+						reports.push(res[i].toJSON());
+					}
+					var args = [err, reports];
+					var returnMsg = {
+						cbId: id,
+						args: args
+					};
+					self.postMessage(returnMsg);
+				});
+			}
+
+		})(msg.cbId);
+	}
+
 	// Check queue and execute next call (if one is waiting)
 	if(window.requestQueue && window.requestQueue.length > 0)
 	{
