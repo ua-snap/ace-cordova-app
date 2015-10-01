@@ -1,0 +1,25 @@
+<ion-view view-title="Golf Reports">
+  <ion-nav-buttons side="left">
+    <button class="button button-icon ion-android-arrow-back" ng-click="goBack()"></button>
+  </ion-nav-buttons>
+	<ion-content>
+    <ion-list>
+      <div class="list card" collection-repeat="golf_report in golf_reports">
+        <div class="item item-divider">
+          Golf Report
+        </div>
+        <ion-list>
+          <ion-item>
+            strokes: {{golf_report.strokes}}
+          </ion-item>
+          <ion-item>
+            par: {{golf_report.par}}
+          </ion-item>
+          <ion-item>
+            yardage: {{golf_report.par}}
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-list>
+	</ion-content>
+</ion-view>
