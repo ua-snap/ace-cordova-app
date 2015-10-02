@@ -19,7 +19,8 @@ components of the Loopback project.  Users can enter data and have full access t
 while offline.  That data will be synchronized with the server side data store when a network connection is 
 re-established.
 
-## Disclaimer
-###### Remaining work
-This project is not complete.  The vast majority of the functionality is provided here, but several bugs and additional
-features remain to be implemented.  All todo's, enhancements, and bugs are documented in the Issues section of this repo.
+## Getting Started
+The project [wiki](https://github.com/ua-snap/ace-cordova-app/wiki) contains a [Getting Started tutorial][[Getting Started]] that details the steps necessary to download and run this project locally and also to modify the existing set of data models.
+
+## Additional Information
+Please see the [wiki](https://github.com/ua-snap/ace-cordova-app/wiki) for all other information regarding the project.
