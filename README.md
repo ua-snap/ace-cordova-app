@@ -20,7 +20,7 @@ while offline.  That data will be synchronized with the server side data store w
 re-established.
 
 ## Getting Started
-The project [wiki](https://github.com/ua-snap/ace-cordova-app/wiki) contains a [[Getting Started]] tutorial that details the steps necessary to download and run this project locally and also to modify the existing set of data models.
+The project [wiki](https://github.com/ua-snap/ace-cordova-app/wiki) contains a [Getting Started tutorial](https://github.com/ua-snap/ace-cordova-app/wiki/Getting-Started) that details the steps necessary to download and run this project locally and also to modify the existing set of data models.
 
 ## Additional Information
 Please see the [wiki](https://github.com/ua-snap/ace-cordova-app/wiki) for all other information regarding the project.
