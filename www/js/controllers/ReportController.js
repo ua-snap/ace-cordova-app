@@ -250,10 +250,12 @@ angular.module('ace.controllers')
         'WIND_DIRECTION',
         'OTHER',
         'NOTES',
-        'ATTACHMENT'
+        'ATTACHMENT',
+        'AAEP'
     ];
-    
+
     $translate(translationsArray).then(function(translations) {
+
         // Fill in each report element
         var clouds = document.getElementById("sumcat1");
         clouds.innerText = translations.CLOUD_COVER + ": " + $scope.report.cloudCover;
@@ -295,6 +297,11 @@ angular.module('ace.controllers')
         
         var attachment = document.getElementById("sumcat8");
         attachment.innerText = translations.ATTACHMENT + ": " + $scope.report.attachment.replace(/^.*[\\\/]/, ''); 
+
+        var settings = SettingsService.getSettings(window);
+        var aaep = document.getElementById("aaep");
+        var aaepSetting = settings.general.aaep ? "Yes" : "No";
+        aaep.innerText = translations.AAEP + ": " + aaepSetting;
     });
     
     
@@ -312,6 +319,10 @@ angular.module('ace.controllers')
     
     // Save report to database and upload
     var tempReport = $scope.report;
+
+    var settings = SettingsService.getSettings(window);
+    tempReport.aaep = settings.general.aaep;
+
     GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
         
         // Ensure that a position was actually returned

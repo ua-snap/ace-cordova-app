@@ -12,6 +12,7 @@ angular.module('ace.controllers')
 		var settings = SettingsService.getSettings(window);
 		$scope.generalSettings.notifications.checked = settings.general.notifications;
 		$scope.generalSettings.units = settings.general.units;
+		$scope.generalSettings.aaep.checked = settings.general.aaep;
 		
 		// Translate the unit labels
 		$translate(['IMPERIAL', 'METRIC']).then(function(translations) {
@@ -53,7 +54,10 @@ angular.module('ace.controllers')
 			checked: true
 		},
 		syncInterval: 5,
-		units: "Imperial"
+		units: "Imperial",
+		aaep: {
+			checked: false
+		}
 	};
 	
 	// Array to hold units name options
@@ -119,5 +123,12 @@ angular.module('ace.controllers')
 				}, interval * 60000);
 			}
 		};
-	}
+	};
+
+	// Toggle/Check handler for when the AAEP setting is changed
+	$scope.aaepChanged = function() {
+		var settings = SettingsService.getSettings(window);
+		settings.general.aaep = $scope.generalSettings.aaep.checked;
+		SettingsService.updateSettings(window, settings);
+	};
 });

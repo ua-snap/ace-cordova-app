@@ -107,5 +107,6 @@
      "POSITION_HISTORY_START_DATE": "Position History Start Date",
      "POSITION_HISTORY_END_DATE": "Positin History End Date",
      "REPORT_TIMESTAMP": "Report Timestamp",
-     "SYNC_NOW": "Sync now"
+     "SYNC_NOW": "Sync now",
+     "AAEP": "Add to AAEP?"
   }

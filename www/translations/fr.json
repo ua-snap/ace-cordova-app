@@ -107,5 +107,6 @@
       "POSITION_HISTORY_START_DATE": "histoire position de la date de début",
       "POSITION_HISTORY_END_DATE": "position de la date de fin de l'histoire",
       "REPORT_TIMESTAMP": "rapport horodatage",
-      "SYNC_NOW": "synchroniser maintenant"
+      "SYNC_NOW": "synchroniser maintenant",
+      "AAEP": "Add to AAEP?"
   }

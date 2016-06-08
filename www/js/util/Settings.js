@@ -28,7 +28,8 @@ var Settings = function() {
 	this.general = {
 		notifications: true,
 		syncInterval: 5,
-		units: "Imperial"
+		units: "Imperial",
+		aaep: false
 	};
 	
 	// Language settings
