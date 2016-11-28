@@ -19,3 +19,5 @@ www/lib/
 
 # Ignore Plato Report
 plato/
+
+www/js/sync/browser.bundle.js
