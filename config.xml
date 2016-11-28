@@ -21,7 +21,6 @@
   <preference name="CROSSWALK_ANDROID_COMMANDLINE" value="––disable-pull-to-refresh-effect"/>
   <preference name="LIB_MODE" value="embedded"/>
   <preference name="CROSSWALK_ANDROID_VERSION" value="14+"/>
-  <preference name="xwalkVersion" value="14+"/>
   <preference name="xwalkCommandLine" value="--disable-pull-to-refresh-effect"/>
   <preference name="xwalkMode" value="embedded"/>
   <feature name="File">
