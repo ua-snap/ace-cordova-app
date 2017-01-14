@@ -1,0 +1,12 @@
+<ion-view view-title="{{'ORGANIZATION_SETTINGS' | translate}}">
+  <ion-nav-buttons side="left">
+    <!--<button class="button button-icon ion-android-arrow-back" ng-click="goBack()"></button>-->
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-list>
+        <ion-radio ng-repeat="organization in organizations" ng-value="organization.value" ng-model="organizationSettings.organization" ng-change="organizationChanged()">
+            {{organization.name}}
+        </ion-radio>
+    </ion-list>
+  </ion-content>
+</ion-view>

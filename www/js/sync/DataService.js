@@ -325,6 +325,34 @@ angular.module('ace.services')
 		},
 		
 		/**
+		 * @method remoteMobileUser_find
+		 *
+		 * @description Function gets all mobile users specified by the included filter
+		 *
+		 * @param {Object/function} arg1 This argument can either be a filter object {where: {field: "value"}} or a
+		 * 		callback function.
+		 * @param {function} If this argument is provided, it must always be a callback function
+		 * @return void
+		 * @throws None
+		 */
+
+		// Function gets all mobile users specified by the included filter
+		remoteMobileUser_find: function(arg1, arg2) {
+			// expecting either...
+			// arg1 = filter, arg2 = callback function
+			// or
+			// arg1 = callback function, arg2 = undefined
+			if(typeof arg1 === "function")
+			{
+				this.sendMessage("remotemobileuser.find", null, null, arg1);
+			}
+			else if(typeof arg1 === "object" && typeof arg2 === "function")
+			{
+				this.sendMessage("remotemobileuser.find", null, arg1, arg2);
+			}
+		},
+
+		/**
 		 * @method remoteMobileUser_logout
 		 * 
 		 * @description Logs out the currently authenticated user with the remote server
@@ -438,9 +466,9 @@ angular.module('ace.services')
 		//--------------------------------------------------------------------------------------------------
 		
 		/**
-		 * @method remoteGroup_findOne
+		 * @method remoteGroup_find
 		 * 
-		 * @description Returns one group matching the provided filter.  (See above for filter doc link) 
+		 * @description Returns groups matching the provided filter.  (See above for filter doc link)
 		 * Note: This method does support relationships for MobileUsers.  Any related Mobile Users (if included 
 		 * in the filter) will be returned in the res.__unknownProperties.MobileUsers object
 		 * 
@@ -451,17 +479,17 @@ angular.module('ace.services')
 		 * @throws None
 		 */
 		 
-		// Returns one group matching the provided filter.  (See above for filter doc link) 
+		// Returns groups matching the provided filter.  (See above for filter doc link)
 		// Note: This method does support relationships for MobileUsers.  Any related Mobile Users (if included 
 		// in the filter) will be returned in the res.__unknownProperties.MobileUsers object
-		remoteGroup_findOne: function(filter, cb) {
-			this.sendMessage("remotegroup.findone", null, filter, cb);	
+		remoteGroup_find: function(filter, cb) {
+			this.sendMessage("remotegroup.find", null, filter, cb);
 		},
 		
 		/**
-		 * @method localGroup_findOne
+		 * @method localGroup_find
 		 * 
-		 * @description Returns one group matching the provided filter.  (See above for filter doc link) 
+		 * @description Returns groups matching the provided filter.  (See above for filter doc link)
 		 * Note: This method does NOT support relationships of any kind (unimplemented in loopback in the browser lib)
 		 * 
 		 * @param {Object} filter Loopback filter to include in the call. Ex. {where: {id: 123456}}
@@ -471,10 +499,10 @@ angular.module('ace.services')
 		 * @throws None
 		 */
 		 
-		// Returns one group matching the provided filter.  (See above for filter doc link) 
+		// Returns groups matching the provided filter.  (See above for filter doc link)
 		// Note: This method does NOT support relationships of any kind (unimplemented in loopback in the browser lib)
-		localGroup_findOne: function(filter, cb) {
-			this.sendMessage("localgroup.findone", null, filter, cb);	
+		localGroup_find: function(filter, cb) {
+			this.sendMessage("localgroup.find", null, filter, cb);
 		},
 		
 		// WeatherReport

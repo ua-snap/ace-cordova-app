@@ -82,6 +82,7 @@
       "POSITION_TRACKING_INTERVAL": "intervalle de suivi de position",
       "DISPLAYED_POSITION_HISTORY_POINTS": "l'histoire des points de position affichées",     
       "LANGUAGE_SETTINGS": "paramètres de langue",
+      "ORGANIZATION_SETTINGS": "paramètres de l'organisation",
       "SELECT_LANGUAGE": "Choisir la langue",
       "REPORT_SUMMARY": "résumé du rapport",
       "MAP_OPTIONS": "options de carte",

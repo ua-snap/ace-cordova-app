@@ -87,6 +87,13 @@ angular.module('ace', ['ionic', 'ace.controllers', 'ace.services', 'pascalprecht
         controller: 'SettingsLangController'
     })
     
+    // Organization settings state (only accessed from Settings state)
+    .state('settings-organization', {
+        url: '/settings_organization',
+        templateUrl: 'templates/settings_organization.html',
+        controller: 'SettingsOrgController'
+    })
+
     // General settings state (only accessed from Settings state)
     .state('settings-general', {
         url: '/settings_general',

@@ -276,19 +276,23 @@ self.onmessage = function(message) {
 	
 	// Group
 	//---------------------------------------------
-	else if(msg.req === "remotegroup.findone") {
+	else if(msg.req === "remotegroup.find") {
 		(function(id) {
-			window.client.models.RemoteGroup.findOne(msg.filter, function(err, res) {
-				if(res.id === window.localStorage.getItem("currentUser", {}).groupId)
+			window.client.models.RemoteGroup.find(msg.filter, function(err, res) {
+				var groupUsersIdArray = [];
+				for(var i = 0; i < res.length; i++)
 				{
-					// Save group id's if they are present and are the current group
-					var groupUsersIdArray = [];
-	                var groupUsers = res.__unknownProperties.MobileUsers;
-	                for(var i = 0; i < groupUsers.length; i++)
-	                {
-	                    groupUsersIdArray.push(groupUsers[i].id);
-	                }
-	                window.localStorage.setItem("groupUserIds", groupUsersIdArray);
+					if(window.localStorage.getItem("currentUser", {}).groupId.indexOf(res[i].id) !== -1)
+					{
+						// Save group id's if they are present and are the current group
+						window.client.models.RemoteMobileUser.find({"where": {"groupId": res[i].id}}, function(err, groupUsers) {
+							for(var j = 0; j < groupUsers.length; j++)
+	                				{
+								groupUsersIdArray.push(groupUsers[j].id);
+								window.localStorage.setItem("groupUserIds", groupUsersIdArray);
+							}
+						});
+					}
 				}
 				
 			   
@@ -301,21 +305,24 @@ self.onmessage = function(message) {
 			});
 		})(msg.cbId);
 	}
-	else if(msg.req === "localgroup.findone") {
+	else if(msg.req === "localgroup.find") {
 		(function(id) {
-			window.client.models.LocalGroup.findOne(msg.filter, function(err, res) {
-				if(res.id === window.localStorage.getItem("currentUser", {}).groupId && res.__unknownProperties && res.__unknownProperties["MobileUsers"])
+			window.client.models.LocalGroup.find(msg.filter, function(err, res) {
+				var groupUsersIdArray = [];
+				for(var i = 0; i < res.length; i++)
 				{
-					// Save group id's if they are present and are the current group
-					var groupUsersIdArray = [];
-	                var groupUsers = res.__unknownProperties.MobileUsers;
-	                for(var i = 0; i < groupUsers.length; i++)
-	                {
-	                    groupUsersIdArray.push(groupUsers[i].id);
-	                }
-	                window.localStorage.setItem("groupUserIds", groupUsersIdArray);
+					if(res[i].id === window.localStorage.getItem("currentUser", {}).groupId && res[i].__unknownProperties && res[i].__unknownProperties["MobileUsers"])
+					{
+						// Save group id's if they are present and are the current group
+						var groupUsers = res[i].__unknownProperties.MobileUsers;
+						for(var j = 0; j < groupUsers.length; j++)
+	                			{
+							groupUsersIdArray.push(groupUsers[j].id);
+						}
+	                		}
 				}
 				
+				window.localStorage.setItem("groupUserIds", groupUsersIdArray);
 			   
 				var args = [err, res];
 				var returnMsg = {
@@ -489,6 +496,42 @@ self.onmessage = function(message) {
 				};
 				self.postMessage(returnMsg);
 			});
+		})(msg.cbId);
+	}
+	else if(msg.req === "remotemobileuser.find") {
+		(function(id) {
+			if(msg.filter !== null)
+			{
+				window.client.models.RemoteMobileUser.find(msg.filter, function(err, res) {
+					var users = [];
+					for(var i = 0; i < res.length; i++)
+					{
+						users.push(res[i].toJSON());
+					}
+					var args = [err, users];
+					var returnMsg = {
+						cbId: id,
+						args: args
+					};
+					self.postMessage(returnMsg);
+				});
+			}
+			else
+			{
+				window.client.models.RemoteMobileUser.find(function(err, res) {
+					var users = [];
+					for(var i = 0; i < res.length; i++)
+					{
+						users.push(res[i].toJSON());
+					}
+					var args = [err, users];
+					var returnMsg = {
+						cbId: id,
+						args: args
+					};
+					self.postMessage(returnMsg);
+				});
+			}
 		})(msg.cbId);
 	}
 	else if(msg.req === "remotemobileuser.currentcheckpoint") {

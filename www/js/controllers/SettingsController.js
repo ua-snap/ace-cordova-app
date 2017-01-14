@@ -55,6 +55,11 @@ angular.module('ace.controllers')
 		$state.go('settings-language');
 	}
 	
+	// Function called when the Organization Settings item is clicked.  Opens the Organization settings interface
+	$scope.organizationSettingsClicked = function() {
+		$state.go('settings-organization');
+	}
+
 	// Function called when the General Settings item is clicked.  Opens the General settings interface
 	$scope.generalSettingsClicked = function() {
 		$state.go('settings-general');
