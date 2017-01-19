@@ -254,6 +254,10 @@ angular.module('ace.controllers')
     ];
     
     $translate(translationsArray).then(function(translations) {
+        var settings = SettingsService.getSettings(window);
+        var organization = document.getElementById("organization");
+        organization.innerText = "Organization: " + LocalStorageService.getItem("groupName", "", window);;
+
         // Fill in each report element
         var clouds = document.getElementById("sumcat1");
         clouds.innerText = translations.CLOUD_COVER + ": " + $scope.report.cloudCover;
@@ -312,6 +316,11 @@ angular.module('ace.controllers')
     
     // Save report to database and upload
     var tempReport = $scope.report;
+    tempReport.groupId = LocalStorageService.getItem("groupId", "", window);
+
+    var settings = SettingsService.getSettings(window);
+    tempReport.organization = settings.organization;
+
     GeoService.getCurrentPosition(navigator.geolocation, function(pos) {
         
         // Ensure that a position was actually returned

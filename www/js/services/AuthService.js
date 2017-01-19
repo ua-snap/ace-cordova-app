@@ -69,6 +69,8 @@ angular.module('ace.services', [])
                 DataService.remoteMobileUser_login(credentials, ['user'], function(err, res) {
                     if(res)
                     {
+                        var settings = SettingsService.getSettings(window);
+
                         // Save current user (including user settings)
                         LocalStorageService.setItem("currentUser", res.user, window);
                         
@@ -76,49 +78,63 @@ angular.module('ace.services', [])
                         LocalStorageService.setItem("access_token", res.id, window);
                         
                         // Retrieve an array of the id's for users in the current group
-                        var filter = {where: {id: res.user.groupId}, include: "MobileUsers"};
-                        DataService.remoteGroup_findOne(filter, function(err, result) {
-                        if(result)
-                        {
-                            var groupUsersIdArray = [];
-                            var groupUsers = result.__unknownProperties.MobileUsers;
-                            for(var i = 0; i < groupUsers.length; i++)
+                        var filter = {where: {id: {inq: res.user.groupId}}, include: "MobileUsers"};
+                        DataService.remoteGroup_find(filter, function(err, result) {
+                            if(result)
                             {
-                                groupUsersIdArray.push(groupUsers[i].id);
-                            }
-                            LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
+                                var groupUsersIdArray = [];
+
+                                for(var i = 0; i < result.length; i++)
+                                {
+                                    if(settings.organization === null) {
+                                        settings.organization = result[i].__data.id;
+                                        SettingsService.updateSettings(window, settings);
+                                    }
+
+                                    if(settings.organization === result[i].__data.id) {
+                                        LocalStorageService.setItem("groupId", result[i].__data.id, window);
+                                        LocalStorageService.setItem("groupName", result[i].__data.name, window);
+                                    }
+
+                                    // Get every user in every one of this user's groups
+                                    DataService.remoteMobileUser_find({"where": {"groupId": result[i].__data.id}}, function(err, groupUsers) {
+                                        if(groupUsers) {
+                                            for(var j = 0; j < groupUsers.length; j++) {
+                               	            groupUsersIdArray.push(groupUsers[j].id);
+                                            }
+                               	        }
+                              	    });
+                                }
                             
-                            // Save group name (to be used when uploading to group containers)
-                            LocalStorageService.setItem("groupName", result.__data.name, window);
-                            
-                            // Before sync, ensure that the current checkpoint is not greater than the remote checkpoint
-                            // If it is, the remote data has been removed, so nuke the local data store before syncing
-                            DataService.localMobileUser_currentCheckpoint(function(err, localCheckpoint) {
-                                DataService.remoteMobileUser_currentCheckpoint(function(err, remoteCheckpoint) {
-                                    if(localCheckpoint > remoteCheckpoint)
-                                    {
-                                        // Kill local data models before syncing
-                                        DataService.resetLocalModels(function(res) {
+                                LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
+
+                                // Before sync, ensure that the current checkpoint is not greater than the remote checkpoint
+                                // If it is, the remote data has been removed, so nuke the local data store before syncing
+                                DataService.localMobileUser_currentCheckpoint(function(err, localCheckpoint) {
+                                    DataService.remoteMobileUser_currentCheckpoint(function(err, remoteCheckpoint) {
+                                        if(localCheckpoint > remoteCheckpoint)
+                                        {
+                                            // Kill local data models before syncing
+                                            DataService.resetLocalModels(function(res) {
+                                                // SYNC 
+                                                var settings = SettingsService.getSettings(window);
+                                                DataService.sync(null, settings.general.notifications);
+                                            });
+                                        }
+                                        else
+                                        {
                                             // SYNC 
                                             var settings = SettingsService.getSettings(window);
                                             DataService.sync(null, settings.general.notifications);
-                                        });
-                                    }
-                                    else
-                                    {
-                                        // SYNC 
-                                        var settings = SettingsService.getSettings(window);
-                                        DataService.sync(null, settings.general.notifications);
-                                    }
-                                });
-                            });                     
-                        }                       
-                        else if(err)
-                        {
-                            alert(err);
-                        }
-                        
-                    });
+                                        }
+                                    });
+                                });                     
+                            }                       
+                            else if(err)
+                            {
+                                alert(err);
+                            }
+                        });
                         // Login was successful, no need to wait on updating the user group data.
                         if(successCallback)
                         {
@@ -142,6 +158,8 @@ angular.module('ace.services', [])
                 DataService.localMobileUser_login(credentials, ['user'], function(err, res) {
                     if(res)
                     {
+                        var settings = SettingsService.getSettings(window);
+
                         // Save current user (including user settings)
                         LocalStorageService.setItem("currentUser", res.user, window);
                         
@@ -149,27 +167,40 @@ angular.module('ace.services', [])
                         LocalStorageService.setItem("access_token", null, window);
                         
                         // Retrieve an array of the id's for users in the current group
-                        var filter = {where: {id: res.user.groupId}};
-                        DataService.localGroup_findOne(filter, function(err, result) {
-                            // Save group name (to be used when uploading to group containers)
-                            LocalStorageService.setItem("groupName", result.__data.name, window);
-                            // Get the users in the group
-                            DataService.localMobileUser_find({where: {groupId: result.__data.id}}, function(err, result) {
+                        var filter = {where: {id: {inq: res.user.groupId}}};
+                        DataService.localGroup_find(filter, function(err, result) {
                                 if(result)
                                 {
                                     var groupUsersIdArray = [];
-                                    var groupUsers = result;
-                                    for(var i = 0; i < groupUsers.length; i++)
+
+                                for(var i = 0; i < result.length; i++)
                                     {
+                                    if(settings.organization === null) {
+                                        settings.organization = result[i].__data.id;
+                                        SettingsService.updateSettings(window, settings);
+                                    }
+
+                                    if(setting.organization === result[i].__data.id) {
+                                        LocalStorageService.setItem("groupId", result[i].__data.id, window);
+                                        LocalStorageService.setItem("groupName", result[i].__data.name, window);
+                                    }
+
+                                    // Get every user in every one of this user's groups
+                                    DataService.localMobileUser_find({where: {groupId: result[0].__data.id}}, function(err, groupUsers) {
+                                        if(groupUsers) {
+                                            for(var i = 0; i < groupUsers.length; i++) {
                                         groupUsersIdArray.push(groupUsers[i].id);
                                     }
-                                    LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
+                                        }
+                                    });
+                                }
                                 }
                                  else if(err)
                                 {
                                     alert(err);
                                 }
-                            });                       
+
+                            LocalStorageService.setItem("groupUserIds", groupUsersIdArray, window);
                         });
                         
                         // Login was successful, don't need to wait for other data to update
